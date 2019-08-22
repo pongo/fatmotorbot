@@ -21,18 +21,14 @@ describe('WeightUseCase', () => {
     });
 
     it('should return error on invalid weight', async () => {
-      let plan = 0;
       const repository = { add: sinon.fake() };
       const usecase = new WeightUseCase(repository);
 
       const actual = await usecase.add(u(1), '');
 
-      if (actual.isErr) {
-        assert.instanceOf(actual.error, InvalidFormatError);
-        plan++;
-      }
+      if (actual.isOk) throw Error();
+      assert.instanceOf(actual.error, InvalidFormatError);
       sinon.assert.notCalled(repository.add);
-      assert.equal(plan, 1, 'plan');
     });
   });
 });
