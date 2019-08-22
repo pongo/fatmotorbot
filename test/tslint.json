@@ -1,0 +1,13 @@
+{
+  "extends": ["../tslint.json"],
+  "rules": {
+    "max-func-body-length": false,
+    "mocha-no-side-effect-code": false,
+    "no-import-side-effect": false,
+    "no-implicit-dependencies": false,
+    "no-unnecessary-type-annotation": false,
+    "no-unsafe-any": false,
+    "object-literal-sort-keys": false,
+    "no-unused-expression": false
+  }
+}

@@ -14,23 +14,34 @@ module.exports = {
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
   ],
   overrides: [
     {
       files: ["*.test.ts"],
       rules: {
         "@typescript-eslint/require-await": 0,
+        "@typescript-eslint/tslint/config": [
+          "error",
+          {
+            lintFile: "./test/tslint.json",
+          },
+        ],
         "max-lines-per-function": 0,
+        "max-nested-callbacks": 0,
+        "no-unused-expressions": 0,
       },
     },
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: "./tsconfig.json",
+    project: "./tsconfig.eslint.json",
     sourceType: "module",
     tsconfigRootDir: ".",
   },
-  plugins: ["@typescript-eslint", "@typescript-eslint/tslint"],
+  plugins: ["@typescript-eslint", "@typescript-eslint/tslint", "import"],
   root: true,
   rules: {
     "@typescript-eslint/camelcase": 0,
@@ -58,6 +69,9 @@ module.exports = {
     ],
     "complexity": ["error", 5],
     "func-names": 0,
+    "import/no-extraneous-dependencies": ["error", { devDependencies: ["**/*.test.ts"] }],
+    "import/no-unresolved": 0,
+    "import/prefer-default-export": 0,
     "lines-between-class-members": 0,
     "max-classes-per-file": 0,
     "max-depth": ["error", 3],

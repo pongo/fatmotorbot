@@ -75,7 +75,10 @@
     "no-void-expression": [true, "ignore-arrow-function-shorthand"],
     "object-literal-sort-keys": false,
     "object-shorthand-properties-first": false,
-    "ordered-imports": false,
+    "ordered-imports": [true, {
+      "import-sources-order": "case-insensitive",
+      "named-imports-order": "any"
+    }],
     "prefer-array-literal": false,
     "prefer-type-cast": false,
     "space-before-function-paren": [
@@ -95,6 +98,8 @@
     "trailing-comma": false,
     "triple-equals": [true, "allow-null-check", "allow-undefined-check"],
     "typedef": [true, "property-declaration"],
-    "variable-name": [true, "ban-keywords"]
+    "variable-name": [true, "ban-keywords"],
+    "chai-vague-errors": false,
+    "quotemark": false
   }
 }
