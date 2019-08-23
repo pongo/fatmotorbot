@@ -12,22 +12,20 @@ class WeightUseCase {
         const weight = validateWeight(parseNumber_1.parseNumber(weightString));
         if (weight == null)
             return result_1.Result.err(new errors_1.InvalidFormatError());
-        const currentMeasure = { date, value: weight };
         const previousMeasuresResult = await this.weightRepository.getAll(userId);
         if (previousMeasuresResult.isErr)
             return previousMeasuresResult;
-        const diff = measureDifference_1.measureDifference(currentMeasure, previousMeasuresResult.value);
         const addResult = await this.weightRepository.add(userId, weight);
         if (addResult.isErr)
             return addResult;
+        const currentMeasure = { date, value: weight };
+        const diff = measureDifference_1.measureDifference(currentMeasure, previousMeasuresResult.value);
         return result_1.Result.ok({ diff, weight });
     }
 }
 exports.WeightUseCase = WeightUseCase;
 function validateWeight(value) {
-    if (value == null)
-        return null;
-    if (value >= 1 && value <= 500)
+    if (value !== null && value >= 1 && value <= 500)
         return value;
     return null;
 }

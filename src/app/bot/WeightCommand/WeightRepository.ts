@@ -7,3 +7,5 @@ export interface IWeightRepository {
 }
 
 export class WeightRepository {}
+
+// TODO: не забыть, что add() должен отправлять запрос через очередь

@@ -80,7 +80,7 @@ describe('WeightUseCase', () => {
   });
 });
 
-describe('isValidWeight()', () => {
+describe('validateWeight()', () => {
   it('value should be not null', () => {
     assert.isNull(validateWeight(null));
   });

@@ -17,13 +17,14 @@ export class WeightUseCase {
     const weight = validateWeight(parseNumber(weightString));
     if (weight == null) return Result.err(new InvalidFormatError());
 
-    const currentMeasure: Measure<Kg> = { date, value: weight };
     const previousMeasuresResult = await this.weightRepository.getAll(userId);
     if (previousMeasuresResult.isErr) return previousMeasuresResult;
-    const diff = measureDifference(currentMeasure, previousMeasuresResult.value);
 
     const addResult = await this.weightRepository.add(userId, weight);
     if (addResult.isErr) return addResult;
+
+    const currentMeasure: Measure<Kg> = { date, value: weight };
+    const diff = measureDifference(currentMeasure, previousMeasuresResult.value);
     return Result.ok({ diff, weight });
   }
 }
@@ -32,7 +33,6 @@ export class WeightUseCase {
  * Проверяет правильно ли указан вес.
  */
 export function validateWeight(value: number | null): Kg | null {
-  if (value == null) return null;
-  if (value >= 1 && value <= 500) return value as Kg;
+  if (value !== null && value >= 1 && value <= 500) return value as Kg;
   return null;
 }

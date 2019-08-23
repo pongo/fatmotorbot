@@ -4,7 +4,7 @@ function parseNumber(str) {
     const prepared = str
         .replace(',', '.')
         .replace(/[−‒–—―]/g, '-');
-    const reFloat = /[+-]?\d+(\.\d+)?/;
+    const reFloat = /-?\d+(\.\d+)?/;
     const found = reFloat.exec(prepared);
     if (found == null)
         return null;
