@@ -1,7 +1,7 @@
 import { differenceInCalendarDays } from 'date-fns';
 import { Measure } from 'src/app/shared/types';
 
-export type MeasureDifferenceResult<T extends number> = {
+export type MeasureDifferenceSummary<T extends number> = {
   today?: MeasureDifference<T>;
   yesterday?: MeasureDifference<T>;
   daysAgo?: MeasureDifference<T>;
@@ -36,15 +36,18 @@ export type DateMark =
 export type MeasureDifferenceFn<T extends number> = (
   current: Measure<T>,
   previous: Measure<T>[],
-) => MeasureDifferenceResult<T>;
+) => MeasureDifferenceSummary<T>;
 
+/**
+ * Возвращает сравнение текущего замера с предыдущими.
+ */
 export function measureDifference<T extends number>(
   current: Measure<T>,
   previous: Measure<T>[],
-): MeasureDifferenceResult<T> {
+): MeasureDifferenceSummary<T> {
   const sorted = sortMeasuresFromOldestToNewest(previous);
 
-  let result: MeasureDifferenceResult<T> = {};
+  let result: MeasureDifferenceSummary<T> = {};
   for (const { date, value } of sorted) {
     const mark = getDateMark(current.date, date);
     if (mark === 'future') continue;
@@ -57,7 +60,7 @@ export function measureDifference<T extends number>(
 
 // eslint-disable-next-line max-params
 function addMeasure<T extends number>(
-  result: MeasureDifferenceResult<T>,
+  result: MeasureDifferenceSummary<T>,
   mark: DateMark,
   currentValue: T,
   date: Date,
@@ -66,8 +69,14 @@ function addMeasure<T extends number>(
   return { ...result, [mark]: { date, value, difference: currentValue - value } };
 }
 
+/**
+ * Маркирует указанную дату (эта дата была неделю назад, эта — месяц и т.п.).
+ */
 // eslint-disable-next-line complexity
 export function getDateMark(current: Date, other: Date): DateMark {
+  // получаем количество дней между датами.
+  // т.к. замеры идут последовательно, то чем больше дней, тем старее дата.
+  // и нам нужен только самый старый замер (т.е. наибольшее количество дней).
   const daysAgo = differenceInCalendarDays(current, other);
   if (daysAgo < 0) return 'future';
   if (daysAgo === 0) return 'today';
