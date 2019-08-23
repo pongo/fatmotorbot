@@ -2,10 +2,9 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { validateWeight, WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
-import { Kg, TelegramUserId } from 'src/app/shared/types';
+import { kg, TelegramUserId } from 'src/app/shared/types';
 
 const u = (id: number) => id as TelegramUserId;
-const kg = (value: number) => value as Kg;
 
 describe('WeightUseCase', () => {
   describe('add()', () => {
