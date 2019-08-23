@@ -1,6 +1,6 @@
 import { IWeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
 import { InvalidFormatError } from 'src/app/shared/errors';
-import { Kg, TelegramUserId } from 'src/app/shared/modelTypes';
+import { Kg, TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
 
@@ -17,7 +17,7 @@ export class WeightUseCase {
 }
 
 /**
- * Вес должен быть от 1 до 500 кг
+ * Проверяет правильно ли указан вес.
  */
 export function validateWeight(value: number | null): Kg | null {
   if (value == null) return null;

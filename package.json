@@ -10,7 +10,9 @@
     "tslint": "tslint --force --project . -t codeframe -c tslint.json",
     "tslintfix": "tslint --force --project . --fix -c tslint.json",
     "test": "mocha",
-    "test:watch": "npm test --- --watch --watch-extensions ts --reporter min"
+    "test:watch": "npm test --- --watch --watch-extensions ts --reporter min",
+    "cov": "nyc mocha --require source-map-support/register -t 10000 && npm run open_cov",
+    "open_cov": "open-cli ./coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,7 @@
   },
   "homepage": "https://github.com/pongo/fatmotorbot",
   "dependencies": {
+    "date-fns": "^2.0.1",
     "module-alias": "^2.2.1"
   },
   "devDependencies": {
@@ -41,8 +44,11 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.0",
     "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "open-cli": "^5.0.0",
     "prettier": "^1.18.2",
     "sinon": "^7.4.1",
+    "source-map-support": "^0.5.13",
     "ts-mocha": "^6.0.0",
     "ts-node": "^8.3.0",
     "tsconfig-paths": "^3.8.0",
@@ -74,5 +80,25 @@
         }
       }
     ]
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "*.test.ts",
+      "test/**/*.ts",
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "cache": true,
+    "all": true
   }
 }
