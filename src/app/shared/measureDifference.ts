@@ -42,32 +42,26 @@ export function measureDifference<T extends number>(
   current: Measure<T>,
   previous: Measure<T>[],
 ): MeasureDifferenceResult<T> {
-  const [currentDate, currentValue] = current;
   const sorted = sortMeasuresFromNewestToOldest(previous);
 
   let result: MeasureDifferenceResult<T> = {};
-  for (const [date, value] of sorted) {
-    const mark = getDateMark(currentDate, date);
+  for (const { date, value } of sorted) {
+    const mark = getDateMark(current.date, date);
     if (mark === 'future') continue;
-    result = addMeasure({ result, mark, currentValue, date, value });
+    result = addMeasure(result, mark, current.value, date, value);
   }
 
   return result;
 }
 
-function addMeasure<T extends number>({
-  result,
-  mark,
-  currentValue,
-  date,
-  value,
-}: {
-  result: MeasureDifferenceResult<T>;
-  mark: DateMark;
-  currentValue: T;
-  date: Date;
-  value: T;
-}) {
+// eslint-disable-next-line max-params
+function addMeasure<T extends number>(
+  result: MeasureDifferenceResult<T>,
+  mark: DateMark,
+  currentValue: T,
+  date: Date,
+  value: T,
+) {
   return { ...result, [mark]: { date, value, difference: currentValue - value } };
 }
 
@@ -88,5 +82,5 @@ export function getDateMark(current: Date, other: Date): DateMark {
 }
 
 export function sortMeasuresFromNewestToOldest<T extends number>(array: Measure<T>[]): Measure<T>[] {
-  return [...array].sort(([aDate], [bDate]) => +bDate - +aDate); // плюсы нужны, чтобы typescript не ругался
+  return [...array].sort((a, b) => +b.date - +a.date); // плюсы нужны, чтобы typescript не ругался
 }

@@ -7,13 +7,13 @@ import {
 } from 'src/app/shared/measureDifference';
 import { kg, Measure } from 'src/app/shared/types';
 
+const m = <T extends number>(date: Date, value: T): Measure<T> => ({ date, value });
+
 describe('measureDifference()', () => {
   it('should skip future dates', () => {
     const today = new Date(2019, 7 /* aug */, 23);
-    const actual = measureDifference(
-      [today, kg(50)],
-      [[new Date(2020, 7, 23), kg(55)], [new Date(2019, 7, 24), kg(55)]],
-    );
+    const futureMeasures = [m(new Date(2020, 7, 23), kg(55)), m(new Date(2019, 7, 24), kg(55))];
+    const actual = measureDifference(m(today, kg(50)), futureMeasures);
 
     assert.deepEqual(actual, {});
   });
@@ -24,11 +24,9 @@ describe('measureDifference()', () => {
     const monthAgo = new Date(2019, 6 /* jul */, 23);
     const halfYearAgo = new Date(2019, 1 /* feb */, 8);
     const yearAgo = new Date(2018, 7 /* aug */, 23);
+    const previousMeasures = [m(yearAgo, kg(100)), m(halfYearAgo, kg(70)), m(monthAgo, kg(60)), m(weekAgo, kg(50))];
 
-    const actual = measureDifference(
-      [today, kg(60)],
-      [[yearAgo, kg(100)], [halfYearAgo, kg(70)], [monthAgo, kg(60)], [weekAgo, kg(50)]],
-    );
+    const actual = measureDifference(m(today, kg(60)), previousMeasures);
 
     assert.deepEqual(actual, {
       halfYearAgo: {
@@ -56,10 +54,12 @@ describe('measureDifference()', () => {
 
   it('should return oldest today value', () => {
     const today = new Date(2019, 7 /* aug */, 23, 20 /* hour */);
-    const actual = measureDifference(
-      [today, kg(50)],
-      [[new Date(2019, 7, 23, 15 /* hour */), kg(55)], [new Date(2019, 7, 23, 10 /* hour */), kg(60)]],
-    );
+    const todayMeasures = [
+      m(new Date(2019, 7, 23, 15 /* hour */), kg(55)),
+      m(new Date(2019, 7, 23, 10 /* hour */), kg(60)),
+    ];
+
+    const actual = measureDifference(m(today, kg(50)), todayMeasures);
 
     assert.deepEqual(actual, { today: { date: new Date(2019, 7, 23, 10), difference: kg(-10), value: kg(60) } });
   });
@@ -107,7 +107,7 @@ describe('markPreviousDates()', () => {
 
 describe('sortMeasuresFromNewestToOldest()', () => {
   it('should return new sorted array', () => {
-    const d = (num: number): Measure<number> => [new Date(2019, 5, num), 0];
+    const d = (num: number): Measure<number> => m(new Date(2019, 5, num), 0);
     const sortedDays = [5, 4, 3, 2, 1].map(d);
     const reversedDays = [1, 2, 3, 4, 5].map(d);
     const nonSortedDays = [3, 1, 5, 2, 4].map(d);

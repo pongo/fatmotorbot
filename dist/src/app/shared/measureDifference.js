@@ -2,19 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
 function measureDifference(current, previous) {
-    const [currentDate, currentValue] = current;
     const sorted = sortMeasuresFromNewestToOldest(previous);
     let result = {};
-    for (const [date, value] of sorted) {
-        const mark = getDateMark(currentDate, date);
+    for (const { date, value } of sorted) {
+        const mark = getDateMark(current.date, date);
         if (mark === 'future')
             continue;
-        result = addMeasure({ result, mark, currentValue, date, value });
+        result = addMeasure(result, mark, current.value, date, value);
     }
     return result;
 }
 exports.measureDifference = measureDifference;
-function addMeasure({ result, mark, currentValue, date, value, }) {
+function addMeasure(result, mark, currentValue, date, value) {
     return { ...result, [mark]: { date, value, difference: currentValue - value } };
 }
 function getDateMark(current, other) {
@@ -43,7 +42,7 @@ function getDateMark(current, other) {
 }
 exports.getDateMark = getDateMark;
 function sortMeasuresFromNewestToOldest(array) {
-    return [...array].sort(([aDate], [bDate]) => +bDate - +aDate);
+    return [...array].sort((a, b) => +b.date - +a.date);
 }
 exports.sortMeasuresFromNewestToOldest = sortMeasuresFromNewestToOldest;
 //# sourceMappingURL=measureDifference.js.map
