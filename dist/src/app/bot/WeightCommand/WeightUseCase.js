@@ -13,9 +13,13 @@ class WeightUseCase {
         if (weight == null)
             return result_1.Result.err(new errors_1.InvalidFormatError());
         const currentMeasure = { date, value: weight };
-        const previousMeasures = await this.weightRepository.getAll(userId);
-        const diff = measureDifference_1.measureDifference(currentMeasure, previousMeasures);
-        await this.weightRepository.add(userId, weight);
+        const previousMeasuresResult = await this.weightRepository.getAll(userId);
+        if (previousMeasuresResult.isErr)
+            return previousMeasuresResult;
+        const diff = measureDifference_1.measureDifference(currentMeasure, previousMeasuresResult.value);
+        const addResult = await this.weightRepository.add(userId, weight);
+        if (addResult.isErr)
+            return addResult;
         return result_1.Result.ok({ diff, weight });
     }
 }

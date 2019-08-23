@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import { validateWeight, WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { kg, Measure, TelegramUserId } from 'src/app/shared/types';
+import { Result } from 'src/shared/utils/result';
 
 const u = (id: number) => id as TelegramUserId;
 const m = <T extends number>(date: Date, value: T): Measure<T> => ({ date, value });
@@ -12,8 +13,8 @@ describe('WeightUseCase', () => {
     it('should adds valid weight to db', async () => {
       const today = new Date(2019, 7 /* aug */, 23);
       const repository = {
-        add: sinon.fake(),
-        getAll: async () => [],
+        add: sinon.fake.returns(Result.ok()),
+        getAll: async () => Result.ok([]),
       };
       const usecase = new WeightUseCase(repository);
 
@@ -52,8 +53,8 @@ describe('WeightUseCase', () => {
       const yesterday = new Date(2019, 7 /* aug */, 22);
       const daysAgo = new Date(2019, 7 /* aug */, 20);
       const repository = {
-        add: async () => undefined,
-        getAll: async () => [m(yesterday, kg(20)), m(daysAgo, kg(15))],
+        add: async () => Result.ok(),
+        getAll: async () => Result.ok([m(yesterday, kg(20)), m(daysAgo, kg(15))]),
       };
       const usecase = new WeightUseCase(repository);
 
