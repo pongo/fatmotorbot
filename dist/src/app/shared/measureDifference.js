@@ -32,7 +32,7 @@ function getDateMark(current, other) {
         return 'twoWeeksAgo';
     if (daysAgo <= 14 + 31)
         return 'monthAgo';
-    if (daysAgo <= 3 * 31)
+    if (daysAgo <= 4 * 31)
         return 'monthsAgo';
     if (daysAgo <= 9 * 31)
         return 'halfYearAgo';
