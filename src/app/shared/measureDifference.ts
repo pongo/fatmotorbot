@@ -42,12 +42,13 @@ export function measureDifference<T extends number>(
   current: Measure<T>,
   previous: Measure<T>[],
 ): MeasureDifferenceResult<T> {
-  const sorted = sortMeasuresFromNewestToOldest(previous);
+  const sorted = sortMeasuresFromOldestToNewest(previous);
 
   let result: MeasureDifferenceResult<T> = {};
   for (const { date, value } of sorted) {
     const mark = getDateMark(current.date, date);
     if (mark === 'future') continue;
+    if (mark in result) continue; // записываем только самый старый замер
     result = addMeasure(result, mark, current.value, date, value);
   }
 
@@ -81,6 +82,9 @@ export function getDateMark(current: Date, other: Date): DateMark {
   return 'yearsAgo';
 }
 
-export function sortMeasuresFromNewestToOldest<T extends number>(array: Measure<T>[]): Measure<T>[] {
-  return [...array].sort((a, b) => +b.date - +a.date); // плюсы нужны, чтобы typescript не ругался
+/**
+ * Возвращает новый отсортированный массив.
+ */
+export function sortMeasuresFromOldestToNewest<T extends number>(array: Measure<T>[]): Measure<T>[] {
+  return [...array].sort((a, b) => +a.date - +b.date); // плюсы нужны, чтобы typescript не ругался
 }

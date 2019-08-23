@@ -3,7 +3,7 @@ import {
   DateMark,
   getDateMark,
   measureDifference,
-  sortMeasuresFromNewestToOldest,
+  sortMeasuresFromOldestToNewest,
 } from 'src/app/shared/measureDifference';
 import { kg, Measure } from 'src/app/shared/types';
 
@@ -105,17 +105,17 @@ describe('markPreviousDates()', () => {
   });
 });
 
-describe('sortMeasuresFromNewestToOldest()', () => {
+describe('sortMeasuresFromOldestToNewest()', () => {
   it('should return new sorted array', () => {
     const d = (num: number): Measure<number> => m(new Date(2019, 5, num), 0);
-    const sortedDays = [5, 4, 3, 2, 1].map(d);
-    const reversedDays = [1, 2, 3, 4, 5].map(d);
+    const sortedDays = [1, 2, 3, 4, 5].map(d);
+    const reversedDays = [5, 4, 3, 2, 1].map(d);
     const nonSortedDays = [3, 1, 5, 2, 4].map(d);
 
-    assert.deepEqual(sortMeasuresFromNewestToOldest([]), []);
-    assert.deepEqual(sortMeasuresFromNewestToOldest(sortedDays), sortedDays);
-    assert.deepEqual(sortMeasuresFromNewestToOldest(reversedDays), sortedDays);
-    assert.deepEqual(sortMeasuresFromNewestToOldest(nonSortedDays), sortedDays);
-    assert.deepEqual(sortMeasuresFromNewestToOldest(sortMeasuresFromNewestToOldest(sortedDays)), sortedDays);
+    assert.deepEqual(sortMeasuresFromOldestToNewest([]), []);
+    assert.deepEqual(sortMeasuresFromOldestToNewest(sortedDays), sortedDays);
+    assert.deepEqual(sortMeasuresFromOldestToNewest(reversedDays), sortedDays);
+    assert.deepEqual(sortMeasuresFromOldestToNewest(nonSortedDays), sortedDays);
+    assert.deepEqual(sortMeasuresFromOldestToNewest(sortMeasuresFromOldestToNewest(sortedDays)), sortedDays);
   });
 });
