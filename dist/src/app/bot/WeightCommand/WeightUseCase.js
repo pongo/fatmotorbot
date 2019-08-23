@@ -1,18 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const errors_1 = require("src/app/shared/errors");
+const measureDifference_1 = require("src/app/shared/measureDifference");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");
 class WeightUseCase {
     constructor(weightRepository) {
         this.weightRepository = weightRepository;
     }
-    async add(userId, weightString) {
+    async add(userId, date, weightString) {
         const weight = validateWeight(parseNumber_1.parseNumber(weightString));
         if (weight == null)
             return result_1.Result.err(new errors_1.InvalidFormatError());
+        const currentMeasure = { date, value: weight };
+        const previousMeasures = await this.weightRepository.getAll(userId);
+        const diff = measureDifference_1.measureDifference(currentMeasure, previousMeasures);
         await this.weightRepository.add(userId, weight);
-        return result_1.Result.ok(undefined);
+        return result_1.Result.ok({ diff, weight });
     }
 }
 exports.WeightUseCase = WeightUseCase;

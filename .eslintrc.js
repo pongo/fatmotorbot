@@ -78,7 +78,7 @@ module.exports = {
     "max-lines": ["warn", 200],
     "max-lines-per-function": ["warn", 20],
     "max-nested-callbacks": ["warn", 2],
-    "max-params": ["warn", 2],
+    "max-params": ["warn", 3],
     "no-await-in-loop": 0,
     "no-console": 0,
     "no-continue": 0,
