@@ -12,7 +12,7 @@
     "test": "mocha",
     "test:watch": "npm test --- --watch --watch-extensions ts --reporter min",
     "cov": "nyc mocha --require source-map-support/register -t 10000 && npm run open_cov",
-    "open_cov": "opn ./coverage/lcov-report/index.html"
+    "open_cov": "open-cli ./coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/pongo/fatmotorbot",
   "dependencies": {
-    "date-fns": "^2.0.0",
+    "date-fns": "^2.0.1",
     "module-alias": "^2.2.1"
   },
   "devDependencies": {
@@ -45,7 +45,7 @@
     "eslint-plugin-prettier": "^3.1.0",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
-    "opn-cli": "^5.0.0",
+    "open-cli": "^5.0.0",
     "prettier": "^1.18.2",
     "sinon": "^7.4.1",
     "source-map-support": "^0.5.13",

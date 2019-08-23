@@ -17,7 +17,7 @@ export class WeightUseCase {
 }
 
 /**
- * Вес должен быть от 1 до 500 кг
+ * Проверяет правильно ли указан вес.
  */
 export function validateWeight(value: number | null): Kg | null {
   if (value == null) return null;
