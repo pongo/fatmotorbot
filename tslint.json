@@ -38,13 +38,7 @@
     ],
     "max-line-length": false,
     "member-access": [true, "no-public"],
-    "member-ordering": [
-      true,
-      {
-        "alphabetize": true,
-        "order": "fields-first"
-      }
-    ],
+    "member-ordering": false,
     "missing-jsdoc": false,
     "newline-before-return": false,
     "newline-per-chained-call": false,
@@ -75,10 +69,13 @@
     "no-void-expression": [true, "ignore-arrow-function-shorthand"],
     "object-literal-sort-keys": false,
     "object-shorthand-properties-first": false,
-    "ordered-imports": [true, {
-      "import-sources-order": "case-insensitive",
-      "named-imports-order": "any"
-    }],
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "case-insensitive",
+        "named-imports-order": "any"
+      }
+    ],
     "prefer-array-literal": false,
     "prefer-type-cast": false,
     "space-before-function-paren": [
@@ -100,6 +97,7 @@
     "typedef": [true, "property-declaration"],
     "variable-name": [true, "ban-keywords"],
     "chai-vague-errors": false,
-    "quotemark": false
+    "quotemark": false,
+    "no-shadowed-variable": false
   }
 }

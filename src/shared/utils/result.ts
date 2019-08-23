@@ -1,4 +1,4 @@
-/* tslint:disable:member-ordering object-literal-sort-keys */
+/* tslint:disable:object-literal-sort-keys */
 // istanbul ignore file
 
 // Раньше здесь был https://github.com/badrap/result
