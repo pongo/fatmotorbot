@@ -1,6 +1,6 @@
 import { IWeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
 import { InvalidFormatError } from 'src/app/shared/errors';
-import { Kg, TelegramUserId } from 'src/app/shared/modelTypes';
+import { Kg, TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
 
