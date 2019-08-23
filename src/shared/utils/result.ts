@@ -18,34 +18,33 @@ type Err<E extends Error> = {
   readonly error: E;
 };
 
-export type Result<T, E extends Error = Error> = Ok<T> | Err<E>;
+export type Result<T = undefined, E extends Error = Error> = Ok<T> | Err<E>;
 
 export const Result = {
   ok,
   err,
   combine,
-} as const;
+};
 
-function ok<T>(value: T): Result<T, never> {
+function ok<T = undefined>(value?: T): Result<T, never> {
   return {
     isOk: true,
     isErr: false,
-    value,
+    value: value as T,
   } as const;
 }
 
 function err<E extends Error = Error>(error: E): Result<never, E>;
 function err<E extends Error = Error>(error: string, data?: unknown): Result<never, E>;
 function err<E extends Error = Error>(error: E | string, data?: unknown): Result<never, E> {
-  const _error = typeof error === 'string' ? (new StacklessError(error, data) as E) : error;
   return {
     isOk: false,
     isErr: true,
-    error: _error,
+    error: typeof error === 'string' ? (new StacklessError(error, data) as E) : error,
   } as const;
 }
 
-function combine<T, E extends Error = Error>(results: Result<T, E>[]): Err<E> | Ok<T[]> {
+function combine<T = undefined, E extends Error = Error>(results: Result<T, E>[]): Err<E> | Ok<T[]> {
   for (const result of results) {
     if (result.isErr) return result;
   }

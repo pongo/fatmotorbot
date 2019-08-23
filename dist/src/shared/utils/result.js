@@ -10,15 +10,14 @@ function ok(value) {
     return {
         isOk: true,
         isErr: false,
-        value,
+        value: value,
     };
 }
 function err(error, data) {
-    const _error = typeof error === 'string' ? new StacklessError_1.StacklessError(error, data) : error;
     return {
         isOk: false,
         isErr: true,
-        error: _error,
+        error: typeof error === 'string' ? new StacklessError_1.StacklessError(error, data) : error,
     };
 }
 function combine(results) {
