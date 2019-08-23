@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/pongo/fatmotorbot",
   "dependencies": {
+    "date-fns": "^2.0.0",
     "module-alias": "^2.2.1"
   },
   "devDependencies": {
