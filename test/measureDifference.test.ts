@@ -122,6 +122,22 @@ describe('markPreviousDates()', () => {
 
     assert.deepEqual(actual, expected);
   });
+
+  it('should correct works with yesterday', () => {
+    const expected: [Date, DateMark][] = [
+      [new Date(2019, 7 /* aug */, 23, 12 /* hour */), 'current'],
+      [new Date(2019, 7 /* aug */, 22, 23), 'yesterday'],
+      [new Date(2019, 7 /* aug */, 22, 13), 'yesterday'],
+      [new Date(2019, 7 /* aug */, 22, 12), 'yesterday'],
+      [new Date(2019, 7 /* aug */, 22, 10), 'yesterday'],
+      [new Date(2019, 7 /* aug */, 21, 23), 'daysAgo'],
+    ];
+    const current = expected[0][0];
+
+    const actual = expected.map(([date]) => [date, getDateMark(current, date)]);
+
+    assert.deepEqual(actual, expected);
+  });
 });
 
 describe('sortMeasuresFromOldestToNewest()', () => {
