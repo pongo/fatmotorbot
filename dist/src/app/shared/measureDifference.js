@@ -6,7 +6,7 @@ function measureDifference(current, previous) {
     let result = {};
     for (const { date, value } of sorted) {
         const mark = getDateMark(current.date, date);
-        if (mark === 'future')
+        if (mark === 'current' || mark === 'future')
             continue;
         if (mark in result)
             continue;
@@ -19,6 +19,8 @@ function addMeasure(result, mark, currentValue, date, value) {
     return { ...result, [mark]: { date, value, difference: currentValue - value } };
 }
 function getDateMark(current, other) {
+    if (date_fns_1.isSameSecond(current, other))
+        return 'current';
     const daysAgo = date_fns_1.differenceInCalendarDays(current, other);
     if (daysAgo < 0)
         return 'future';
