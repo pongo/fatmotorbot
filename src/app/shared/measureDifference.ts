@@ -1,5 +1,6 @@
 import { differenceInCalendarDays, isSameSecond } from 'date-fns';
 import { Measure } from 'src/app/shared/types';
+import { roundToTwo } from 'src/shared/utils/parseNumber';
 
 export type MeasureDifferenceSummary<T extends number> = {
   today?: MeasureDifference<T>;
@@ -67,7 +68,7 @@ function addMeasure<T extends number>(
   date: Date,
   value: T,
 ) {
-  return { ...result, [mark]: { date, value, difference: currentValue - value } };
+  return { ...result, [mark]: { date, value, difference: roundToTwo(currentValue - value) } };
 }
 
 /**

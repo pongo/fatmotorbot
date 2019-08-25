@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
+const parseNumber_1 = require("src/shared/utils/parseNumber");
 function measureDifference(current, previous) {
     const sorted = sortMeasuresFromOldestToNewest(previous);
     let result = {};
@@ -16,7 +17,7 @@ function measureDifference(current, previous) {
 }
 exports.measureDifference = measureDifference;
 function addMeasure(result, mark, currentValue, date, value) {
-    return { ...result, [mark]: { date, value, difference: currentValue - value } };
+    return { ...result, [mark]: { date, value, difference: parseNumber_1.roundToTwo(currentValue - value) } };
 }
 function getDateMark(current, other) {
     if (date_fns_1.isSameSecond(current, other))
