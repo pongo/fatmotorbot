@@ -6,6 +6,7 @@ import {
   sortMeasuresFromOldestToNewest,
 } from 'src/app/shared/measureDifference';
 import { kg, Measure } from 'src/app/shared/types';
+import { subDays } from 'date-fns';
 
 const m = <T extends number>(date: Date, value: T): Measure<T> => ({ date, value });
 
@@ -63,15 +64,33 @@ describe('measureDifference()', () => {
 
     assert.deepEqual(actual, { today: { date: new Date(2019, 7, 23, 10), difference: kg(-10), value: kg(60) } });
   });
+
+  it('should skip current date', () => {
+    const now = new Date('2019-08-25T11:01:57.762Z');
+    const current = m(now, kg(50));
+    const fewDaysAgo = m(subDays(now, 2), kg(60));
+    const previous = [current, fewDaysAgo];
+
+    const actual = measureDifference(current, previous);
+
+    assert.deepEqual(actual, {
+      daysAgo: {
+        date: fewDaysAgo.date,
+        difference: kg(-10),
+        value: fewDaysAgo.value,
+      },
+    });
+  });
 });
 
 describe('markPreviousDates()', () => {
   it('should mark each day in array', () => {
-    const current = new Date(2019, 7 /* aug */, 23);
+    const current = new Date(2019, 7 /* aug */, 23, 12 /* hour */);
     const expected: [Date, DateMark][] = [
       [new Date(2019, 7 /* aug */, 26), 'future'],
       [new Date(2019, 7 /* aug */, 25), 'future'],
       [new Date(2019, 7 /* aug */, 24), 'future'],
+      [new Date(2019, 7 /* aug */, 23, 12), 'current'],
       [new Date(2019, 7 /* aug */, 23), 'today'],
       [new Date(2019, 7 /* aug */, 22), 'yesterday'],
       [new Date(2019, 7 /* aug */, 21), 'daysAgo'],
@@ -98,6 +117,22 @@ describe('markPreviousDates()', () => {
       [new Date(2018, 6 /* jul */, 8), 'yearAgo'],
       [new Date(2010, 6 /* jul */, 8), 'yearsAgo'],
     ];
+
+    const actual = expected.map(([date]) => [date, getDateMark(current, date)]);
+
+    assert.deepEqual(actual, expected);
+  });
+
+  it('should correct works with yesterday', () => {
+    const expected: [Date, DateMark][] = [
+      [new Date(2019, 7 /* aug */, 23, 12 /* hour */), 'current'],
+      [new Date(2019, 7 /* aug */, 22, 23), 'yesterday'],
+      [new Date(2019, 7 /* aug */, 22, 13), 'yesterday'],
+      [new Date(2019, 7 /* aug */, 22, 12), 'yesterday'],
+      [new Date(2019, 7 /* aug */, 22, 10), 'yesterday'],
+      [new Date(2019, 7 /* aug */, 21, 23), 'daysAgo'],
+    ];
+    const current = expected[0][0];
 
     const actual = expected.map(([date]) => [date, getDateMark(current, date)]);
 

@@ -1,5 +1,6 @@
-import { differenceInCalendarDays } from 'date-fns';
+import { differenceInCalendarDays, isSameSecond } from 'date-fns';
 import { Measure } from 'src/app/shared/types';
+import { roundToTwo } from 'src/shared/utils/parseNumber';
 
 export type MeasureDifferenceSummary<T extends number> = {
   today?: MeasureDifference<T>;
@@ -21,6 +22,7 @@ export type MeasureDifference<T extends number> = {
 };
 
 export type DateMark =
+  | 'current'
   | 'future'
   | 'today'
   | 'yesterday'
@@ -50,7 +52,7 @@ export function measureDifference<T extends number>(
   let result: MeasureDifferenceSummary<T> = {};
   for (const { date, value } of sorted) {
     const mark = getDateMark(current.date, date);
-    if (mark === 'future') continue;
+    if (mark === 'current' || mark === 'future') continue;
     if (mark in result) continue; // записываем только самый старый замер
     result = addMeasure(result, mark, current.value, date, value);
   }
@@ -66,7 +68,7 @@ function addMeasure<T extends number>(
   date: Date,
   value: T,
 ) {
-  return { ...result, [mark]: { date, value, difference: currentValue - value } };
+  return { ...result, [mark]: { date, value, difference: roundToTwo(currentValue - value) } };
 }
 
 /**
@@ -74,6 +76,8 @@ function addMeasure<T extends number>(
  */
 // eslint-disable-next-line complexity
 export function getDateMark(current: Date, other: Date): DateMark {
+  if (isSameSecond(current, other)) return 'current';
+
   // получаем количество дней между датами.
   // т.к. замеры идут последовательно, то чем больше дней, тем старее дата.
   // и нам нужен только самый старый замер (т.е. наибольшее количество дней).

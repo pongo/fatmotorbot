@@ -9,7 +9,11 @@ function parseNumber(str) {
     if (found == null)
         return null;
     const num = found[0];
-    return Math.round(parseFloat(num) * 100) / 100;
+    return roundToTwo(parseFloat(num));
 }
 exports.parseNumber = parseNumber;
+function roundToTwo(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+exports.roundToTwo = roundToTwo;
 //# sourceMappingURL=parseNumber.js.map

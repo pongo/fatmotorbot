@@ -1,5 +1,5 @@
-import { expect } from 'chai';
-import { parseNumber } from 'src/shared/utils/parseNumber';
+import { assert, expect } from 'chai';
+import { parseNumber, roundToTwo } from 'src/shared/utils/parseNumber';
 
 describe('parseNumber()', () => {
   it('should parse single value', () => {
@@ -36,5 +36,25 @@ describe('parseNumber()', () => {
     expect(parseNumber('')).to.null;
     expect(parseNumber('-')).to.null;
     expect(parseNumber('Infinity')).to.null;
+  });
+});
+
+describe('roundToTwo()', () => {
+  it('should round with 2 decimals', () => {
+    const tests = [
+      [10, 10],
+      [55.5, 55.5],
+      [55.05, 55.05],
+      [55.005, 55.01],
+      [33.3333333333333333, 33.33],
+      [33.38888888888888888, 33.39],
+      [99999999, 99999999],
+      [1.005, 1.01],
+      [0.004999999999999999, 0.01],
+    ];
+
+    for (const [value, expected] of tests) {
+      assert.equal(roundToTwo(value), expected, value.toString());
+    }
   });
 });

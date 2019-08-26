@@ -7,5 +7,13 @@ export function parseNumber(str: string): number | null {
   if (found == null) return null;
 
   const num = found[0];
-  return Math.round(parseFloat(num) * 100) / 100; // 2 знака после запятой
+  return roundToTwo(parseFloat(num));
+}
+
+/**
+ * Округляет с точностью 2 знака после запятой
+ * https://stackoverflow.com/a/41716722/136559
+ */
+export function roundToTwo(num: number): number {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
 }
