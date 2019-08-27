@@ -11,7 +11,7 @@ const m = <T extends number>(date: Date, value: T): Measure<T> => ({ date, value
 describe('WeightUseCase', () => {
   describe('add()', () => {
     it('should adds valid weight to db', async () => {
-      const today = new Date(2019, 7 /* aug */, 23);
+      const today = new Date('2019-08-23');
       const repository = {
         add: sinon.fake.returns(Result.ok()),
         getAll: async () => Result.ok([]),
@@ -36,7 +36,7 @@ describe('WeightUseCase', () => {
     });
 
     it('should return error on invalid weight', async () => {
-      const today = new Date(2019, 7 /* aug */, 23);
+      const today = new Date('2019-08-23');
       const repository = { add: sinon.fake(), getAll: sinon.fake.throws('should not be called') };
       const usecase = new WeightUseCase(repository);
 
@@ -49,9 +49,9 @@ describe('WeightUseCase', () => {
     });
 
     it('should return diff summary', async () => {
-      const today = new Date(2019, 7 /* aug */, 23);
-      const yesterday = new Date(2019, 7 /* aug */, 22);
-      const daysAgo = new Date(2019, 7 /* aug */, 20);
+      const today = new Date('2019-08-23');
+      const yesterday = new Date('2019-08-22');
+      const daysAgo = new Date('2019-08-20');
       const repository = {
         add: async () => Result.ok(),
         getAll: async () => Result.ok([m(yesterday, kg(20)), m(daysAgo, kg(15))]),
@@ -64,16 +64,8 @@ describe('WeightUseCase', () => {
       assert.deepEqual(actual.value, {
         weight: kg(10),
         diff: {
-          daysAgo: {
-            date: daysAgo,
-            difference: kg(-5),
-            value: kg(15),
-          },
-          yesterday: {
-            date: yesterday,
-            difference: kg(-10),
-            value: kg(20),
-          },
+          daysAgo: { date: daysAgo, difference: kg(-5), value: kg(15) },
+          yesterday: { date: yesterday, difference: kg(-10), value: kg(20) },
         },
       });
     });

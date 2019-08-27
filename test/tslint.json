@@ -8,6 +8,7 @@
     "no-unnecessary-type-annotation": false,
     "no-unsafe-any": false,
     "object-literal-sort-keys": false,
-    "no-unused-expression": false
+    "no-unused-expression": false,
+    "no-duplicate-string": false
   }
 }
