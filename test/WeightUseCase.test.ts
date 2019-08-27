@@ -91,5 +91,7 @@ describe('validateWeight()', () => {
     assert.isNull(validateWeight(501));
 
     assert.equal(validateWeight(50.5), kg(50.5));
+    assert.equal(validateWeight(1), kg(1));
+    assert.equal(validateWeight(500), kg(500));
   });
 });
