@@ -26,12 +26,14 @@
   },
   "homepage": "https://github.com/pongo/fatmotorbot",
   "dependencies": {
+    "big.js": "^5.2.2",
     "date-fns": "^2.0.1",
     "envalid": "^5.0.0",
     "module-alias": "^2.2.1",
     "slonik": "^18.10.0"
   },
   "devDependencies": {
+    "@types/big.js": "^4.0.5",
     "@types/chai": "^4.2.0",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.2",

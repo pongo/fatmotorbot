@@ -1,6 +1,6 @@
 import { differenceInCalendarDays, isSameSecond } from 'date-fns';
 import { Measure } from 'src/app/shared/types';
-import { roundToTwo } from 'src/shared/utils/parseNumber';
+import { minus } from 'src/shared/utils/parseNumber';
 
 export type MeasureDifferenceSummary<T extends number> = {
   today?: MeasureDifference<T>;
@@ -68,7 +68,7 @@ function addMeasure<T extends number>(
   date: Date,
   value: T,
 ) {
-  return { ...result, [mark]: { date, value, difference: roundToTwo(currentValue - value) } };
+  return { ...result, [mark]: { date, value, difference: minus(currentValue, value) } };
 }
 
 /**
@@ -101,3 +101,4 @@ export function getDateMark(current: Date, other: Date): DateMark {
 export function sortMeasuresFromOldestToNewest<T extends number>(array: Measure<T>[]): Measure<T>[] {
   return [...array].sort((a, b) => +a.date - +b.date); // плюсы нужны, чтобы typescript не ругался
 }
+

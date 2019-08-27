@@ -17,7 +17,7 @@ function measureDifference(current, previous) {
 }
 exports.measureDifference = measureDifference;
 function addMeasure(result, mark, currentValue, date, value) {
-    return { ...result, [mark]: { date, value, difference: parseNumber_1.roundToTwo(currentValue - value) } };
+    return { ...result, [mark]: { date, value, difference: parseNumber_1.minus(currentValue, value) } };
 }
 function getDateMark(current, other) {
     if (date_fns_1.isSameSecond(current, other))

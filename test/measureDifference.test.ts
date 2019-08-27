@@ -1,4 +1,5 @@
 import { assert } from 'chai';
+import { subDays } from 'date-fns';
 import {
   DateMark,
   getDateMark,
@@ -6,7 +7,6 @@ import {
   sortMeasuresFromOldestToNewest,
 } from 'src/app/shared/measureDifference';
 import { kg, Measure } from 'src/app/shared/types';
-import { subDays } from 'date-fns';
 
 const m = <T extends number>(date: Date, value: T): Measure<T> => ({ date, value });
 
@@ -78,6 +78,22 @@ describe('measureDifference()', () => {
         date: fewDaysAgo.date,
         difference: kg(-10),
         value: fewDaysAgo.value,
+      },
+    });
+  });
+
+  it('should do correct float minus', () => {
+    const today = new Date(2019, 7 /* aug */, 23);
+    const daysAgo = new Date(2019, 7 /* aug */, 20);
+    const previous = [m(daysAgo, kg(0.1))];
+
+    const actual = measureDifference(m(today, kg(0.3)), previous);
+
+    assert.deepEqual(actual, {
+      daysAgo: {
+        date: daysAgo,
+        difference: kg(0.2),
+        value: kg(0.1),
       },
     });
   });

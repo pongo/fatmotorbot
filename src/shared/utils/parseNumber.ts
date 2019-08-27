@@ -1,3 +1,5 @@
+import Big from 'big.js';
+
 export function parseNumber(str: string): number | null {
   const prepared = str
     .replace(',', '.') // формат с запятой вместо точки "70,23"
@@ -12,8 +14,13 @@ export function parseNumber(str: string): number | null {
 
 /**
  * Округляет с точностью 2 знака после запятой
- * https://stackoverflow.com/a/41716722/136559
  */
-export function roundToTwo(num: number): number {
-  return Math.round((num + Number.EPSILON) * 100) / 100;
+export function roundToTwo(num: number | Big): number {
+  // prettier-ignore
+  return parseFloat(Big(num).toFixed(2));
+}
+
+// Вычитание: current - other
+export function minus<T extends number>(current: T, other: T): T {
+  return roundToTwo(Big(current).minus(other)) as T;
 }
