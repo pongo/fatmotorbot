@@ -70,6 +70,56 @@ describe('WeightUseCase', () => {
       });
     });
   });
+
+  describe('getCurrent()', () => {
+    it('should return empty if there is no measures', async () => {
+      // const today = new Date('2019-08-28');
+      // const weekAgo = new Date('2019-08-21');
+      // m(today, kg(60)), m(weekAgo, kg(61))
+      const repository = {
+        add: sinon.fake.throws('should not be called'),
+        getAll: async () => Result.ok([]),
+      };
+      const usecase = new WeightUseCase(repository);
+
+      const actual = await usecase.getCurrent(u(1));
+
+      if (actual.isErr) throw new Error('should be ok');
+      assert.deepEqual(actual.value, { weight: null, diff: {} });
+    });
+
+    it('should return current weight and empty diff if only one measure', async () => {
+      const weekAgo = new Date('2019-08-21');
+      const repository = {
+        add: sinon.fake.throws('should not be called'),
+        getAll: async () => Result.ok([m(weekAgo, kg(61))]),
+      };
+      const usecase = new WeightUseCase(repository);
+
+      const actual = await usecase.getCurrent(u(1));
+
+      if (actual.isErr) throw new Error('should be ok');
+      assert.deepEqual(actual.value, { weight: kg(61), diff: {} });
+    });
+
+    it('should return current weight and diff', async () => {
+      const yesterday = new Date('2019-08-28');
+      const weekAgo = new Date('2019-08-21');
+      const repository = {
+        add: sinon.fake.throws('should not be called'),
+        getAll: async () => Result.ok([m(yesterday, kg(60)), m(weekAgo, kg(61))]),
+      };
+      const usecase = new WeightUseCase(repository);
+
+      const actual = await usecase.getCurrent(u(1));
+
+      if (actual.isErr) throw new Error('should be ok');
+      assert.deepEqual(actual.value, {
+        weight: kg(60),
+        diff: { weekAgo: { date: weekAgo, difference: kg(-1), value: kg(61) } },
+      });
+    });
+  });
 });
 
 describe('validateWeight()', () => {

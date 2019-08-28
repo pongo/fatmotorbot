@@ -10,10 +10,17 @@ type WeightAdded = {
   weight: Kg;
 };
 
+type WeightAddedErrors = InvalidFormatError | Error;
+
+type CurrentWeight = {
+  diff: MeasureDifferenceSummary<Kg>;
+  weight: Kg | null;
+};
+
 export class WeightUseCase {
   constructor(private readonly weightRepository: IWeightRepository) {}
 
-  async add(userId: TelegramUserId, date: Date, weightString: string): Promise<Result<WeightAdded>> {
+  async add(userId: TelegramUserId, date: Date, weightString: string): Promise<Result<WeightAdded, WeightAddedErrors>> {
     const weight = validateWeight(parseNumber(weightString));
     if (weight == null) return Result.err(new InvalidFormatError());
 
@@ -26,6 +33,17 @@ export class WeightUseCase {
     const currentMeasure: Measure<Kg> = { date, value: weight };
     const diff = measureDifference(currentMeasure, previousMeasuresResult.value);
     return Result.ok({ diff, weight });
+  }
+
+  async getCurrent(userId: TelegramUserId): Promise<Result<CurrentWeight>> {
+    const measuresResult = await this.weightRepository.getAll(userId);
+    if (measuresResult.isErr) return measuresResult;
+
+    if (measuresResult.value.length === 0) return Result.ok({ diff: {}, weight: null });
+
+    const currentMeasure = measuresResult.value[0];
+    const diff = measureDifference(currentMeasure, measuresResult.value);
+    return Result.ok({ diff, weight: currentMeasure.value });
   }
 }
 
