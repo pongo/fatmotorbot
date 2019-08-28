@@ -2,6 +2,6 @@ module.exports = {
   bail: true,
   exit: true,
   extension: ["ts"],
-  spec: "test/**/*.test.ts",
+  spec: "test/nodb/**/*.test.ts",
   require: ["ts-node/register/transpile-only", "tsconfig-paths/register"],
 };
