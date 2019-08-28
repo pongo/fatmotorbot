@@ -22,14 +22,17 @@ class WeightUseCase {
         const diff = measureDifference_1.measureDifference(currentMeasure, previousMeasuresResult.value);
         return result_1.Result.ok({ diff, weight });
     }
-    async getCurrent(userId) {
+    async getCurrent(userId, now) {
         const measuresResult = await this.weightRepository.getAll(userId);
         if (measuresResult.isErr)
             return measuresResult;
-        if (measuresResult.value.length === 0)
+        const measures = measuresResult.value;
+        if (measures.length === 0)
             return result_1.Result.ok({ diff: {}, weight: null });
-        const currentMeasure = measuresResult.value[0];
-        const diff = measureDifference_1.measureDifference(currentMeasure, measuresResult.value);
+        const currentMeasure = measures[0];
+        if (measures.length === 1)
+            return result_1.Result.ok({ diff: {}, weight: currentMeasure.value });
+        const diff = measureDifference_1.measureDifference(currentMeasure, measures, now);
         return result_1.Result.ok({ diff, weight: currentMeasure.value });
     }
 }

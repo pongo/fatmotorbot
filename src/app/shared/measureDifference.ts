@@ -42,13 +42,13 @@ export type DateMark =
 export function measureDifference<T extends number>(
   current: Measure<T>,
   previous: MeasuresFromNewestToOldest<T>,
-  relativeDate: Date = current.date,
+  relativeDate?: Date,
 ): MeasureDifferenceSummary<T> {
   const sorted = [...previous].reverse();
 
   let result: MeasureDifferenceSummary<T> = {};
   for (const { date, value } of sorted) {
-    const mark = getDateMark(relativeDate, date);
+    const mark = getDateMark(current.date, date, relativeDate);
     if (mark === 'current' || mark === 'future') continue;
     if (mark in result) continue; // записываем только самый старый замер
     result = addMeasure(result, mark, current.value, date, value);
@@ -70,15 +70,19 @@ function addMeasure<T extends number>(
 
 /**
  * Маркирует указанную дату (эта дата была неделю назад, эта — месяц и т.п.).
+ *
+ * @param current дата текущего замера
+ * @param other дата другого замера
+ * @param relativeDate с этой датой идет сравнение
  */
 // eslint-disable-next-line complexity
-export function getDateMark(current: Date, other: Date): DateMark {
+export function getDateMark(current: Date, other: Date, relativeDate: Date = current): DateMark {
   if (isSameSecond(current, other)) return 'current';
 
   // получаем количество дней между датами.
   // т.к. замеры идут последовательно, то чем больше дней, тем старее дата.
   // и нам нужен только самый старый замер (т.е. наибольшее количество дней).
-  const daysAgo = differenceInCalendarDays(current, other);
+  const daysAgo = differenceInCalendarDays(relativeDate, other);
   if (daysAgo < 0) return 'future';
   if (daysAgo === 0) return 'today';
   if (daysAgo === 1) return 'yesterday';

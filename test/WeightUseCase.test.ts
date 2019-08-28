@@ -73,50 +73,85 @@ describe('WeightUseCase', () => {
 
   describe('getCurrent()', () => {
     it('should return empty if there is no measures', async () => {
-      // const today = new Date('2019-08-28');
-      // const weekAgo = new Date('2019-08-21');
-      // m(today, kg(60)), m(weekAgo, kg(61))
-      const repository = {
-        add: sinon.fake.throws('should not be called'),
-        getAll: async () => Result.ok([]),
-      };
+      const repository = { add: sinon.fake.throws('should not be called'), getAll: async () => Result.ok([]) };
       const usecase = new WeightUseCase(repository);
 
-      const actual = await usecase.getCurrent(u(1));
+      const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
       if (actual.isErr) throw new Error('should be ok');
       assert.deepEqual(actual.value, { weight: null, diff: {} });
     });
 
-    it('should return current weight and empty diff if only one measure', async () => {
-      const weekAgo = new Date('2019-08-21');
-      const repository = {
-        add: sinon.fake.throws('should not be called'),
-        getAll: async () => Result.ok([m(weekAgo, kg(61))]),
-      };
-      const usecase = new WeightUseCase(repository);
+    describe('should return current weight and empty diff if only one measure', () => {
+      it('week ago', async () => {
+        const weekAgo = new Date('2019-08-21');
+        const repository = {
+          add: sinon.fake.throws('should not be called'),
+          getAll: async () => Result.ok([m(weekAgo, kg(61))]),
+        };
+        const usecase = new WeightUseCase(repository);
 
-      const actual = await usecase.getCurrent(u(1));
+        const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
-      if (actual.isErr) throw new Error('should be ok');
-      assert.deepEqual(actual.value, { weight: kg(61), diff: {} });
+        if (actual.isErr) throw new Error('should be ok');
+        assert.deepEqual(actual.value, { weight: kg(61), diff: {} });
+      });
+
+      it('today earlier', async () => {
+        const repository = {
+          add: sinon.fake.throws('should not be called'),
+          getAll: async () => Result.ok([m(new Date('2019-08-21 15:00'), kg(61))]),
+        };
+        const usecase = new WeightUseCase(repository);
+
+        const actual = await usecase.getCurrent(u(1), new Date('2019-08-21 20:00'));
+
+        if (actual.isErr) throw new Error('should be ok');
+        assert.deepEqual(actual.value, { weight: kg(61), diff: {} });
+      });
     });
 
-    it('should return current weight and diff', async () => {
-      const yesterday = new Date('2019-08-28');
-      const weekAgo = new Date('2019-08-21');
-      const repository = {
-        add: sinon.fake.throws('should not be called'),
-        getAll: async () => Result.ok([m(yesterday, kg(60)), m(weekAgo, kg(61))]),
-      };
-      const usecase = new WeightUseCase(repository);
+    describe('should return current weight and diff', () => {
+      it('yesterday and week ago', async () => {
+        const now = new Date('2019-08-29');
+        const current = new Date('2019-08-28');
+        const weekAgo = new Date('2019-08-21');
+        const repository = {
+          add: sinon.fake.throws('should not be called'),
+          getAll: async () => Result.ok([m(current, kg(60)), m(weekAgo, kg(61))]),
+        };
+        const usecase = new WeightUseCase(repository);
 
-      const actual = await usecase.getCurrent(u(1));
+        const actual = await usecase.getCurrent(u(1), now);
 
-      if (actual.isErr) throw new Error('should be ok');
-      assert.deepEqual(actual.value, {
-        weight: kg(60),
-        diff: { weekAgo: { date: weekAgo, difference: kg(-1), value: kg(61) } },
+        if (actual.isErr) throw new Error('should be ok');
+        assert.deepEqual(actual.value, {
+          weight: kg(60),
+          diff: { weekAgo: { date: weekAgo, difference: kg(-1), value: kg(61) } },
+        });
+      });
+
+      it('today earlier', async () => {
+        const now = new Date('2019-08-29 20:00');
+        const current = new Date('2019-08-29 15:00');
+        const earlier = new Date('2019-08-29 10:00');
+        const yesterday = new Date('2019-08-28');
+        const repository = {
+          add: sinon.fake.throws('should not be called'),
+          getAll: async () => Result.ok([m(current, kg(61)), m(earlier, kg(60)), m(yesterday, kg(64))]),
+        };
+        const usecase = new WeightUseCase(repository);
+
+        const actual = await usecase.getCurrent(u(1), now);
+
+        if (actual.isErr) throw new Error('should be ok');
+        assert.deepEqual(actual.value, {
+          weight: kg(61),
+          diff: {
+            today: { date: earlier, difference: kg(1), value: kg(60) },
+            yesterday: { date: yesterday, difference: kg(-3), value: kg(64) },
+          },
+        });
       });
     });
   });
