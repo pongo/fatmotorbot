@@ -15,8 +15,9 @@ class WeightRepository {
       `);
             return result_1.Result.ok();
         }
-        catch (error) {
-            return result_1.Result.err(error);
+        catch (e) {
+            console.error('WeightRepository.add()', e);
+            return result_1.Result.err(e);
         }
     }
     async getAll(userId) {
@@ -31,8 +32,9 @@ class WeightRepository {
             const measures = result;
             return result_1.Result.ok(measures);
         }
-        catch (error) {
-            return result_1.Result.err(error);
+        catch (e) {
+            console.error('WeightRepository.getAll()', e);
+            return result_1.Result.err(e);
         }
     }
 }

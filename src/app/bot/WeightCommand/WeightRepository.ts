@@ -20,8 +20,9 @@ export class WeightRepository implements IWeightRepository {
         VALUES (${userId}, 'weight', ${weight}, to_timestamp(${toTimestamp(date)}));
       `);
       return Result.ok();
-    } catch (error) {
-      return Result.err(error);
+    } catch (e) {
+      console.error('WeightRepository.add()', e);
+      return Result.err(e);
     }
   }
 
@@ -37,8 +38,9 @@ export class WeightRepository implements IWeightRepository {
       // TODO: нужна ли здесь валидация?
       const measures = (result as unknown) as MeasuresFromNewestToOldest<Kg>;
       return Result.ok(measures);
-    } catch (error) {
-      return Result.err(error);
+    } catch (e) {
+      console.error('WeightRepository.getAll()', e);
+      return Result.err(e);
     }
   }
 }
