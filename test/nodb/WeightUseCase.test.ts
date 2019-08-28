@@ -2,11 +2,9 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { validateWeight, WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
-import { kg, Measure, TelegramUserId } from 'src/app/shared/types';
+import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
-
-const u = (id: number) => id as TelegramUserId;
-const m = <T extends number>(date: Date, value: T): Measure<T> => ({ date, value });
+import { m, u } from 'test/utils';
 
 describe('WeightUseCase', () => {
   describe('add()', () => {

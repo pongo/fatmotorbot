@@ -1,5 +1,5 @@
 import { MeasuresFromNewestToOldest } from 'src/app/bot/WeightCommand/WeightRepository';
-import { Measure } from 'src/app/shared/types';
+import { Measure, TelegramUserId } from 'src/app/shared/types';
 
 /**
  * Возвращает новый отсортированный массив.
@@ -9,3 +9,7 @@ export function sortMeasuresFromNewestToOldest<T extends number>(array: Measure<
 }
 
 export const sortM = sortMeasuresFromNewestToOldest;
+
+export const u = (id: number) => id as TelegramUserId;
+
+export const m = <T extends number>(date: Date, value: T): Measure<T> => ({ date, value });

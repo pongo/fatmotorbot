@@ -22,6 +22,7 @@ module.exports = {
     {
       files: ["*.test.ts"],
       rules: {
+        "@typescript-eslint/no-non-null-assertion": 0,
         "@typescript-eslint/require-await": 0,
         "@typescript-eslint/tslint/config": [
           "error",

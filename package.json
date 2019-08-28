@@ -12,6 +12,7 @@
     "test": "mocha",
     "test:watch": "npm test --- --watch --watch-extensions ts --reporter min",
     "cov": "nyc mocha --require source-map-support/register -t 10000 && npm run open_cov",
+    "cov:db": "nyc mocha --require source-map-support/register -t 10000 test/**/*.test.ts && npm run open_cov",
     "open_cov": "open-cli ./coverage/lcov-report/index.html"
   },
   "repository": {
@@ -30,6 +31,8 @@
     "date-fns": "^2.0.1",
     "envalid": "^5.0.0",
     "module-alias": "^2.2.1",
+    "pg-connection-string": "^2.1.0",
+    "postgres-migrations": "^3.0.2",
     "slonik": "^18.10.0"
   },
   "devDependencies": {
