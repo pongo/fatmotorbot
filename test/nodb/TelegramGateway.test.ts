@@ -1,26 +1,9 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { toTimestamp } from 'src/shared/infrastructure/createDB';
-import { handleCommand, parseCommand } from 'src/shared/infrastructure/TelegramGateway';
+import { Command, handleCommand, parseCommand } from 'src/shared/infrastructure/TelegramGateway';
 import { ContextMessageUpdate } from 'telegraf';
 import * as TT from 'telegram-typings';
-
-// type FakeMiddleware = (ctx: unknown, next?: Function) => void;
-//
-// describe('TelegramGateway', () => {
-//   it('onCommand() should emit a handler', async () => {
-//     class TelegrafFake {
-//       command(command: string, middleware: FakeMiddleware): void {
-//         //
-//       }
-//     }
-//     const telegram = new TelegramGateway('token', TelegrafFake);
-//     const handler = sinon.fake();
-//     telegram.onCommand('hi', handler);
-//   });
-//
-//   // TODO: если два раза вызвано, то не создает обработчик, а лишь подписывает на событие
-// });
 
 describe('handleCommand()', () => {
   it('should not call handler() if where is no command', async () => {
@@ -44,7 +27,7 @@ describe('handleCommand()', () => {
     await handleCommand(handler, ({ message: createMsg(date, '/hi') } as unknown) as ContextMessageUpdate, next);
 
     sinon.assert.calledOnce(handler);
-    sinon.assert.calledWith(handler, {
+    const command: Command = {
       fullText: '/hi',
       command: 'hi',
       bot: undefined,
@@ -53,8 +36,9 @@ describe('handleCommand()', () => {
       messageId: 1,
       date,
       chatId: -1,
-      from: {},
-    });
+      from: ({} as unknown) as TT.User,
+    };
+    sinon.assert.calledWith(handler, command);
     sinon.assert.calledOnce(next);
   });
 });

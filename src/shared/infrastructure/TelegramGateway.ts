@@ -61,7 +61,7 @@ const reCommandParts = /^\/([^@\s]+)@?(?:(\S+)|)\s?([\s\S]+)?$/i;
 
 type StringWithoutAt = string;
 type StringWithoutSlash = string;
-type Command = {
+export type Command = {
   readonly fullText: string;
   readonly command: StringWithoutSlash;
   readonly bot?: StringWithoutAt;
