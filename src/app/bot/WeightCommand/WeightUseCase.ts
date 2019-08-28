@@ -27,7 +27,7 @@ export class WeightUseCase {
     const previousMeasuresResult = await this.weightRepository.getAll(userId);
     if (previousMeasuresResult.isErr) return previousMeasuresResult;
 
-    const addResult = await this.weightRepository.add(userId, weight);
+    const addResult = await this.weightRepository.add(userId, weight, date);
     if (addResult.isErr) return addResult;
 
     const currentMeasure: Measure<Kg> = { date, value: weight };
