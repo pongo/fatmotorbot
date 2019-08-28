@@ -62,6 +62,23 @@ describe('measureDifference()', () => {
 
     assert.deepEqual(actual, { daysAgo: { date: daysAgo, difference: kg(0.2), value: kg(0.1) } });
   });
+
+  it('should return result adjusted to relative date', () => {
+    const today = new Date('2020-08-23');
+    const current = new Date('2019-08-23');
+    const weekAgo = new Date('2019-08-16');
+    const monthAgo = new Date('2019-07-23');
+    const halfYearAgo = new Date('2019-02-08');
+    const yearAgo = new Date('2018-08-23');
+    const previousMeasures = [m(yearAgo, kg(100)), m(halfYearAgo, kg(70)), m(monthAgo, kg(60)), m(weekAgo, kg(50))];
+
+    const actual = measureDifference(m(current, kg(60)), sortM(previousMeasures), today);
+
+    assert.deepEqual(actual, {
+      yearAgo: { date: monthAgo, difference: kg(0), value: kg(60) },
+      yearsAgo: { date: yearAgo, difference: kg(-40), value: kg(100) },
+    });
+  });
 });
 
 describe('markPreviousDates()', () => {

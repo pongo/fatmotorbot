@@ -42,12 +42,13 @@ export type DateMark =
 export function measureDifference<T extends number>(
   current: Measure<T>,
   previous: MeasuresFromNewestToOldest<T>,
+  relativeDate: Date = current.date,
 ): MeasureDifferenceSummary<T> {
   const sorted = [...previous].reverse();
 
   let result: MeasureDifferenceSummary<T> = {};
   for (const { date, value } of sorted) {
-    const mark = getDateMark(current.date, date);
+    const mark = getDateMark(relativeDate, date);
     if (mark === 'current' || mark === 'future') continue;
     if (mark in result) continue; // записываем только самый старый замер
     result = addMeasure(result, mark, current.value, date, value);

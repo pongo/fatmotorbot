@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
-function measureDifference(current, previous) {
+function measureDifference(current, previous, relativeDate = current.date) {
     const sorted = [...previous].reverse();
     let result = {};
     for (const { date, value } of sorted) {
-        const mark = getDateMark(current.date, date);
+        const mark = getDateMark(relativeDate, date);
         if (mark === 'current' || mark === 'future')
             continue;
         if (mark in result)
