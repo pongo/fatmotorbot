@@ -11,7 +11,11 @@ async function main() {
     telegram.onCommand('hi', async (command) => {
         await telegram.sendMessage(command.chatId, 'hello', command.messageId);
     });
-    await telegram.connect();
+    await telegram.connect({
+        domain: config.BOT_WEBHOOK_DOMAIN,
+        webhookPath: config.BOT_WEBHOOK_PATH,
+        port: config.PORT,
+    });
     console.log('Bot started');
 }
 main();

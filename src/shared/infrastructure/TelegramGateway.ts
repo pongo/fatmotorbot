@@ -15,8 +15,12 @@ export class TelegramGateway {
     if (telegrafLogs) this.telegraf.use(Telegraf.log());
   }
 
-  async connect() {
-    return this.telegraf.launch();
+  async connect({ domain, webhookPath, port }: { domain?: string; webhookPath?: string; port?: number }) {
+    const config =
+      port == null || webhookPath == null || domain == null
+        ? undefined
+        : { webhook: { domain, webhookPath, port, tlsOptions: null } };
+    return this.telegraf.launch(config);
   }
 
   onCommand(command: StringWithoutSlash, handler: CommandHandler) {
