@@ -1,7 +1,7 @@
 import { differenceInCalendarDays, isSameSecond } from 'date-fns';
+import { MeasuresFromNewestToOldest } from 'src/app/bot/WeightCommand/WeightRepository';
 import { Measure } from 'src/app/shared/types';
 import { minus } from 'src/shared/utils/parseNumber';
-import { MeasuresFromNewestToOldest } from 'src/app/bot/WeightCommand/WeightRepository';
 
 export type MeasureDifferenceSummary<T extends number> = {
   today?: MeasureDifference<T>;
@@ -36,11 +36,6 @@ export type DateMark =
   | 'yearAgo'
   | 'yearsAgo';
 
-export type MeasureDifferenceFn<T extends number> = (
-  current: Measure<T>,
-  previous: Measure<T>[],
-) => MeasureDifferenceSummary<T>;
-
 /**
  * Возвращает сравнение текущего замера с предыдущими.
  */
@@ -48,7 +43,7 @@ export function measureDifference<T extends number>(
   current: Measure<T>,
   previous: MeasuresFromNewestToOldest<T>,
 ): MeasureDifferenceSummary<T> {
-  const sorted = sortMeasuresFromOldestToNewest(previous); // TODO заменить на reverse
+  const sorted = [...previous].reverse();
 
   let result: MeasureDifferenceSummary<T> = {};
   for (const { date, value } of sorted) {
@@ -94,12 +89,4 @@ export function getDateMark(current: Date, other: Date): DateMark {
   if (daysAgo <= 9 * 31) return 'halfYearAgo';
   if (daysAgo <= 15 * 31) return 'yearAgo';
   return 'yearsAgo';
-}
-
-/**
- * Возвращает новый отсортированный массив.
- * TODO: удалить если бд возвращает отсортированный. мб для getAll нужно направление сортировки
- */
-export function sortMeasuresFromOldestToNewest<T extends number>(array: Measure<T>[]): Measure<T>[] {
-  return [...array].sort((a, b) => +a.date - +b.date); // плюсы нужны, чтобы typescript не ругался
 }
