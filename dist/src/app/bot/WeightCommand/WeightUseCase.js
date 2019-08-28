@@ -22,6 +22,19 @@ class WeightUseCase {
         const diff = measureDifference_1.measureDifference(currentMeasure, previousMeasuresResult.value);
         return result_1.Result.ok({ diff, weight });
     }
+    async getCurrent(userId, now) {
+        const measuresResult = await this.weightRepository.getAll(userId);
+        if (measuresResult.isErr)
+            return measuresResult;
+        const measures = measuresResult.value;
+        if (measures.length === 0)
+            return result_1.Result.ok({ diff: {}, weight: null });
+        const currentMeasure = measures[0];
+        if (measures.length === 1)
+            return result_1.Result.ok({ diff: {}, weight: currentMeasure.value });
+        const diff = measureDifference_1.measureDifference(currentMeasure, measures, now);
+        return result_1.Result.ok({ diff, weight: currentMeasure.value });
+    }
 }
 exports.WeightUseCase = WeightUseCase;
 function validateWeight(value) {

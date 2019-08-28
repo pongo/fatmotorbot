@@ -1,4 +1,5 @@
 import { differenceInCalendarDays, isSameSecond } from 'date-fns';
+import { MeasuresFromNewestToOldest } from 'src/app/bot/WeightCommand/WeightRepository';
 import { Measure } from 'src/app/shared/types';
 import { minus } from 'src/shared/utils/parseNumber';
 
@@ -35,23 +36,19 @@ export type DateMark =
   | 'yearAgo'
   | 'yearsAgo';
 
-export type MeasureDifferenceFn<T extends number> = (
-  current: Measure<T>,
-  previous: Measure<T>[],
-) => MeasureDifferenceSummary<T>;
-
 /**
  * Возвращает сравнение текущего замера с предыдущими.
  */
 export function measureDifference<T extends number>(
   current: Measure<T>,
-  previous: Measure<T>[],
+  previous: MeasuresFromNewestToOldest<T>,
+  relativeDate?: Date,
 ): MeasureDifferenceSummary<T> {
-  const sorted = sortMeasuresFromOldestToNewest(previous);
+  const sorted = [...previous].reverse();
 
   let result: MeasureDifferenceSummary<T> = {};
   for (const { date, value } of sorted) {
-    const mark = getDateMark(current.date, date);
+    const mark = getDateMark(current.date, date, relativeDate);
     if (mark === 'current' || mark === 'future') continue;
     if (mark in result) continue; // записываем только самый старый замер
     result = addMeasure(result, mark, current.value, date, value);
@@ -73,15 +70,19 @@ function addMeasure<T extends number>(
 
 /**
  * Маркирует указанную дату (эта дата была неделю назад, эта — месяц и т.п.).
+ *
+ * @param current дата текущего замера
+ * @param other дата другого замера
+ * @param relativeDate с этой датой идет сравнение
  */
 // eslint-disable-next-line complexity
-export function getDateMark(current: Date, other: Date): DateMark {
+export function getDateMark(current: Date, other: Date, relativeDate: Date = current): DateMark {
   if (isSameSecond(current, other)) return 'current';
 
   // получаем количество дней между датами.
   // т.к. замеры идут последовательно, то чем больше дней, тем старее дата.
   // и нам нужен только самый старый замер (т.е. наибольшее количество дней).
-  const daysAgo = differenceInCalendarDays(current, other);
+  const daysAgo = differenceInCalendarDays(relativeDate, other);
   if (daysAgo < 0) return 'future';
   if (daysAgo === 0) return 'today';
   if (daysAgo === 1) return 'yesterday';
@@ -94,11 +95,3 @@ export function getDateMark(current: Date, other: Date): DateMark {
   if (daysAgo <= 15 * 31) return 'yearAgo';
   return 'yearsAgo';
 }
-
-/**
- * Возвращает новый отсортированный массив.
- */
-export function sortMeasuresFromOldestToNewest<T extends number>(array: Measure<T>[]): Measure<T>[] {
-  return [...array].sort((a, b) => +a.date - +b.date); // плюсы нужны, чтобы typescript не ругался
-}
-
