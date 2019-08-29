@@ -29,6 +29,14 @@ export class TelegramGateway {
     });
   }
 
+  onStartCommand(text: string) {
+    this.telegraf.start(async ctx => {
+      const isPrivate = ctx.message != null && ctx.message.from != null && ctx.message.from.id === ctx.message.chat.id;
+      if (isPrivate) return ctx.reply(text);
+      return undefined;
+    });
+  }
+
   async sendMessage(
     chatId: number,
     text: string,

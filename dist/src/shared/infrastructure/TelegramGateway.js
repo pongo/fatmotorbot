@@ -22,6 +22,14 @@ class TelegramGateway {
             return handleCommand(handler, ctx, next);
         });
     }
+    onStartCommand(text) {
+        this.telegraf.start(async (ctx) => {
+            const isPrivate = ctx.message != null && ctx.message.from != null && ctx.message.from.id === ctx.message.chat.id;
+            if (isPrivate)
+                return ctx.reply(text);
+            return undefined;
+        });
+    }
     async sendMessage(chatId, text, reply_to_message_id) {
         try {
             const message = await this.telegraf.telegram.sendMessage(chatId, text, {

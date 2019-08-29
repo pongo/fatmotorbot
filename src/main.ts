@@ -15,6 +15,8 @@ async function main() {
 
   new WeightCommand(new WeightRepository(db), telegram).enable();
 
+  telegram.onStartCommand(`Команды:\n\n/weight 45.5 — добавляет вес.\n/weight — предыдущие замеры.`);
+
   await telegram.connect({
     domain: config.BOT_WEBHOOK_DOMAIN,
     webhookPath: config.BOT_WEBHOOK_PATH,
