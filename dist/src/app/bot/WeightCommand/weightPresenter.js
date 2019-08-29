@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
-const errors_1 = require("../../shared/errors");
-const measureDifference_1 = require("../../shared/measureDifference");
+const errors_1 = require("src/app/shared/errors");
+const measureDifference_1 = require("src/app/shared/measureDifference");
 function weightPresenter(result, now) {
     if (result.isErr)
         return presentError(result.error);

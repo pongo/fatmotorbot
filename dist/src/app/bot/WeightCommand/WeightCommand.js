@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const weightPresenter_1 = require("./weightPresenter");
-const WeightUseCase_1 = require("./WeightUseCase");
+const weightPresenter_1 = require("src/app/bot/WeightCommand/weightPresenter");
+const WeightUseCase_1 = require("src/app/bot/WeightCommand/WeightUseCase");
 class WeightCommand {
     constructor(repository, telegram) {
         this.repository = repository;

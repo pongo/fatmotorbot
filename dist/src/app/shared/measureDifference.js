@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
-const parseNumber_1 = require("../../shared/utils/parseNumber");
-const utils_1 = require("../../shared/utils/utils");
+const parseNumber_1 = require("src/shared/utils/parseNumber");
+const utils_1 = require("src/shared/utils/utils");
 function measureDifference(current, previous, relativeDate) {
     const sorted = [...previous].reverse();
     const result = {};

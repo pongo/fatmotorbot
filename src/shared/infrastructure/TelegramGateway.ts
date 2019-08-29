@@ -1,6 +1,6 @@
+import { Result } from 'src/shared/utils/result';
 import Telegraf, { ContextMessageUpdate } from 'telegraf';
 import * as TT from 'telegram-typings';
-import { Result } from '../utils/result';
 
 type CommandHandler = (command: Command) => void | Promise<void>;
 type TelegramMessageId = number;

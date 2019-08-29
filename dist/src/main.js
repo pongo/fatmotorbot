@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const WeightCommand_1 = require("./app/bot/WeightCommand/WeightCommand");
-const WeightRepository_1 = require("./app/bot/WeightCommand/WeightRepository");
+require('module-alias')({ base: process.cwd() });
+const WeightCommand_1 = require("src/app/bot/WeightCommand/WeightCommand");
+const WeightRepository_1 = require("src/app/bot/WeightCommand/WeightRepository");
+const createDB_1 = require("src/shared/infrastructure/createDB");
+const TelegramGateway_1 = require("src/shared/infrastructure/TelegramGateway");
 const config_1 = require("./config");
-const createDB_1 = require("./shared/infrastructure/createDB");
-const TelegramGateway_1 = require("./shared/infrastructure/TelegramGateway");
 async function main() {
     const config = config_1.parseConfig();
     const db = createDB_1.createDB(config.DATABASE_URL);

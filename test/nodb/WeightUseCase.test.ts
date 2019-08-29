@@ -1,10 +1,10 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { validateWeight, WeightUseCase } from '../../src/app/bot/WeightCommand/WeightUseCase';
-import { InvalidFormatError } from '../../src/app/shared/errors';
-import { kg } from '../../src/app/shared/types';
-import { Result } from '../../src/shared/utils/result';
-import { m, u } from '../utils';
+import { validateWeight, WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
+import { InvalidFormatError } from 'src/app/shared/errors';
+import { kg } from 'src/app/shared/types';
+import { Result } from 'src/shared/utils/result';
+import { m, u } from 'test/utils';
 
 describe('WeightUseCase', () => {
   describe('add()', () => {

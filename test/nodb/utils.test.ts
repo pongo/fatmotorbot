@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import { Measure } from '../../src/app/shared/types';
-import { sortMeasuresFromNewestToOldest } from '../utils';
+import { Measure } from 'src/app/shared/types';
+import { sortMeasuresFromNewestToOldest } from 'test/utils';
 
 const m = <T extends number>(date: Date, value: T): Measure<T> => ({ date, value });
 

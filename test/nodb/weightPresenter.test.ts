@@ -1,8 +1,8 @@
 import { assert } from 'chai';
-import { weightPresenter } from '../../src/app/bot/WeightCommand/weightPresenter';
-import { InvalidFormatError } from '../../src/app/shared/errors';
-import { kg } from '../../src/app/shared/types';
-import { Result } from '../../src/shared/utils/result';
+import { weightPresenter } from 'src/app/bot/WeightCommand/weightPresenter';
+import { InvalidFormatError } from 'src/app/shared/errors';
+import { kg } from 'src/app/shared/types';
+import { Result } from 'src/shared/utils/result';
 
 describe('weightPresenter()', () => {
   describe('add()', () => {

@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import { Result } from '../../src/shared/utils/result';
-import { StacklessError } from '../../src/shared/utils/StacklessError';
+import { Result } from 'src/shared/utils/result';
+import { StacklessError } from 'src/shared/utils/StacklessError';
 
 describe('Result', () => {
   it('ok()', () => {

@@ -1,11 +1,11 @@
 import { assert } from 'chai';
 import { sql } from 'slonik';
-import { WeightRepository } from '../../src/app/bot/WeightCommand/WeightRepository';
-import { kg } from '../../src/app/shared/types';
-import { parseConfig } from '../../src/config';
-import { createDB } from '../../src/shared/infrastructure/createDB';
-import { Result } from '../../src/shared/utils/result';
-import { m, sortMeasuresFromNewestToOldest, u } from '../utils';
+import { WeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
+import { kg } from 'src/app/shared/types';
+import { parseConfig } from 'src/config';
+import { createDB } from 'src/shared/infrastructure/createDB';
+import { Result } from 'src/shared/utils/result';
+import { m, sortMeasuresFromNewestToOldest, u } from 'test/utils';
 
 const config = (parseConfig() as unknown) as { DATABASE_URL_TEST: string };
 const db = createDB(config.DATABASE_URL_TEST);
