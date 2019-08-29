@@ -20,7 +20,7 @@ class WeightUseCase {
             return addResult;
         const currentMeasure = { date, value: weight };
         const diff = measureDifference_1.measureDifference(currentMeasure, previousMeasuresResult.value);
-        return result_1.Result.ok({ diff, weight });
+        return result_1.Result.ok({ diff, weight, kind: 'add' });
     }
     async getCurrent(userId, now) {
         const measuresResult = await this.weightRepository.getAll(userId);
@@ -28,12 +28,10 @@ class WeightUseCase {
             return measuresResult;
         const measures = measuresResult.value;
         if (measures.length === 0)
-            return result_1.Result.ok({ diff: {}, weight: null });
-        const currentMeasure = measures[0];
-        if (measures.length === 1)
-            return result_1.Result.ok({ diff: {}, weight: currentMeasure.value });
-        const diff = measureDifference_1.measureDifference(currentMeasure, measures, now);
-        return result_1.Result.ok({ diff, weight: currentMeasure.value });
+            return result_1.Result.ok({ kind: 'current' });
+        const current = measures[0];
+        const diff = measureDifference_1.measureDifference(current, measures, now);
+        return result_1.Result.ok({ diff, current, kind: 'current' });
     }
 }
 exports.WeightUseCase = WeightUseCase;

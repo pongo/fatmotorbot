@@ -5,16 +5,18 @@ import { Kg, Measure, TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
 
-type WeightAdded = {
-  diff: MeasureDifferenceSummary<Kg>;
+export type WeightAdded = {
+  kind: 'add';
+  diff?: MeasureDifferenceSummary<Kg>;
   weight: Kg;
 };
 
 type WeightAddedErrors = InvalidFormatError | Error;
 
-type CurrentWeight = {
-  diff: MeasureDifferenceSummary<Kg>;
-  weight: Kg | null;
+export type CurrentWeight = {
+  kind: 'current';
+  current?: Measure<Kg>;
+  diff?: MeasureDifferenceSummary<Kg>;
 };
 
 export class WeightUseCase {
@@ -32,7 +34,7 @@ export class WeightUseCase {
 
     const currentMeasure: Measure<Kg> = { date, value: weight };
     const diff = measureDifference(currentMeasure, previousMeasuresResult.value);
-    return Result.ok({ diff, weight });
+    return Result.ok({ diff, weight, kind: 'add' });
   }
 
   async getCurrent(userId: TelegramUserId, now: Date): Promise<Result<CurrentWeight>> {
@@ -40,13 +42,11 @@ export class WeightUseCase {
     if (measuresResult.isErr) return measuresResult;
 
     const measures = measuresResult.value;
-    if (measures.length === 0) return Result.ok({ diff: {}, weight: null });
+    if (measures.length === 0) return Result.ok({ kind: 'current' });
 
-    const currentMeasure = measures[0];
-    if (measures.length === 1) return Result.ok({ diff: {}, weight: currentMeasure.value});
-
-    const diff = measureDifference(currentMeasure, measures, now);
-    return Result.ok({ diff, weight: currentMeasure.value });
+    const current = measures[0];
+    const diff = measureDifference(current, measures, now);
+    return Result.ok({ diff, current, kind: 'current' });
   }
 }
 

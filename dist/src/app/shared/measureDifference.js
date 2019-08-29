@@ -2,23 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
+const utils_1 = require("src/shared/utils/utils");
 function measureDifference(current, previous, relativeDate) {
     const sorted = [...previous].reverse();
-    let result = {};
+    const result = {};
     for (const { date, value } of sorted) {
         const mark = getDateMark(current.date, date, relativeDate);
         if (mark === 'current' || mark === 'future')
             continue;
         if (mark in result)
             continue;
-        result = addMeasure(result, mark, current.value, date, value);
+        result[mark] = { date, value, difference: parseNumber_1.minus(current.value, value) };
     }
-    return result;
+    return utils_1.isEmptyObject(result) ? undefined : result;
 }
 exports.measureDifference = measureDifference;
-function addMeasure(result, mark, currentValue, date, value) {
-    return { ...result, [mark]: { date, value, difference: parseNumber_1.minus(currentValue, value) } };
-}
 function getDateMark(current, other, relativeDate = current) {
     if (date_fns_1.isSameSecond(current, other))
         return 'current';
