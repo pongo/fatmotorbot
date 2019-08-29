@@ -2,6 +2,7 @@ import { differenceInCalendarDays, isSameSecond } from 'date-fns';
 import { MeasuresFromNewestToOldest } from 'src/app/bot/WeightCommand/WeightRepository';
 import { Measure } from 'src/app/shared/types';
 import { minus } from 'src/shared/utils/parseNumber';
+import { isEmptyObject } from 'src/shared/utils/utils';
 
 export type MeasureDifferenceSummary<T extends number> = {
   today?: MeasureDifference<T>;
@@ -38,34 +39,28 @@ export type DateMark =
 
 /**
  * Возвращает сравнение текущего замера с предыдущими.
+ *
+ * @param current Текущий замер
+ * @param previous Все замеры в порядке от новых к старым
+ * @param relativeDate Сегодняшняя дата
  */
+// eslint-disable-next-line complexity
 export function measureDifference<T extends number>(
   current: Measure<T>,
   previous: MeasuresFromNewestToOldest<T>,
   relativeDate?: Date,
-): MeasureDifferenceSummary<T> {
-  const sorted = [...previous].reverse();
+): MeasureDifferenceSummary<T> | undefined {
+  const sorted = [...previous].reverse(); // теперь отсортировано от самых старых к новым
+  const result: MeasureDifferenceSummary<T> = {};
 
-  let result: MeasureDifferenceSummary<T> = {};
   for (const { date, value } of sorted) {
     const mark = getDateMark(current.date, date, relativeDate);
     if (mark === 'current' || mark === 'future') continue;
-    if (mark in result) continue; // записываем только самый старый замер
-    result = addMeasure(result, mark, current.value, date, value);
+    if (mark in result) continue; // если уже записан, то пропуск: записываем только самый старый замер
+    result[mark] = { date, value, difference: minus(current.value, value) };
   }
 
-  return result;
-}
-
-// eslint-disable-next-line max-params
-function addMeasure<T extends number>(
-  result: MeasureDifferenceSummary<T>,
-  mark: DateMark,
-  currentValue: T,
-  date: Date,
-  value: T,
-) {
-  return { ...result, [mark]: { date, value, difference: minus(currentValue, value) } };
+  return isEmptyObject(result) ? undefined : result;
 }
 
 /**

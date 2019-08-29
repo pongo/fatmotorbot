@@ -11,7 +11,3 @@ export function createDB(databaseUrl: string): DatabasePoolType {
     typeParsers: [createBigintTypeParser(), createIntervalTypeParser(), createNumericTypeParser()],
   });
 }
-
-export function toTimestamp(date: Date): number {
-  return Math.round(date.getTime() / 1000); // https://github.com/gajus/slonik/issues/70
-}

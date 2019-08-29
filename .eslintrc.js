@@ -90,4 +90,7 @@ module.exports = {
     "no-underscore-dangle": 0,
     "no-useless-constructor": 0,
   },
+  settings: {
+    "import/core-modules": ["telegram-typings"],
+  },
 };

@@ -47,7 +47,7 @@
     "no-commented-code": false,
     "no-console": false,
     "no-else-after-return": true,
-    "no-implicit-dependencies": [true, "dev", ["~", "src", "test"]],
+    "no-implicit-dependencies": [true, "dev", ["~", "src", "test", "telegram-typings"]],
     "no-increment-decrement": false,
     "no-inferrable-types": false,
     "no-inferred-empty-object-type": false,
@@ -98,6 +98,7 @@
     "variable-name": [true, "ban-keywords"],
     "chai-vague-errors": false,
     "quotemark": false,
-    "no-shadowed-variable": false
+    "no-shadowed-variable": false,
+    "align": false
   }
 }

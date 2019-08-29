@@ -7,8 +7,4 @@ function createDB(databaseUrl) {
     });
 }
 exports.createDB = createDB;
-function toTimestamp(date) {
-    return Math.round(date.getTime() / 1000);
-}
-exports.toTimestamp = toTimestamp;
 //# sourceMappingURL=createDB.js.map

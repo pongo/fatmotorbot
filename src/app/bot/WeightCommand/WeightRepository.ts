@@ -1,7 +1,7 @@
 import { DatabasePoolType, SlonikError, sql } from 'slonik';
-import { Kg, Measure, TelegramUserId } from 'src/app/shared/types';
-import { toTimestamp } from 'src/shared/infrastructure/createDB';
+import { Kg, Measure, MeasureValueType, TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
+import { toTimestamp } from 'src/shared/utils/utils';
 
 export type MeasuresFromNewestToOldest<T extends number> = Measure<T>[];
 
@@ -14,14 +14,16 @@ export class WeightRepository implements IWeightRepository {
   constructor(private readonly db: DatabasePoolType) {}
 
   async add(userId: TelegramUserId, weight: Kg, date: Date): Promise<Result<undefined, SlonikError>> {
+    const valueType: MeasureValueType = 'weight';
     try {
       await this.db.any(sql`
         INSERT INTO measures (user_id, value_type, value, date)
-        VALUES (${userId}, 'weight', ${weight}, to_timestamp(${toTimestamp(date)}));
+        VALUES (${userId}, ${valueType}, ${weight}, to_timestamp(${toTimestamp(date)}));
       `);
       return Result.ok();
-    } catch (error) {
-      return Result.err(error);
+    } catch (e) {
+      console.error('WeightRepository.add()', e);
+      return Result.err(e);
     }
   }
 
@@ -37,8 +39,9 @@ export class WeightRepository implements IWeightRepository {
       // TODO: нужна ли здесь валидация?
       const measures = (result as unknown) as MeasuresFromNewestToOldest<Kg>;
       return Result.ok(measures);
-    } catch (error) {
-      return Result.err(error);
+    } catch (e) {
+      console.error('WeightRepository.getAll()', e);
+      return Result.err(e);
     }
   }
 }

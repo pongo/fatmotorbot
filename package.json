@@ -33,7 +33,8 @@
     "module-alias": "^2.2.1",
     "pg-connection-string": "^2.1.0",
     "postgres-migrations": "^3.0.2",
-    "slonik": "^18.10.0"
+    "slonik": "^18.10.0",
+    "telegraf": "^3.32.0"
   },
   "devDependencies": {
     "@types/big.js": "^4.0.5",
@@ -108,5 +109,9 @@
     ],
     "cache": true,
     "all": true
+  },
+  "_moduleAliases": {
+    "src": "./dist/src",
+    "test": "./dist/test"
   }
 }
