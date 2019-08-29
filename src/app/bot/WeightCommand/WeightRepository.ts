@@ -1,7 +1,7 @@
 import { DatabasePoolType, SlonikError, sql } from 'slonik';
 import { Kg, Measure, TelegramUserId } from 'src/app/shared/types';
-import { toTimestamp } from 'src/shared/infrastructure/createDB';
 import { Result } from 'src/shared/utils/result';
+import { toTimestamp } from 'src/shared/utils/utils';
 
 export type MeasuresFromNewestToOldest<T extends number> = Measure<T>[];
 

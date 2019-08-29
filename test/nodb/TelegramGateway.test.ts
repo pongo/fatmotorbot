@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { toTimestamp } from 'src/shared/infrastructure/createDB';
 import { Command, handleCommand, parseCommand } from 'src/shared/infrastructure/TelegramGateway';
+import { toTimestamp } from 'src/shared/utils/utils';
 import { ContextMessageUpdate } from 'telegraf';
 import * as TT from 'telegram-typings';
 

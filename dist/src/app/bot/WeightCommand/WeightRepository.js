@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const slonik_1 = require("slonik");
-const createDB_1 = require("src/shared/infrastructure/createDB");
 const result_1 = require("src/shared/utils/result");
+const utils_1 = require("src/shared/utils/utils");
 class WeightRepository {
     constructor(db) {
         this.db = db;
@@ -11,7 +11,7 @@ class WeightRepository {
         try {
             await this.db.any(slonik_1.sql `
         INSERT INTO measures (user_id, value_type, value, date)
-        VALUES (${userId}, 'weight', ${weight}, to_timestamp(${createDB_1.toTimestamp(date)}));
+        VALUES (${userId}, 'weight', ${weight}, to_timestamp(${utils_1.toTimestamp(date)}));
       `);
             return result_1.Result.ok();
         }

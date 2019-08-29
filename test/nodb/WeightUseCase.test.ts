@@ -4,6 +4,7 @@ import { validateWeight, WeightUseCase } from 'src/app/bot/WeightCommand/WeightU
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
+import { isEmptyObject } from 'src/shared/utils/utils';
 import { m, u } from 'test/utils';
 
 describe('WeightUseCase', () => {
@@ -26,11 +27,6 @@ describe('WeightUseCase', () => {
         diff: {},
       });
       assert.isTrue(isEmptyObject(actual.value.diff));
-
-      // https://stackoverflow.com/a/32108184/136559
-      function isEmptyObject(obj: object): boolean {
-        return Object.keys(obj).length === 0 && obj.constructor === Object;
-      }
     });
 
     it('should return error on invalid weight', async () => {
