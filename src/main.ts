@@ -1,7 +1,9 @@
 /* eslint-disable import/first */
 /* tslint:disable:no-require-imports no-submodule-imports */
 require('module-alias/register');
-
+//
+import { WeightCommand } from 'src/app/bot/WeightCommand/WeightCommand';
+import { WeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
 import { createDB } from 'src/shared/infrastructure/createDB';
 import { TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
 import { parseConfig } from './config';
@@ -11,9 +13,7 @@ async function main() {
   const db = createDB(config.DATABASE_URL);
   const telegram = new TelegramGateway(config.BOT_TOKEN);
 
-  telegram.onCommand('hi', async command => {
-    await telegram.sendMessage(command.chatId, 'hello', command.messageId);
-  });
+  new WeightCommand(new WeightRepository(db), telegram).enable();
 
   await telegram.connect({
     domain: config.BOT_WEBHOOK_DOMAIN,
