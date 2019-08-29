@@ -1,7 +1,7 @@
 import { assert } from 'chai';
-import { DateMark, getDateMark, measureDifference } from 'src/app/shared/measureDifference';
-import { kg } from 'src/app/shared/types';
-import { m, sortM } from 'test/utils';
+import { DateMark, getDateMark, measureDifference } from '../../src/app/shared/measureDifference';
+import { kg } from '../../src/app/shared/types';
+import { m, sortM } from '../utils';
 
 describe('measureDifference()', () => {
   it('should skip future dates', () => {

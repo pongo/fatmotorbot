@@ -3,5 +3,5 @@ module.exports = {
   exit: true,
   extension: ["ts"],
   // spec: "test/nodb/**/*.test.ts",
-  require: ["ts-node/register/transpile-only", "tsconfig-paths/register"],
+  require: ["ts-node/register/transpile-only"],
 };

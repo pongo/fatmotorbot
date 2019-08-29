@@ -1,12 +1,8 @@
-/* eslint-disable import/first,@typescript-eslint/no-var-requires */
-/* tslint:disable:no-require-imports no-submodule-imports no-unsafe-any */
-require('module-alias')({ base: process.cwd() });
-// ...
-import { WeightCommand } from 'src/app/bot/WeightCommand/WeightCommand';
-import { WeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
-import { createDB } from 'src/shared/infrastructure/createDB';
-import { TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
+import { WeightCommand } from './app/bot/WeightCommand/WeightCommand';
+import { WeightRepository } from './app/bot/WeightCommand/WeightRepository';
 import { parseConfig } from './config';
+import { createDB } from './shared/infrastructure/createDB';
+import { TelegramGateway } from './shared/infrastructure/TelegramGateway';
 
 async function main() {
   const config = parseConfig();

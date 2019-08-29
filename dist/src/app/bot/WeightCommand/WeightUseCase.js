@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("src/app/shared/errors");
-const measureDifference_1 = require("src/app/shared/measureDifference");
-const parseNumber_1 = require("src/shared/utils/parseNumber");
-const result_1 = require("src/shared/utils/result");
+const parseNumber_1 = require("../../../shared/utils/parseNumber");
+const result_1 = require("../../../shared/utils/result");
+const errors_1 = require("../../shared/errors");
+const measureDifference_1 = require("../../shared/measureDifference");
 class WeightUseCase {
     constructor(weightRepository) {
         this.weightRepository = weightRepository;

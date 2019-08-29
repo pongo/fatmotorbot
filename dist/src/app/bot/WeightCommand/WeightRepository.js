@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const slonik_1 = require("slonik");
-const result_1 = require("src/shared/utils/result");
-const utils_1 = require("src/shared/utils/utils");
+const result_1 = require("../../../shared/utils/result");
+const utils_1 = require("../../../shared/utils/utils");
 class WeightRepository {
     constructor(db) {
         this.db = db;

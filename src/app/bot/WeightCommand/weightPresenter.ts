@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* tslint:disable:no-non-null-assertion */
 import { differenceInCalendarDays } from 'date-fns';
-import { CurrentWeight, WeightAdded } from 'src/app/bot/WeightCommand/WeightUseCase';
-import { InvalidFormatError } from 'src/app/shared/errors';
-import { DateMark, getDateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
-import { Kg, Measure } from 'src/app/shared/types';
-import { Result } from 'src/shared/utils/result';
+import { Result } from '../../../shared/utils/result';
+import { InvalidFormatError } from '../../shared/errors';
+import { DateMark, getDateMark, MeasureDifferenceSummary } from '../../shared/measureDifference';
+import { Kg, Measure } from '../../shared/types';
+import { CurrentWeight, WeightAdded } from './WeightUseCase';
 
 export function weightPresenter(result: Result<CurrentWeight | WeightAdded>, now: Date): string {
   if (result.isErr) return presentError(result.error);

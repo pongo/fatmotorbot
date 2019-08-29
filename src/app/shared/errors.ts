@@ -1,4 +1,4 @@
-import { StacklessError } from 'src/shared/utils/StacklessError';
+import { StacklessError } from '../../shared/utils/StacklessError';
 
 export class InvalidFormatError extends StacklessError {
   constructor() {

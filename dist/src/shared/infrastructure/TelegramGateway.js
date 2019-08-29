@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const result_1 = require("src/shared/utils/result");
 const telegraf_1 = __importDefault(require("telegraf"));
+const result_1 = require("../utils/result");
 class TelegramGateway {
     constructor(token, telegrafLogs = false) {
         this.telegraf = new telegraf_1.default(token);

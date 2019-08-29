@@ -1,8 +1,8 @@
-import { weightPresenter } from 'src/app/bot/WeightCommand/weightPresenter';
-import { IWeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
-import { WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
-import { TelegramUserId } from 'src/app/shared/types';
-import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
+import { Command, TelegramGateway } from '../../../shared/infrastructure/TelegramGateway';
+import { TelegramUserId } from '../../shared/types';
+import { weightPresenter } from './weightPresenter';
+import { IWeightRepository } from './WeightRepository';
+import { WeightUseCase } from './WeightUseCase';
 
 export class WeightCommand {
   private readonly usecase: WeightUseCase;

@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai';
-import { minus, parseNumber, roundToTwo } from 'src/shared/utils/parseNumber';
+import { minus, parseNumber, roundToTwo } from '../../src/shared/utils/parseNumber';
 
 describe('parseNumber()', () => {
   it('should parse single value', () => {

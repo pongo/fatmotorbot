@@ -1,9 +1,9 @@
-import { IWeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
-import { InvalidFormatError } from 'src/app/shared/errors';
-import { measureDifference, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
-import { Kg, Measure, TelegramUserId } from 'src/app/shared/types';
-import { parseNumber } from 'src/shared/utils/parseNumber';
-import { Result } from 'src/shared/utils/result';
+import { parseNumber } from '../../../shared/utils/parseNumber';
+import { Result } from '../../../shared/utils/result';
+import { InvalidFormatError } from '../../shared/errors';
+import { measureDifference, MeasureDifferenceSummary } from '../../shared/measureDifference';
+import { Kg, Measure, TelegramUserId } from '../../shared/types';
+import { IWeightRepository } from './WeightRepository';
 
 export type WeightAdded = {
   kind: 'add';

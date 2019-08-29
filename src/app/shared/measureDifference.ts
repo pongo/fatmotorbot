@@ -1,8 +1,8 @@
 import { differenceInCalendarDays, isSameSecond } from 'date-fns';
-import { MeasuresFromNewestToOldest } from 'src/app/bot/WeightCommand/WeightRepository';
-import { Measure } from 'src/app/shared/types';
-import { minus } from 'src/shared/utils/parseNumber';
-import { isEmptyObject } from 'src/shared/utils/utils';
+import { minus } from '../../shared/utils/parseNumber';
+import { isEmptyObject } from '../../shared/utils/utils';
+import { MeasuresFromNewestToOldest } from '../bot/WeightCommand/WeightRepository';
+import { Measure } from './types';
 
 export type MeasureDifferenceSummary<T extends number> = {
   today?: MeasureDifference<T>;
