@@ -9,6 +9,7 @@ class WeightUseCase {
         this.weightRepository = weightRepository;
     }
     async add(userId, date, weightString) {
+        console.log(`WeightUseCase.add(${userId}, new Date('${date.toISOString()}'), \`${weightString}\`);`);
         const weight = validateWeight(parseNumber_1.parseNumber(weightString));
         if (weight == null)
             return result_1.Result.err(new errors_1.InvalidFormatError());
@@ -23,6 +24,7 @@ class WeightUseCase {
         return result_1.Result.ok({ diff, weight, kind: 'add' });
     }
     async getCurrent(userId, now) {
+        console.log(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
         const measuresResult = await this.weightRepository.getAll(userId);
         if (measuresResult.isErr)
             return measuresResult;

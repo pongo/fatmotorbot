@@ -23,6 +23,7 @@ export class WeightUseCase {
   constructor(private readonly weightRepository: IWeightRepository) {}
 
   async add(userId: TelegramUserId, date: Date, weightString: string): Promise<Result<WeightAdded, WeightAddedErrors>> {
+    console.log(`WeightUseCase.add(${userId}, new Date('${date.toISOString()}'), \`${weightString}\`);`);
     const weight = validateWeight(parseNumber(weightString));
     if (weight == null) return Result.err(new InvalidFormatError());
 
@@ -38,6 +39,7 @@ export class WeightUseCase {
   }
 
   async getCurrent(userId: TelegramUserId, now: Date): Promise<Result<CurrentWeight>> {
+    console.log(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
     const measuresResult = await this.weightRepository.getAll(userId);
     if (measuresResult.isErr) return measuresResult;
 
