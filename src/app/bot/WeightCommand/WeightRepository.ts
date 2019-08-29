@@ -1,5 +1,5 @@
 import { DatabasePoolType, SlonikError, sql } from 'slonik';
-import { Kg, Measure, TelegramUserId } from 'src/app/shared/types';
+import { Kg, Measure, MeasureValueType, TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { toTimestamp } from 'src/shared/utils/utils';
 
@@ -14,10 +14,11 @@ export class WeightRepository implements IWeightRepository {
   constructor(private readonly db: DatabasePoolType) {}
 
   async add(userId: TelegramUserId, weight: Kg, date: Date): Promise<Result<undefined, SlonikError>> {
+    const valueType: MeasureValueType = 'weight';
     try {
       await this.db.any(sql`
         INSERT INTO measures (user_id, value_type, value, date)
-        VALUES (${userId}, 'weight', ${weight}, to_timestamp(${toTimestamp(date)}));
+        VALUES (${userId}, ${valueType}, ${weight}, to_timestamp(${toTimestamp(date)}));
       `);
       return Result.ok();
     } catch (e) {

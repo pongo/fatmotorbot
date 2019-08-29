@@ -8,10 +8,11 @@ class WeightRepository {
         this.db = db;
     }
     async add(userId, weight, date) {
+        const valueType = 'weight';
         try {
             await this.db.any(slonik_1.sql `
         INSERT INTO measures (user_id, value_type, value, date)
-        VALUES (${userId}, 'weight', ${weight}, to_timestamp(${utils_1.toTimestamp(date)}));
+        VALUES (${userId}, ${valueType}, ${weight}, to_timestamp(${utils_1.toTimestamp(date)}));
       `);
             return result_1.Result.ok();
         }

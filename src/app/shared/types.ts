@@ -6,3 +6,5 @@ export type Kg = Brand<number, 'Kg'>;
 export type Measure<T extends number> = { date: Date; value: T };
 
 export const kg = (value: number) => value as Kg;
+
+export type MeasureValueType = 'weight' | 'none';
