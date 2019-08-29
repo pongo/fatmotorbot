@@ -3,7 +3,7 @@
 import { differenceInCalendarDays } from 'date-fns';
 import { CurrentWeight, WeightAdded } from 'src/app/bot/WeightCommand/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
-import { DateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
+import { DateMark, getDateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
 import { Kg, Measure } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
@@ -14,10 +14,12 @@ export function weightPresenter(result: Result<CurrentWeight | WeightAdded>, now
 }
 
 function presentAdd({ weight, diff }: WeightAdded) {
+  const header = `Твой вес: ${weight} кг.\n\n`;
   if (diff == null) {
-    return `Твой вес: ${weight} кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
+    return `${header}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
   }
-  return showDiff(weight, diff);
+  const previous = presentDiff(diff);
+  return `${header}${previous}`;
 }
 
 function presentError(error: InvalidFormatError | Error) {
@@ -30,27 +32,48 @@ function presentCurrent({ current, diff }: CurrentWeight, now: Date) {
     return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
   }
   if (diff == null) return firstMeasure(current, now);
-  return showDiff(current.value, diff);
+  return presentCurrentDiff(current, diff, now);
 }
 
-function showDiff(currentWeight: Kg, diff: MeasureDifferenceSummary<Kg>): string {
-  const header = `Твой вес: ${currentWeight} кг.\n\n`;
+function presentCurrentDiff(current: Measure<Kg>, diff: MeasureDifferenceSummary<Kg>, now: Date): string {
+  const header = headerRelativeDate(current, now);
   const previous = presentDiff(diff);
   return `${header}${previous}`;
 }
 
+function headerRelativeDate({ date, value }: Measure<Kg>, now: Date) {
+  const markToHeader: { [key in DateMark]: string } = {
+    current: 'Твой вес',
+    today: 'Твой вес',
+    yesterday: 'Вес вчера',
+    daysAgo: 'Вес пару дней назад',
+    weekAgo: 'Вес неделю назад',
+    twoWeeksAgo: 'Вес две недели назад',
+    monthAgo: 'Вес месяц назад',
+    monthsAgo: 'Вес пару месяцев назад',
+    halfYearAgo: 'Вес полгода назад',
+    yearAgo: 'Вес год назад',
+    yearsAgo: 'Вес годы назад',
+    future: 'Ты будешь весить',
+  };
+
+  const mark = getDateMark(now, date);
+  return `${markToHeader[mark]}: ${value} кг.\n\n`;
+}
+
 // eslint-disable-next-line max-lines-per-function
 function presentDiff(diff: MeasureDifferenceSummary<Kg>) {
+  let firstAgoLabelAdded = false;
   const dates: [DateMark, string][] = [
-    ['today', 'Еще сегодня'],
+    ['today', 'Сегодня ранее'],
     ['yesterday', 'Вчера'],
-    ['daysAgo', 'Пару дней назад'],
-    ['weekAgo', 'Неделю назад'],
-    ['twoWeeksAgo', 'Две недели назад'],
-    ['monthAgo', 'Месяц назад'],
-    ['monthsAgo', 'Пару месяцев назад'],
-    ['halfYearAgo', 'Полгода назад'],
-    ['yearAgo', 'Год назад'],
+    ['daysAgo', 'Пару дней :ago:'],
+    ['weekAgo', 'Неделю :ago:'],
+    ['twoWeeksAgo', 'Две недели :ago:'],
+    ['monthAgo', 'Месяц :ago:'],
+    ['monthsAgo', 'Пару месяцев :ago:'],
+    ['halfYearAgo', 'Полгода :ago:'],
+    ['yearAgo', 'Год :ago:'],
     ['yearsAgo', 'Годы назад'],
   ];
 
@@ -60,7 +83,15 @@ function presentDiff(diff: MeasureDifferenceSummary<Kg>) {
     if (mark === 'future' || mark === 'current' || diff[mark] == null) return acc;
     const weight = diff[mark]!.value;
     const difference = differenceStr(diff[mark]!.difference);
-    return `${acc}\n• ${text}: ${weight} ${difference}`.trim();
+    return `${acc}\n• ${ago(text)}: ${weight} ${difference}`.trim();
+  }
+
+  function ago(text: string) {
+    if (text.includes(':ago:') && !firstAgoLabelAdded) {
+      firstAgoLabelAdded = true;
+      return text.replace(':ago:', 'назад');
+    }
+    return text.replace(':ago:', '').trim();
   }
 
   function differenceStr(difference: number): string {

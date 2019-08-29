@@ -35,7 +35,7 @@ describe('weightPresenter()', () => {
       };
       assert.equal(
         weightPresenter(Result.ok(data), new Date('2019-08-29')),
-        `Твой вес: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц назад: 55 (−5)`,
+        `Твой вес: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)`,
       );
     });
   });
@@ -99,7 +99,7 @@ describe('weightPresenter()', () => {
       };
       assert.equal(
         weightPresenter(Result.ok(data), new Date('2019-08-29')),
-        `Твой вес: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц назад: 55 (−5)`,
+        `Вес вчера: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)`,
       );
     });
   });
