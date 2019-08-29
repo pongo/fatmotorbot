@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require('module-alias/register');
+require('module-alias')({ base: process.cwd() });
 const WeightCommand_1 = require("src/app/bot/WeightCommand/WeightCommand");
 const WeightRepository_1 = require("src/app/bot/WeightCommand/WeightRepository");
 const createDB_1 = require("src/shared/infrastructure/createDB");

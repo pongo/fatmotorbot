@@ -1,7 +1,7 @@
-/* eslint-disable import/first */
-/* tslint:disable:no-require-imports no-submodule-imports */
-require('module-alias/register');
-//
+/* eslint-disable import/first,@typescript-eslint/no-var-requires */
+/* tslint:disable:no-require-imports no-submodule-imports no-unsafe-any */
+require('module-alias')({ base: process.cwd() });
+// ...
 import { WeightCommand } from 'src/app/bot/WeightCommand/WeightCommand';
 import { WeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
 import { createDB } from 'src/shared/infrastructure/createDB';
