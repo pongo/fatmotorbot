@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/src/main.js",
   "scripts": {
+    "build": "rimraf dist/* && tsc --newLine lf",
     "eslint": "eslint ./src/**/*.ts ./test/**/*.ts",
     "eslintfix": "eslint --fix ./src/**/*.ts ./test/**/*.ts",
     "tscheck": "tsc --noEmit",
@@ -56,6 +57,7 @@
     "nyc": "^14.1.1",
     "open-cli": "^5.0.0",
     "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
     "sinon": "^7.4.1",
     "source-map-support": "^0.5.13",
     "ts-mocha": "^6.0.0",

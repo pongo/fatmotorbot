@@ -1,18 +1,12 @@
-/* tslint:disable:object-literal-sort-keys */
-// istanbul ignore file
-
-// Раньше здесь был https://github.com/badrap/result
-// Но я заменил на свой упрощенный вариант
-
 import { StacklessError } from './StacklessError';
 
-type Ok<T> = {
+export type Ok<T> = {
   readonly isOk: true;
   readonly isErr: false;
   readonly value: T;
 };
 
-type Err<E extends Error> = {
+export type Err<E extends Error> = {
   readonly isOk: false;
   readonly isErr: true;
   readonly error: E;
