@@ -92,16 +92,18 @@ function presentDiff(diff) {
     }
 }
 function firstMeasure({ date, value }, now) {
-    const header = `Твой вес: ${value} кг.\n\n`;
-    const daysAgo = date_fns_1.differenceInCalendarDays(now, date);
-    if (daysAgo <= 5)
-        return `${header}Регулярно делай замеры, например, каждую пятницу утром.`;
-    if (daysAgo <= 9)
-        return `${header}Прошла неделя с последнего замера, пора взвешиваться!`;
-    if (daysAgo <= 7 * 7)
-        return `${header}Несколько недель прошло, сколько ты теперь весишь?`;
-    if (daysAgo <= 150)
-        return `${header}И было это пару месяцев назад, сколько же ты теперь весишь?`;
-    return `${header}Но было это чертовски давно, рискнешь встать на весы?`;
+    const note = getNoteByDaysAgo(date_fns_1.differenceInCalendarDays(now, date));
+    return `Твой вес: ${value} кг.\n\n${note}`;
+    function getNoteByDaysAgo(daysAgo) {
+        if (daysAgo <= 5)
+            return 'Регулярно делай замеры, например, каждую пятницу утром.';
+        if (daysAgo <= 9)
+            return 'Прошла неделя с последнего замера, пора взвешиваться!';
+        if (daysAgo <= 7 * 7)
+            return 'Несколько недель прошло, сколько ты теперь весишь?';
+        if (daysAgo <= 150)
+            return 'И было это пару месяцев назад, сколько же ты теперь весишь?';
+        return 'Но было это чертовски давно, рискнешь встать на весы?';
+    }
 }
 //# sourceMappingURL=weightPresenter.js.map
