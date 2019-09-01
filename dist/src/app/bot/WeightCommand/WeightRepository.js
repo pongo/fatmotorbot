@@ -3,16 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const slonik_1 = require("slonik");
 const result_1 = require("src/shared/utils/result");
 const utils_1 = require("src/shared/utils/utils");
+const weightValueType = 'weight';
 class WeightRepository {
     constructor(db) {
         this.db = db;
     }
     async add(userId, weight, date) {
-        const valueType = 'weight';
         try {
             await this.db.any(slonik_1.sql `
         INSERT INTO measures (user_id, value_type, value, date)
-        VALUES (${userId}, ${valueType}, ${weight}, to_timestamp(${utils_1.toTimestamp(date)}));
+        VALUES (${userId}, ${weightValueType}, ${weight}, to_timestamp(${utils_1.toTimestamp(date)}));
       `);
             return result_1.Result.ok();
         }
@@ -26,7 +26,7 @@ class WeightRepository {
             const result = await this.db.any(slonik_1.sql `
         SELECT date, value
         FROM measures
-        WHERE value_type = 'weight'
+        WHERE value_type = ${weightValueType}
           AND user_id = ${userId}
         ORDER BY date DESC;
       `);

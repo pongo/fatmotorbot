@@ -99,6 +99,7 @@
     "chai-vague-errors": false,
     "quotemark": false,
     "no-shadowed-variable": false,
-    "align": false
+    "align": false,
+    "no-non-null-assertion": false
   }
 }

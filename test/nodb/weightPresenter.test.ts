@@ -1,32 +1,37 @@
 import { assert } from 'chai';
+import { SlonikError } from 'slonik';
 import { weightPresenter } from 'src/app/bot/WeightCommand/weightPresenter';
+import {
+  CurrentWeightDiff,
+  CurrentWeightFirst,
+  WeightAddedDiff,
+  WeightCases,
+} from 'src/app/bot/WeightCommand/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
 describe('weightPresenter()', () => {
   describe('add()', () => {
-    const kind = 'add' as const;
-
     it('error', () => {
       assert.equal(weightPresenter(Result.err(new InvalidFormatError()), new Date()), 'Какой-какой у тебя вес?');
 
       assert.equal(
-        weightPresenter(Result.err('oops'), new Date()),
+        weightPresenter(Result.err(new SlonikError('oops')), new Date()),
         'Что-то не так с базой данных. Вызывайте техподдержку!',
       );
     });
 
     it('first add', () => {
       assert.equal(
-        weightPresenter(Result.ok({ kind, weight: kg(100) }), new Date()),
+        weightPresenter(Result.ok({ case: WeightCases.addFirst, weight: kg(100) }), new Date()),
         `Твой вес: 100 кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`,
       );
     });
 
     it('not first', () => {
-      const data = {
-        kind,
+      const data: WeightAddedDiff = {
+        case: WeightCases.addDiff,
         weight: kg(50),
         diff: {
           daysAgo: { difference: kg(1), value: kg(49), date: new Date('2019-08-27') },
@@ -41,25 +46,24 @@ describe('weightPresenter()', () => {
   });
 
   describe('getCurrent()', () => {
-    const kind = 'current' as const;
-
     it('error', () => {
       assert.equal(
-        weightPresenter(Result.err('oops'), new Date()),
+        weightPresenter(Result.err(new SlonikError('oops')), new Date()),
         'Что-то не так с базой данных. Вызывайте техподдержку!',
       );
     });
 
     it('no measures', () => {
       assert.equal(
-        weightPresenter(Result.ok({ kind }), new Date('2019-08-29')),
+        weightPresenter(Result.ok({ case: WeightCases.currentEmpty }), new Date('2019-08-29')),
         `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`,
       );
     });
 
     it('one measure', () => {
       function gen(date: Date) {
-        return Result.ok({ kind, current: { date, value: kg(100) } });
+        const data: CurrentWeightFirst = { case: WeightCases.currentFirst, current: { date, value: kg(100) } };
+        return Result.ok(data);
       }
 
       assert.equal(
@@ -89,8 +93,8 @@ describe('weightPresenter()', () => {
     });
 
     it('measures', () => {
-      const data = {
-        kind,
+      const data: CurrentWeightDiff = {
+        case: WeightCases.currentDiff,
         current: { date: new Date('2019-08-28'), value: kg(50) },
         diff: {
           daysAgo: { difference: kg(1), value: kg(49), date: new Date('2019-08-27') },

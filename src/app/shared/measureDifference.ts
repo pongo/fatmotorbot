@@ -2,7 +2,6 @@ import { differenceInCalendarDays, isSameSecond } from 'date-fns';
 import { MeasuresFromNewestToOldest } from 'src/app/bot/WeightCommand/WeightRepository';
 import { Measure } from 'src/app/shared/types';
 import { minus } from 'src/shared/utils/parseNumber';
-import { isEmptyObject } from 'src/shared/utils/utils';
 
 export type MeasureDifferenceSummary<T extends number> = {
   today?: MeasureDifference<T>;
@@ -44,13 +43,12 @@ export type DateMark =
  * @param previous Все замеры в порядке от новых к старым
  * @param relativeDate Сегодняшняя дата
  */
-// eslint-disable-next-line complexity
 export function measureDifference<T extends number>(
   current: Measure<T>,
   previous: MeasuresFromNewestToOldest<T>,
   relativeDate?: Date,
-): MeasureDifferenceSummary<T> | undefined {
-  const sorted = [...previous].reverse(); // теперь отсортировано от самых старых к новым
+): MeasureDifferenceSummary<T> {
+  const sorted = [...previous].reverse(); // reverse() сортирует от самых старых к новым
   const result: MeasureDifferenceSummary<T> = {};
 
   for (const { date, value } of sorted) {
@@ -60,7 +58,7 @@ export function measureDifference<T extends number>(
     result[mark] = { date, value, difference: minus(current.value, value) };
   }
 
-  return isEmptyObject(result) ? undefined : result;
+  return result;
 }
 
 /**

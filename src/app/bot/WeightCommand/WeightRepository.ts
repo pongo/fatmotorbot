@@ -10,15 +10,16 @@ export interface IWeightRepository {
   getAll(userId: TelegramUserId): Promise<Result<MeasuresFromNewestToOldest<Kg>, SlonikError>>;
 }
 
+const weightValueType: MeasureValueType = 'weight';
+
 export class WeightRepository implements IWeightRepository {
   constructor(private readonly db: DatabasePoolType) {}
 
   async add(userId: TelegramUserId, weight: Kg, date: Date): Promise<Result<undefined, SlonikError>> {
-    const valueType: MeasureValueType = 'weight';
     try {
       await this.db.any(sql`
         INSERT INTO measures (user_id, value_type, value, date)
-        VALUES (${userId}, ${valueType}, ${weight}, to_timestamp(${toTimestamp(date)}));
+        VALUES (${userId}, ${weightValueType}, ${weight}, to_timestamp(${toTimestamp(date)}));
       `);
       return Result.ok();
     } catch (e) {
@@ -32,7 +33,7 @@ export class WeightRepository implements IWeightRepository {
       const result = await this.db.any(sql`
         SELECT date, value
         FROM measures
-        WHERE value_type = 'weight'
+        WHERE value_type = ${weightValueType}
           AND user_id = ${userId}
         ORDER BY date DESC;
       `);

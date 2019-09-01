@@ -1,64 +1,98 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* tslint:disable:no-non-null-assertion */
 import { differenceInCalendarDays } from 'date-fns';
-import { CurrentWeight, WeightAdded } from 'src/app/bot/WeightCommand/WeightUseCase';
+import { SlonikError } from 'slonik';
+import {
+  CurrentWeight,
+  CurrentWeightDiff,
+  CurrentWeightFirst,
+  WeightAdded,
+  WeightAddedDiff,
+  WeightAddedFirst,
+  WeightCases,
+} from 'src/app/bot/WeightCommand/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { DateMark, getDateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
 import { Kg, Measure } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
+// eslint-disable-next-line complexity
 export function weightPresenter(result: Result<CurrentWeight | WeightAdded>, now: Date): string {
   if (result.isErr) return presentError(result.error);
   const data = result.value;
-  return data.kind === 'current' ? presentCurrent(data, now) : presentAdd(data);
-}
 
-function presentAdd({ weight, diff }: WeightAdded) {
-  const header = `Твой вес: ${weight} кг.\n\n`;
-  if (diff == null) {
-    return `${header}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
+  switch (data.case) {
+    case WeightCases.addFirst:
+      return presentAddFirst(data);
+    case WeightCases.addDiff:
+      return presentAddDiff(data);
+    case WeightCases.currentEmpty:
+      return presentCurrentEmpty();
+    case WeightCases.currentFirst:
+      return presentCurrentFirst(data, now);
+    case WeightCases.currentDiff:
+      return presentCurrentDiff(data, now);
+    default:
+      return 'Ошибочный кейс';
   }
-  const previous = presentDiff(diff);
-  return `${header}${previous}`;
 }
 
-function presentError(error: InvalidFormatError | Error) {
+function presentError(error: InvalidFormatError | SlonikError | Error) {
   if (error instanceof InvalidFormatError) return 'Какой-какой у тебя вес?';
-  return 'Что-то не так с базой данных. Вызывайте техподдержку!';
+  if (error instanceof SlonikError) return 'Что-то не так с базой данных. Вызывайте техподдержку!';
+  return 'Ошибочная ошибка';
 }
 
-function presentCurrent({ current, diff }: CurrentWeight, now: Date) {
-  if (current == null) {
-    return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
+function presentAddFirst({ weight }: WeightAddedFirst) {
+  return `${getHeader(weight)}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
+}
+
+function presentAddDiff({ diff, weight }: WeightAddedDiff) {
+  const previous = presentDiff(diff);
+  return `${getHeader(weight)}${previous}`;
+}
+
+function presentCurrentEmpty() {
+  return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
+}
+
+function presentCurrentFirst({ current }: CurrentWeightFirst, now: Date): string {
+  const { date, value } = current;
+  const note = getNoteByDaysAgo(differenceInCalendarDays(now, date));
+  return `${getHeader(value)}${note}`;
+
+  function getNoteByDaysAgo(daysAgo: number) {
+    if (daysAgo <= 5) return 'Регулярно делай замеры, например, каждую пятницу утром.';
+    if (daysAgo <= 9) return 'Прошла неделя с последнего замера, пора взвешиваться!';
+    if (daysAgo <= 7 * 7) return 'Несколько недель прошло, сколько ты теперь весишь?';
+    if (daysAgo <= 150) return 'И было это пару месяцев назад, сколько же ты теперь весишь?';
+    return 'Но было это чертовски давно, рискнешь встать на весы?';
   }
-  if (diff == null) return firstMeasure(current, now);
-  return presentCurrentDiff(current, diff, now);
 }
 
-function presentCurrentDiff(current: Measure<Kg>, diff: MeasureDifferenceSummary<Kg>, now: Date): string {
-  const header = headerRelativeDate(current, now);
+// eslint-disable-next-line max-lines-per-function
+function presentCurrentDiff({ current, diff }: CurrentWeightDiff, now: Date): string {
+  const header = headerRelativeDate(current);
   const previous = presentDiff(diff);
   return `${header}${previous}`;
-}
 
-function headerRelativeDate({ date, value }: Measure<Kg>, now: Date) {
-  const markToHeader: { [key in DateMark]: string } = {
-    current: 'Твой вес',
-    today: 'Твой вес',
-    yesterday: 'Вес вчера',
-    daysAgo: 'Вес пару дней назад',
-    weekAgo: 'Вес неделю назад',
-    twoWeeksAgo: 'Вес две недели назад',
-    monthAgo: 'Вес месяц назад',
-    monthsAgo: 'Вес пару месяцев назад',
-    halfYearAgo: 'Вес полгода назад',
-    yearAgo: 'Вес год назад',
-    yearsAgo: 'Вес годы назад',
-    future: 'Ты будешь весить',
-  };
+  function headerRelativeDate({ date, value }: Measure<Kg>) {
+    const markToHeader: { [key in DateMark]: string } = {
+      current: 'Твой вес',
+      today: 'Твой вес',
+      yesterday: 'Вес вчера',
+      daysAgo: 'Вес пару дней назад',
+      weekAgo: 'Вес неделю назад',
+      twoWeeksAgo: 'Вес две недели назад',
+      monthAgo: 'Вес месяц назад',
+      monthsAgo: 'Вес пару месяцев назад',
+      halfYearAgo: 'Вес полгода назад',
+      yearAgo: 'Вес год назад',
+      yearsAgo: 'Вес годы назад',
+      future: 'Ты будешь весить',
+    };
 
-  const mark = getDateMark(now, date);
-  return `${markToHeader[mark]}: ${value} кг.\n\n`;
+    const mark = getDateMark(now, date);
+    return `${markToHeader[mark]}: ${value} кг.\n\n`;
+  }
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -80,9 +114,12 @@ function presentDiff(diff: MeasureDifferenceSummary<Kg>) {
   return dates.reduce(reducer, '').trim();
 
   function reducer(acc: string, [mark, text]: [DateMark, string]): string {
-    if (mark === 'future' || mark === 'current' || diff[mark] == null) return acc;
-    const weight = diff[mark]!.value;
-    const difference = differenceStr(diff[mark]!.difference);
+    if (mark === 'future' || mark === 'current') return acc;
+    const measure = diff[mark];
+    if (measure == null) return acc;
+
+    const weight = measure.value;
+    const difference = differenceStr(measure.difference);
     return `${acc}\n• ${ago(text)}: ${weight} ${difference}`.trim();
   }
 
@@ -102,15 +139,6 @@ function presentDiff(diff: MeasureDifferenceSummary<Kg>) {
   }
 }
 
-function firstMeasure({ date, value }: Measure<Kg>, now: Date): string {
-  const note = getNoteByDaysAgo(differenceInCalendarDays(now, date));
-  return `Твой вес: ${value} кг.\n\n${note}`;
-
-  function getNoteByDaysAgo(daysAgo: number) {
-    if (daysAgo <= 5) return 'Регулярно делай замеры, например, каждую пятницу утром.';
-    if (daysAgo <= 9) return 'Прошла неделя с последнего замера, пора взвешиваться!';
-    if (daysAgo <= 7 * 7) return 'Несколько недель прошло, сколько ты теперь весишь?';
-    if (daysAgo <= 150) return 'И было это пару месяцев назад, сколько же ты теперь весишь?';
-    return 'Но было это чертовски давно, рискнешь встать на весы?';
-  }
+function getHeader(weight: Kg) {
+  return `Твой вес: ${weight} кг.\n\n`;
 }

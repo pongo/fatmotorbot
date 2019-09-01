@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { validateWeight, WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
+import { validateWeight, WeightCases, WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
@@ -22,9 +22,8 @@ describe('WeightUseCase', () => {
       sinon.assert.calledOnce(repository.add);
       sinon.assert.calledWith(repository.add, u(1), kg(11));
       assert.deepEqual(actual.value, {
-        kind: 'add',
+        case: WeightCases.addFirst,
         weight: kg(11),
-        diff: undefined,
       });
     });
 
@@ -55,7 +54,7 @@ describe('WeightUseCase', () => {
 
       if (actual.isErr) throw new Error('should be ok');
       assert.deepEqual(actual.value, {
-        kind: 'add',
+        case: WeightCases.addDiff,
         weight: kg(10),
         diff: {
           daysAgo: { date: daysAgo, difference: kg(-5), value: kg(15) },
@@ -73,7 +72,7 @@ describe('WeightUseCase', () => {
       const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
       if (actual.isErr) throw new Error('should be ok');
-      assert.deepEqual(actual.value, { kind: 'current' });
+      assert.deepEqual(actual.value, { case: WeightCases.currentEmpty });
     });
 
     describe('should return current weight and empty diff if only one measure', () => {
@@ -89,7 +88,7 @@ describe('WeightUseCase', () => {
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
         if (actual.isErr) throw new Error('should be ok');
-        assert.deepEqual(actual.value, { kind: 'current', current, diff: undefined });
+        assert.deepEqual(actual.value, { case: WeightCases.currentFirst, current });
       });
 
       it('today earlier', async () => {
@@ -103,7 +102,7 @@ describe('WeightUseCase', () => {
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-21 20:00'));
 
         if (actual.isErr) throw new Error('should be ok');
-        assert.deepEqual(actual.value, { kind: 'current', current, diff: undefined });
+        assert.deepEqual(actual.value, { case: WeightCases.currentFirst, current });
       });
     });
 
@@ -122,7 +121,7 @@ describe('WeightUseCase', () => {
 
         if (actual.isErr) throw new Error('should be ok');
         assert.deepEqual(actual.value, {
-          kind: 'current',
+          case: WeightCases.currentDiff,
           current,
           diff: { weekAgo: { date: weekAgo, difference: kg(-1), value: kg(61) } },
         });
@@ -143,7 +142,7 @@ describe('WeightUseCase', () => {
 
         if (actual.isErr) throw new Error('should be ok');
         assert.deepEqual(actual.value, {
-          kind: 'current',
+          case: WeightCases.currentDiff,
           current,
           diff: {
             today: { date: earlier, difference: kg(1), value: kg(60) },
