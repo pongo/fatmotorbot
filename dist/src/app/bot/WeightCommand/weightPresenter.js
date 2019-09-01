@@ -1,37 +1,64 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
+const slonik_1 = require("slonik");
 const errors_1 = require("src/app/shared/errors");
 const measureDifference_1 = require("src/app/shared/measureDifference");
 function weightPresenter(result, now) {
     if (result.isErr)
         return presentError(result.error);
     const data = result.value;
-    return data.kind === 'current' ? presentCurrent(data, now) : presentAdd(data);
+    switch (data.case) {
+        case WeightUseCase_1.WeightCases.addFirst:
+            return presentAddFirst(data);
+        case WeightUseCase_1.WeightCases.addDiff:
+            return presentAddDiff(data);
+        case WeightUseCase_1.WeightCases.currentEmpty:
+            return presentCurrentEmpty();
+        case WeightUseCase_1.WeightCases.currentFirst:
+            return presentCurrentFirst(data, now);
+        case WeightUseCase_1.WeightCases.currentDiff:
+            return presentCurrentDiff(data, now);
+        default:
+            return 'Ошибочный кейс';
+    }
 }
 exports.weightPresenter = weightPresenter;
-function presentAdd({ weight, diff }) {
-    const header = `Твой вес: ${weight} кг.\n\n`;
-    if (diff == null) {
-        return `${header}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
-    }
-    const previous = presentDiff(diff);
-    return `${header}${previous}`;
-}
 function presentError(error) {
     if (error instanceof errors_1.InvalidFormatError)
         return 'Какой-какой у тебя вес?';
-    return 'Что-то не так с базой данных. Вызывайте техподдержку!';
+    if (error instanceof slonik_1.SlonikError)
+        return 'Что-то не так с базой данных. Вызывайте техподдержку!';
+    return 'Ошибочная ошибка';
 }
-function presentCurrent({ current, diff }, now) {
-    if (current == null) {
-        return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
+function presentAddFirst({ weight }) {
+    return `Твой вес: ${weight} кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
+}
+function presentAddDiff({ diff, weight }) {
+    const header = `Твой вес: ${weight} кг.\n\n`;
+    const previous = presentDiff(diff);
+    return `${header}${previous}`;
+}
+function presentCurrentEmpty() {
+    return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
+}
+function presentCurrentFirst({ current }, now) {
+    const { date, value } = current;
+    const note = getNoteByDaysAgo(date_fns_1.differenceInCalendarDays(now, date));
+    return `Твой вес: ${value} кг.\n\n${note}`;
+    function getNoteByDaysAgo(daysAgo) {
+        if (daysAgo <= 5)
+            return 'Регулярно делай замеры, например, каждую пятницу утром.';
+        if (daysAgo <= 9)
+            return 'Прошла неделя с последнего замера, пора взвешиваться!';
+        if (daysAgo <= 7 * 7)
+            return 'Несколько недель прошло, сколько ты теперь весишь?';
+        if (daysAgo <= 150)
+            return 'И было это пару месяцев назад, сколько же ты теперь весишь?';
+        return 'Но было это чертовски давно, рискнешь встать на весы?';
     }
-    if (diff == null)
-        return firstMeasure(current, now);
-    return presentCurrentDiff(current, diff, now);
 }
-function presentCurrentDiff(current, diff, now) {
+function presentCurrentDiff({ current, diff }, now) {
     const header = headerRelativeDate(current, now);
     const previous = presentDiff(diff);
     return `${header}${previous}`;
@@ -92,21 +119,6 @@ function presentDiff(diff) {
         const fixed = difference.toFixed(2).replace('.00', '');
         const withSign = difference > 0 ? `+${fixed}` : fixed.replace('-', '−');
         return `(${withSign})`;
-    }
-}
-function firstMeasure({ date, value }, now) {
-    const note = getNoteByDaysAgo(date_fns_1.differenceInCalendarDays(now, date));
-    return `Твой вес: ${value} кг.\n\n${note}`;
-    function getNoteByDaysAgo(daysAgo) {
-        if (daysAgo <= 5)
-            return 'Регулярно делай замеры, например, каждую пятницу утром.';
-        if (daysAgo <= 9)
-            return 'Прошла неделя с последнего замера, пора взвешиваться!';
-        if (daysAgo <= 7 * 7)
-            return 'Несколько недель прошло, сколько ты теперь весишь?';
-        if (daysAgo <= 150)
-            return 'И было это пару месяцев назад, сколько же ты теперь весишь?';
-        return 'Но было это чертовски давно, рискнешь встать на весы?';
     }
 }
 //# sourceMappingURL=weightPresenter.js.map

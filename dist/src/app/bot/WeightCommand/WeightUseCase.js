@@ -4,6 +4,14 @@ const errors_1 = require("src/app/shared/errors");
 const measureDifference_1 = require("src/app/shared/measureDifference");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");
+var WeightCases;
+(function (WeightCases) {
+    WeightCases["addFirst"] = "add:first";
+    WeightCases["addDiff"] = "add:diff";
+    WeightCases["currentEmpty"] = "current:empty";
+    WeightCases["currentFirst"] = "current:first";
+    WeightCases["currentDiff"] = "current:diff";
+})(WeightCases = exports.WeightCases || (exports.WeightCases = {}));
 class WeightUseCase {
     constructor(weightRepository) {
         this.weightRepository = weightRepository;
@@ -19,9 +27,10 @@ class WeightUseCase {
         const addResult = await this.weightRepository.add(userId, weight, date);
         if (addResult.isErr)
             return addResult;
-        const currentMeasure = { date, value: weight };
-        const diff = measureDifference_1.measureDifference(currentMeasure, previousMeasuresResult.value);
-        return result_1.Result.ok({ diff, weight, kind: 'add' });
+        if (previousMeasuresResult.value.length === 0)
+            return result_1.Result.ok({ case: WeightCases.addFirst, weight });
+        const diff = measureDifference_1.measureDifference({ date, value: weight }, previousMeasuresResult.value);
+        return result_1.Result.ok({ case: WeightCases.addDiff, diff, weight });
     }
     async getCurrent(userId, now) {
         console.log(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
@@ -30,10 +39,12 @@ class WeightUseCase {
             return measuresResult;
         const measures = measuresResult.value;
         if (measures.length === 0)
-            return result_1.Result.ok({ kind: 'current' });
+            return result_1.Result.ok({ case: WeightCases.currentEmpty });
         const current = measures[0];
+        if (measures.length === 1)
+            return result_1.Result.ok({ case: WeightCases.currentFirst, current });
         const diff = measureDifference_1.measureDifference(current, measures, now);
-        return result_1.Result.ok({ diff, current, kind: 'current' });
+        return result_1.Result.ok({ case: WeightCases.currentDiff, diff, current });
     }
 }
 exports.WeightUseCase = WeightUseCase;

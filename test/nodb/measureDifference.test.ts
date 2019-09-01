@@ -9,7 +9,7 @@ describe('measureDifference()', () => {
     const futureMeasures = [m(new Date('2020-08-23'), kg(55)), m(new Date('2019-08-24'), kg(55))];
     const actual = measureDifference(m(today, kg(50)), sortM(futureMeasures));
 
-    assert.deepEqual(actual, undefined);
+    assert.deepEqual(actual, {});
   });
 
   it('should return summary with previous measures', () => {
