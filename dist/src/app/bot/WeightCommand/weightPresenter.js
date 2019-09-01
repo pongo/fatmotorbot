@@ -70,10 +70,13 @@ function presentDiff(diff) {
     ];
     return dates.reduce(reducer, '').trim();
     function reducer(acc, [mark, text]) {
-        if (mark === 'future' || mark === 'current' || diff[mark] == null)
+        if (mark === 'future' || mark === 'current')
             return acc;
-        const weight = diff[mark].value;
-        const difference = differenceStr(diff[mark].difference);
+        const measure = diff[mark];
+        if (measure == null)
+            return acc;
+        const weight = measure.value;
+        const difference = differenceStr(measure.difference);
         return `${acc}\n• ${ago(text)}: ${weight} ${difference}`.trim();
     }
     function ago(text) {

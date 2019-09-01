@@ -4,6 +4,9 @@ import { WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
 import { TelegramUserId } from 'src/app/shared/types';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
 
+/**
+ * Контроллер команды /weight
+ */
 export class WeightCommand {
   private readonly usecase: WeightUseCase;
 

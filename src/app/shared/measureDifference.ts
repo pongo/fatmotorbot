@@ -50,7 +50,7 @@ export function measureDifference<T extends number>(
   previous: MeasuresFromNewestToOldest<T>,
   relativeDate?: Date,
 ): MeasureDifferenceSummary<T> | undefined {
-  const sorted = [...previous].reverse(); // теперь отсортировано от самых старых к новым
+  const sorted = [...previous].reverse(); // reverse() сортирует от самых старых к новым
   const result: MeasureDifferenceSummary<T> = {};
 
   for (const { date, value } of sorted) {

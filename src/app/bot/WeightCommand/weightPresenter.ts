@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* tslint:disable:no-non-null-assertion */
 import { differenceInCalendarDays } from 'date-fns';
 import { CurrentWeight, WeightAdded } from 'src/app/bot/WeightCommand/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
@@ -80,9 +78,12 @@ function presentDiff(diff: MeasureDifferenceSummary<Kg>) {
   return dates.reduce(reducer, '').trim();
 
   function reducer(acc: string, [mark, text]: [DateMark, string]): string {
-    if (mark === 'future' || mark === 'current' || diff[mark] == null) return acc;
-    const weight = diff[mark]!.value;
-    const difference = differenceStr(diff[mark]!.difference);
+    if (mark === 'future' || mark === 'current') return acc;
+    const measure = diff[mark];
+    if (measure == null) return acc;
+
+    const weight = measure.value;
+    const difference = differenceStr(measure.difference);
     return `${acc}\n• ${ago(text)}: ${weight} ${difference}`.trim();
   }
 
