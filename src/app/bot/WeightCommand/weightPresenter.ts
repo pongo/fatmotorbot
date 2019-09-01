@@ -35,20 +35,19 @@ export function weightPresenter(result: Result<CurrentWeight | WeightAdded>, now
   }
 }
 
-function presentError(error: InvalidFormatError | Error) {
+function presentError(error: InvalidFormatError | SlonikError | Error) {
   if (error instanceof InvalidFormatError) return 'Какой-какой у тебя вес?';
   if (error instanceof SlonikError) return 'Что-то не так с базой данных. Вызывайте техподдержку!';
   return 'Ошибочная ошибка';
 }
 
 function presentAddFirst({ weight }: WeightAddedFirst) {
-  return `Твой вес: ${weight} кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
+  return `${getHeader(weight)}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
 }
 
 function presentAddDiff({ diff, weight }: WeightAddedDiff) {
-  const header = `Твой вес: ${weight} кг.\n\n`;
   const previous = presentDiff(diff);
-  return `${header}${previous}`;
+  return `${getHeader(weight)}${previous}`;
 }
 
 function presentCurrentEmpty() {
@@ -58,7 +57,7 @@ function presentCurrentEmpty() {
 function presentCurrentFirst({ current }: CurrentWeightFirst, now: Date): string {
   const { date, value } = current;
   const note = getNoteByDaysAgo(differenceInCalendarDays(now, date));
-  return `Твой вес: ${value} кг.\n\n${note}`;
+  return `${getHeader(value)}${note}`;
 
   function getNoteByDaysAgo(daysAgo: number) {
     if (daysAgo <= 5) return 'Регулярно делай замеры, например, каждую пятницу утром.';
@@ -69,30 +68,31 @@ function presentCurrentFirst({ current }: CurrentWeightFirst, now: Date): string
   }
 }
 
+// eslint-disable-next-line max-lines-per-function
 function presentCurrentDiff({ current, diff }: CurrentWeightDiff, now: Date): string {
-  const header = headerRelativeDate(current, now);
+  const header = headerRelativeDate(current);
   const previous = presentDiff(diff);
   return `${header}${previous}`;
-}
 
-function headerRelativeDate({ date, value }: Measure<Kg>, now: Date) {
-  const markToHeader: { [key in DateMark]: string } = {
-    current: 'Твой вес',
-    today: 'Твой вес',
-    yesterday: 'Вес вчера',
-    daysAgo: 'Вес пару дней назад',
-    weekAgo: 'Вес неделю назад',
-    twoWeeksAgo: 'Вес две недели назад',
-    monthAgo: 'Вес месяц назад',
-    monthsAgo: 'Вес пару месяцев назад',
-    halfYearAgo: 'Вес полгода назад',
-    yearAgo: 'Вес год назад',
-    yearsAgo: 'Вес годы назад',
-    future: 'Ты будешь весить',
-  };
+  function headerRelativeDate({ date, value }: Measure<Kg>) {
+    const markToHeader: { [key in DateMark]: string } = {
+      current: 'Твой вес',
+      today: 'Твой вес',
+      yesterday: 'Вес вчера',
+      daysAgo: 'Вес пару дней назад',
+      weekAgo: 'Вес неделю назад',
+      twoWeeksAgo: 'Вес две недели назад',
+      monthAgo: 'Вес месяц назад',
+      monthsAgo: 'Вес пару месяцев назад',
+      halfYearAgo: 'Вес полгода назад',
+      yearAgo: 'Вес год назад',
+      yearsAgo: 'Вес годы назад',
+      future: 'Ты будешь весить',
+    };
 
-  const mark = getDateMark(now, date);
-  return `${markToHeader[mark]}: ${value} кг.\n\n`;
+    const mark = getDateMark(now, date);
+    return `${markToHeader[mark]}: ${value} кг.\n\n`;
+  }
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -137,4 +137,8 @@ function presentDiff(diff: MeasureDifferenceSummary<Kg>) {
     const withSign = difference > 0 ? `+${fixed}` : fixed.replace('-', '−');
     return `(${withSign})`;
   }
+}
+
+function getHeader(weight: Kg) {
+  return `Твой вес: ${weight} кг.\n\n`;
 }

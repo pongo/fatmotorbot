@@ -32,12 +32,11 @@ function presentError(error) {
     return 'Ошибочная ошибка';
 }
 function presentAddFirst({ weight }) {
-    return `Твой вес: ${weight} кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
+    return `${getHeader(weight)}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
 }
 function presentAddDiff({ diff, weight }) {
-    const header = `Твой вес: ${weight} кг.\n\n`;
     const previous = presentDiff(diff);
-    return `${header}${previous}`;
+    return `${getHeader(weight)}${previous}`;
 }
 function presentCurrentEmpty() {
     return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
@@ -45,7 +44,7 @@ function presentCurrentEmpty() {
 function presentCurrentFirst({ current }, now) {
     const { date, value } = current;
     const note = getNoteByDaysAgo(date_fns_1.differenceInCalendarDays(now, date));
-    return `Твой вес: ${value} кг.\n\n${note}`;
+    return `${getHeader(value)}${note}`;
     function getNoteByDaysAgo(daysAgo) {
         if (daysAgo <= 5)
             return 'Регулярно делай замеры, например, каждую пятницу утром.';
@@ -59,27 +58,27 @@ function presentCurrentFirst({ current }, now) {
     }
 }
 function presentCurrentDiff({ current, diff }, now) {
-    const header = headerRelativeDate(current, now);
+    const header = headerRelativeDate(current);
     const previous = presentDiff(diff);
     return `${header}${previous}`;
-}
-function headerRelativeDate({ date, value }, now) {
-    const markToHeader = {
-        current: 'Твой вес',
-        today: 'Твой вес',
-        yesterday: 'Вес вчера',
-        daysAgo: 'Вес пару дней назад',
-        weekAgo: 'Вес неделю назад',
-        twoWeeksAgo: 'Вес две недели назад',
-        monthAgo: 'Вес месяц назад',
-        monthsAgo: 'Вес пару месяцев назад',
-        halfYearAgo: 'Вес полгода назад',
-        yearAgo: 'Вес год назад',
-        yearsAgo: 'Вес годы назад',
-        future: 'Ты будешь весить',
-    };
-    const mark = measureDifference_1.getDateMark(now, date);
-    return `${markToHeader[mark]}: ${value} кг.\n\n`;
+    function headerRelativeDate({ date, value }) {
+        const markToHeader = {
+            current: 'Твой вес',
+            today: 'Твой вес',
+            yesterday: 'Вес вчера',
+            daysAgo: 'Вес пару дней назад',
+            weekAgo: 'Вес неделю назад',
+            twoWeeksAgo: 'Вес две недели назад',
+            monthAgo: 'Вес месяц назад',
+            monthsAgo: 'Вес пару месяцев назад',
+            halfYearAgo: 'Вес полгода назад',
+            yearAgo: 'Вес год назад',
+            yearsAgo: 'Вес годы назад',
+            future: 'Ты будешь весить',
+        };
+        const mark = measureDifference_1.getDateMark(now, date);
+        return `${markToHeader[mark]}: ${value} кг.\n\n`;
+    }
 }
 function presentDiff(diff) {
     let firstAgoLabelAdded = false;
@@ -120,5 +119,8 @@ function presentDiff(diff) {
         const withSign = difference > 0 ? `+${fixed}` : fixed.replace('-', '−');
         return `(${withSign})`;
     }
+}
+function getHeader(weight) {
+    return `Твой вес: ${weight} кг.\n\n`;
 }
 //# sourceMappingURL=weightPresenter.js.map
