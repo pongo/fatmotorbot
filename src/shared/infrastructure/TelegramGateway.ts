@@ -81,7 +81,6 @@ export type Command = {
   readonly chatId: number;
 };
 
-// eslint-disable-next-line complexity,max-lines-per-function
 export function parseCommand(message: TT.Message): Command | null {
   if (message.text == null || message.forward_date != null || message.from == null) return null;
 

@@ -18,6 +18,10 @@ module.exports = {
     "plugin:import/warnings",
     "plugin:import/typescript",
   ],
+  globals: {
+    Atomics: "readonly",
+    SharedArrayBuffer: "readonly",
+  },
   overrides: [
     {
       files: ["*.test.ts"],
@@ -38,11 +42,13 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
+    ecmaVersion: 2018,
     project: "./tsconfig.eslint.json",
     sourceType: "module",
     tsconfigRootDir: ".",
   },
   plugins: ["@typescript-eslint", "@typescript-eslint/tslint", "import"],
+  reportUnusedDisableDirectives: true,
   root: true,
   rules: {
     "@typescript-eslint/camelcase": 0,
@@ -68,18 +74,18 @@ module.exports = {
         lintFile: "./tslint.json",
       },
     ],
-    "complexity": ["warn", 5],
+    "complexity": ["warn", 10], // suck: 5, default: 20
     "func-names": 0,
     "import/no-extraneous-dependencies": ["error", { devDependencies: ["**/*.test.ts"] }],
     "import/no-unresolved": 0,
     "import/prefer-default-export": 0,
     "lines-between-class-members": 0,
     "max-classes-per-file": 0,
-    "max-depth": ["warn", 3],
-    "max-lines": ["warn", 200],
-    "max-lines-per-function": ["warn", 20],
-    "max-nested-callbacks": ["warn", 2],
-    "max-params": ["warn", 3],
+    "max-depth": ["warn", 3], // suck: 3, default: 4
+    "max-lines": ["warn", 300], // suck: 200, angular: 400, default: 300
+    "max-lines-per-function": ["warn", 50], // suck: 20, angular: 75, default: 50
+    "max-nested-callbacks": ["warn", 2], // suck: 2, default: 10
+    "max-params": ["warn", 3], // suck: 2, default: 3
     "no-await-in-loop": 0,
     "no-console": 0,
     "no-continue": 0,

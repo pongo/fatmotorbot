@@ -14,7 +14,6 @@ import { DateMark, getDateMark, MeasureDifferenceSummary } from 'src/app/shared/
 import { Kg, Measure } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
-// eslint-disable-next-line complexity
 export function weightPresenter(result: Result<CurrentWeight | WeightAdded>, now: Date): string {
   if (result.isErr) return presentError(result.error);
   const data = result.value;
@@ -68,7 +67,6 @@ function presentCurrentFirst({ current }: CurrentWeightFirst, now: Date): string
   }
 }
 
-// eslint-disable-next-line max-lines-per-function
 function presentCurrentDiff({ current, diff }: CurrentWeightDiff, now: Date): string {
   const header = headerRelativeDate(current);
   const previous = presentDiff(diff);
@@ -95,7 +93,6 @@ function presentCurrentDiff({ current, diff }: CurrentWeightDiff, now: Date): st
   }
 }
 
-// eslint-disable-next-line max-lines-per-function
 function presentDiff(diff: MeasureDifferenceSummary<Kg>) {
   let firstAgoLabelAdded = false;
   const dates: [DateMark, string][] = [
