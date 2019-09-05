@@ -1,7 +1,8 @@
-/* eslint-disable class-methods-use-this,@typescript-eslint/tslint/config */
 /* tslint:disable:no-duplicate-string max-classes-per-file */
+import Big from 'big.js';
 import { BMI, Cm, Gender, Kg } from 'src/app/shared/types';
 import { roundToTwo } from 'src/shared/utils/parseNumber';
+import { StacklessError } from 'src/shared/utils/StacklessError';
 
 /**
  * Вычисляет ИМТ, используя "новую" формулу
@@ -30,131 +31,227 @@ export type BMICategoryName =
   | 'Obese V'
   | 'Obese VI+';
 
-abstract class BaseBMICategory {
-  abstract category: BMICategoryName;
-  abstract check(_bmi: BMI, _gender?: Gender): boolean;
+const categories: Map<BMICategoryName, BMICategory> = new Map();
+
+interface IBMICategoryParams {
+  name: BMICategoryName;
+  position: number;
+  prev?: BMICategoryName;
+  next?: BMICategoryName;
+  lowerBMI: { [gender in Gender]: BMI };
+  upperBMI: { [gender in Gender]: BMI };
 }
 
-class VerySeverelyUnderweight implements BaseBMICategory {
-  category = 'Very severely underweight' as const;
+type SuggestedWeightDiff =
+  | { alreadyHealthy: true }
+  | { alreadyHealthy: false; toHealthy: Kg; toNext: SuggestedNextDiff | null };
 
-  check(bmi: BMI): boolean {
-    return bmi < 15;
+type SuggestedNextDiff = {
+  categoryName: BMICategoryName;
+  diff: Kg;
+};
+
+class BMICategory {
+  readonly name: BMICategoryName;
+  readonly position: number;
+  readonly lowerBMI: { [gender in Gender]: BMI };
+  readonly upperBMI: { [gender in Gender]: BMI };
+  readonly prev?: BMICategoryName;
+  readonly next?: BMICategoryName;
+
+  constructor({ name, position, lowerBMI, upperBMI, prev, next }: IBMICategoryParams) {
+    this.name = name;
+    this.position = position;
+    this.prev = prev;
+    this.next = next;
+    this.lowerBMI = lowerBMI;
+    this.upperBMI = upperBMI;
+  }
+
+  getRangeBMI(gender: Gender): [BMI, BMI] {
+    return [this.lowerBMI[gender], this.upperBMI[gender]];
+  }
+
+  getRangeWeight(gender: Gender, height: Cm): [Kg, Kg] {
+    const [lowerBMI, upperBMI] = this.getRangeBMI(gender);
+
+    const coeff = calcBMICoeff(height);
+    const lower = (lowerBMI / 1.3) * coeff;
+    const upper = (upperBMI / 1.3) * coeff;
+
+    return [roundUp(lower), roundUp(upper)];
+  }
+
+  getSuggest(gender: Gender, height: Cm, weight: Kg): SuggestedWeightDiff {
+    if (this.name === 'Normal') return { alreadyHealthy: true };
+
+    return {
+      alreadyHealthy: false,
+      toHealthy: this.toHealthy(gender, height, weight),
+      toNext: this.toNext(gender, height, weight),
+    };
+  }
+
+  private toHealthy(gender: Gender, height: Cm, weight: Kg): Kg {
+    const [healthyLower, healthyUpper] = getHealthyRange(gender, height);
+    const healthyWeight = this.position < 0 ? healthyLower : healthyUpper;
+    return roundUp(Big(healthyWeight).minus(weight));
+  }
+
+  private toNext(gender: Gender, height: Cm, weight: Kg): SuggestedNextDiff | null {
+    if (this.position === -1 || this.position === 1) return null;
+
+    const nextName = this.position < 0 ? this.next : this.prev;
+    const next = categories.get(nextName as BMICategoryName);
+    if (next == null) throw new StacklessError('next should be defined', { gender, height, weight, name: this.name });
+
+    const [lower, upper] = next.getRangeWeight(gender, height);
+    const nextWeight = this.position < 0 ? lower : upper;
+    const diff = roundUp(Big(nextWeight).minus(weight));
+    return {
+      categoryName: next.name,
+      diff,
+    };
   }
 }
 
-class SeverelyUnderweight implements BaseBMICategory {
-  category = 'Severely underweight' as const;
+const VerySeverelyUnderweight = new BMICategory({
+  name: 'Very severely underweight',
+  position: -3,
+  prev: undefined,
+  next: 'Severely underweight',
+  lowerBMI: { female: -Infinity as BMI, male: -Infinity as BMI },
+  upperBMI: { female: 15 as BMI, male: 15 as BMI },
+});
+categories.set(VerySeverelyUnderweight.name, VerySeverelyUnderweight);
 
-  check(bmi: BMI, gender: Gender): boolean {
-    return bmi < (gender === 'female' ? 16 : 18);
-  }
+const SeverelyUnderweight = new BMICategory({
+  name: 'Severely underweight',
+  position: -2,
+  prev: 'Very severely underweight',
+  next: 'Underweight',
+  lowerBMI: { female: 15 as BMI, male: 15 as BMI },
+  upperBMI: { female: 16 as BMI, male: 18 as BMI },
+});
+categories.set(SeverelyUnderweight.name, SeverelyUnderweight);
+
+const Underweight = new BMICategory({
+  name: 'Underweight',
+  position: -1,
+  prev: 'Severely underweight',
+  next: 'Normal',
+  lowerBMI: { female: 16 as BMI, male: 18 as BMI },
+  upperBMI: { female: 19 as BMI, male: 20 as BMI },
+});
+categories.set(Underweight.name, Underweight);
+
+const Normal = new BMICategory({
+  name: 'Normal',
+  position: 0,
+  prev: 'Underweight',
+  next: 'Overweight',
+  lowerBMI: { female: 19 as BMI, male: 20 as BMI },
+  upperBMI: { female: 24 as BMI, male: 25 as BMI },
+});
+categories.set(Normal.name, Normal);
+
+const Overweight = new BMICategory({
+  name: 'Overweight',
+  position: 1,
+  prev: 'Normal',
+  next: 'Obese I',
+  lowerBMI: { female: 24 as BMI, male: 25 as BMI },
+  upperBMI: { female: 30 as BMI, male: 30 as BMI },
+});
+categories.set(Overweight.name, Overweight);
+
+const Obese1 = new BMICategory({
+  name: 'Obese I',
+  position: 2,
+  prev: 'Overweight',
+  next: 'Obese I',
+  lowerBMI: { female: 30 as BMI, male: 30 as BMI },
+  upperBMI: { female: 35 as BMI, male: 35 as BMI },
+});
+categories.set(Obese1.name, Obese1);
+
+const Obese2 = new BMICategory({
+  name: 'Obese II',
+  position: 3,
+  prev: 'Obese I',
+  next: 'Obese III',
+  lowerBMI: { female: 35 as BMI, male: 35 as BMI },
+  upperBMI: { female: 40 as BMI, male: 40 as BMI },
+});
+categories.set(Obese2.name, Obese2);
+
+const Obese3 = new BMICategory({
+  name: 'Obese III',
+  position: 4,
+  prev: 'Obese II',
+  next: 'Obese IV',
+  lowerBMI: { female: 40 as BMI, male: 40 as BMI },
+  upperBMI: { female: 45 as BMI, male: 45 as BMI },
+});
+categories.set(Obese3.name, Obese3);
+
+const Obese4 = new BMICategory({
+  name: 'Obese IV',
+  position: 5,
+  prev: 'Obese III',
+  next: 'Obese V',
+  lowerBMI: { female: 45 as BMI, male: 45 as BMI },
+  upperBMI: { female: 50 as BMI, male: 50 as BMI },
+});
+categories.set(Obese4.name, Obese4);
+
+const Obese5 = new BMICategory({
+  name: 'Obese V',
+  position: 6,
+  prev: 'Obese IV',
+  next: 'Obese VI+',
+  lowerBMI: { female: 50 as BMI, male: 50 as BMI },
+  upperBMI: { female: 60 as BMI, male: 60 as BMI },
+});
+categories.set(Obese5.name, Obese5);
+
+const Obese6 = new BMICategory({
+  name: 'Obese VI+',
+  position: 7,
+  prev: 'Obese V',
+  next: undefined,
+  lowerBMI: { female: 60 as BMI, male: 60 as BMI },
+  upperBMI: { female: Infinity as BMI, male: Infinity as BMI },
+});
+categories.set(Obese6.name, Obese6);
+
+export function getBMICategoryName(gender: Gender, bmi: BMI): BMICategoryName {
+  return getBMICategory(gender, bmi).name;
 }
 
-class Underweight implements BaseBMICategory {
-  category = 'Underweight' as const;
-
-  check(bmi: BMI, gender: Gender): boolean {
-    return bmi < (gender === 'female' ? 19 : 20);
-  }
-}
-
-class Normal implements BaseBMICategory {
-  category = 'Normal' as const;
-
-  check(bmi: BMI, gender: Gender): boolean {
-    return bmi < (gender === 'female' ? 24 : 25);
-  }
-
-  static getRange(gender: Gender): [BMI, BMI] {
-    const [lower, upper] = gender === 'female' ? [19, 24] : [20, 25];
-    return [lower as BMI, upper as BMI];
-  }
-}
-
-class Overweight implements BaseBMICategory {
-  category = 'Overweight' as const;
-
-  check(bmi: BMI): boolean {
-    return bmi < 30;
-  }
-}
-
-class Obese1 implements BaseBMICategory {
-  category = 'Obese I' as const;
-
-  check(bmi: BMI): boolean {
-    return bmi < 35;
-  }
-}
-
-class Obese2 implements BaseBMICategory {
-  category = 'Obese II' as const;
-
-  check(bmi: BMI): boolean {
-    return bmi < 40;
-  }
-}
-
-class Obese3 implements BaseBMICategory {
-  category = 'Obese III' as const;
-
-  check(bmi: BMI): boolean {
-    return bmi < 45;
-  }
-}
-
-class Obese4 implements BaseBMICategory {
-  category = 'Obese IV' as const;
-
-  check(bmi: BMI): boolean {
-    return bmi < 50;
-  }
-}
-
-class Obese5 implements BaseBMICategory {
-  category = 'Obese V' as const;
-
-  check(bmi: BMI): boolean {
-    return bmi < 60;
-  }
-}
-
-class Obese6 implements BaseBMICategory {
-  category = 'Obese VI+' as const;
-
-  check(bmi: BMI): boolean {
-    return bmi >= 60;
-  }
-}
-
-const categories: BaseBMICategory[] = [
-  new VerySeverelyUnderweight(),
-  new SeverelyUnderweight(),
-  new Underweight(),
-  new Normal(),
-  new Overweight(),
-  new Obese1(),
-  new Obese2(),
-  new Obese3(),
-  new Obese4(),
-  new Obese5(),
-  new Obese6(),
-];
-
-export function getBMICategory(gender: Gender, bmi: BMI): BMICategoryName {
-  for (const cat of categories) {
-    if (cat.check(bmi, gender)) return cat.category;
+function getBMICategory(gender: Gender, bmi: BMI): BMICategory {
+  for (const cat of categories.values()) {
+    const part1 = bmi >= cat.lowerBMI[gender];
+    const part2 = bmi < cat.upperBMI[gender];
+    if (part1 && part2) return cat;
   }
   throw Error(`BMI category not found. gender: "${gender}", bmi: "${bmi}"`);
 }
 
 export function getHealthyRange(gender: Gender, height: Cm): [Kg, Kg] {
-  const [lowerBMI, upperBMI] = Normal.getRange(gender);
+  const normal = categories.get('Normal');
+  if (normal == null) throw Error('normal category not found');
 
-  const coeff = calcBMICoeff(height);
-  const targetLower = (lowerBMI / 1.3) * coeff;
-  const targetUpper = (upperBMI / 1.3) * coeff;
+  return normal.getRangeWeight(gender, height);
+}
 
-  return [roundToTwo(targetLower) as Kg, roundToTwo(targetUpper) as Kg];
+export function getSuggestedWeightDiff(gender: Gender, height: Cm, weight: Kg): SuggestedWeightDiff {
+  const bmi = calcBMI(height, weight);
+  const category = getBMICategory(gender, bmi);
+  return category.getSuggest(gender, height, weight);
+}
+
+function roundUp(value: number | Big): Kg {
+  // prettier-ignore
+  return parseInt(Big(value).round(0, 3 /* ROUND_UP */).toFixed(), 10) as Kg;
 }

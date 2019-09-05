@@ -1,5 +1,11 @@
 import { assert } from 'chai';
-import { BMICategoryName, calcBMI, getBMICategory, getHealthyRange } from 'src/app/bot/BMI/BMI';
+import {
+  BMICategoryName,
+  calcBMI,
+  getBMICategoryName,
+  getHealthyRange,
+  getSuggestedWeightDiff,
+} from 'src/app/bot/BMI/BMI';
 import { BMI, cm, kg } from 'src/app/shared/types';
 
 describe('calcBMI()', () => {
@@ -37,7 +43,7 @@ describe('getBMICategory()', () => {
     };
     for (const [cat, values] of Object.entries(expected)) {
       for (const bmi of values) {
-        assert.equal(getBMICategory('female', bmi as BMI), cat, `female ${bmi} BMI`);
+        assert.equal(getBMICategoryName('female', bmi as BMI), cat, `female ${bmi} BMI`);
       }
     }
   });
@@ -58,7 +64,7 @@ describe('getBMICategory()', () => {
     };
     for (const [cat, values] of Object.entries(expected)) {
       for (const bmi of values) {
-        assert.equal(getBMICategory('male', bmi as BMI), cat, `male ${bmi} BMI`);
+        assert.equal(getBMICategoryName('male', bmi as BMI), cat, `male ${bmi} BMI`);
       }
     }
   });
@@ -66,7 +72,73 @@ describe('getBMICategory()', () => {
 
 describe('getHealthyRange()', () => {
   it('should return healthy range for height', () => {
-    assert.deepEqual(getHealthyRange('male', cm(180)), [66.88, 83.59], 'male');
-    assert.deepEqual(getHealthyRange('female', cm(180)), [63.53, 80.25], 'female');
+    assert.deepEqual(getHealthyRange('male', cm(180)), [67, 84], 'male');
+    assert.deepEqual(getHealthyRange('female', cm(180)), [64, 81], 'female');
+  });
+});
+
+describe('getSuggestedWeightDiff()', () => {
+  it('should return suggested weight loss or gain', () => {
+    assert.deepEqual(
+      getSuggestedWeightDiff('male', cm(200), kg(60)),
+      {
+        alreadyHealthy: false,
+        toHealthy: kg(28),
+        toNext: {
+          categoryName: 'Severely underweight',
+          diff: kg(6),
+        },
+      },
+      '60 kg',
+    );
+    assert.deepEqual(
+      getSuggestedWeightDiff('male', cm(200), kg(66)),
+      {
+        alreadyHealthy: false,
+        toHealthy: kg(22),
+        toNext: {
+          categoryName: 'Underweight',
+          diff: kg(13),
+        },
+      },
+      '66 kg',
+    );
+    assert.deepEqual(
+      getSuggestedWeightDiff('male', cm(200), kg(79)),
+      {
+        alreadyHealthy: false,
+        toHealthy: kg(9),
+        toNext: null,
+      },
+      '79 kg',
+    );
+    assert.deepEqual(
+      getSuggestedWeightDiff('male', cm(200), kg(88)),
+      {
+        alreadyHealthy: true,
+      },
+      '88 kg',
+    );
+    assert.deepEqual(
+      getSuggestedWeightDiff('male', cm(200), kg(115)),
+      {
+        alreadyHealthy: false,
+        toHealthy: kg(-6),
+        toNext: null,
+      },
+      '115 kg',
+    );
+    assert.deepEqual(
+      getSuggestedWeightDiff('male', cm(200), kg(150)),
+      {
+        alreadyHealthy: false,
+        toHealthy: kg(-41),
+        toNext: {
+          categoryName: 'Overweight',
+          diff: kg(-19),
+        },
+      },
+      '150 kg',
+    );
   });
 });
