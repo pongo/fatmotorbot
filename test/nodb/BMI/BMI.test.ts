@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { BMICategory, calcBMI, getBMICategory } from 'src/app/bot/BMI/BMI';
+import { BMICategory, calcBMI, getBMICategory, getHealthyRange } from 'src/app/bot/BMI/BMI';
 import { BMI, cm, kg } from 'src/app/shared/types';
 
 describe('calcBMI()', () => {
@@ -20,7 +20,7 @@ describe('calcBMI()', () => {
   });
 });
 
-describe('getBMICategory', () => {
+describe('getBMICategory()', () => {
   it('should return category for females', () => {
     const expected: { [cat in BMICategory]: number[] } = {
       'Very severely underweight': [14],
@@ -61,5 +61,12 @@ describe('getBMICategory', () => {
         assert.equal(getBMICategory('male', bmi as BMI), cat, `male ${bmi} BMI`);
       }
     }
+  });
+});
+
+describe('getHealthyRange()', () => {
+  it('should return healthy range for height', () => {
+    assert.deepEqual(getHealthyRange('male', cm(180)), [66.88, 83.59], 'male');
+    assert.deepEqual(getHealthyRange('female', cm(180)), [63.53, 80.25], 'female');
   });
 });

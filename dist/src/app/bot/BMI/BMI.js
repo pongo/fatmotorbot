@@ -1,15 +1,11 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const big_js_1 = __importDefault(require("big.js"));
 const parseNumber_1 = require("src/shared/utils/parseNumber");
+function calcBMICoeff(height) {
+    return (((height / 100) * height) / 100) * Math.sqrt(height / 100);
+}
 function calcBMI(height, weight) {
-    const bHeight = big_js_1.default(height);
-    const part1 = big_js_1.default(weight).mul(1.3);
-    const part2 = bHeight.div(100).mul(bHeight).div(100).mul(bHeight.div(100).sqrt());
-    const bmi = part1.div(part2);
+    const bmi = (weight * 1.3) / calcBMICoeff(height);
     return parseNumber_1.roundToTwo(bmi);
 }
 exports.calcBMI = calcBMI;
@@ -52,4 +48,12 @@ function getGenericBMICategory(bmi) {
         return 'Obese V';
     return 'Obese VI+';
 }
+function getHealthyRange(gender, height) {
+    const [lowerBMI, upperBMI] = gender === 'male' ? [20, 25] : [19, 24];
+    const coeff = calcBMICoeff(height);
+    const targetLower = (lowerBMI / 1.3) * coeff;
+    const targetUpper = (upperBMI / 1.3) * coeff;
+    return [parseNumber_1.roundToTwo(targetLower), parseNumber_1.roundToTwo(targetUpper)];
+}
+exports.getHealthyRange = getHealthyRange;
 //# sourceMappingURL=BMI.js.map

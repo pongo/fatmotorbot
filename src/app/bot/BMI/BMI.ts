@@ -1,7 +1,10 @@
 /* tslint:disable:no-duplicate-string */
-import Big from 'big.js';
 import { BMI, Cm, Gender, Kg } from 'src/app/shared/types';
 import { roundToTwo } from 'src/shared/utils/parseNumber';
+
+function calcBMICoeff(height: Cm) {
+  return (((height / 100) * height) / 100) * Math.sqrt(height / 100);
+}
 
 /**
  * Вычисляет ИМТ, используя "новую" формулу
@@ -9,12 +12,7 @@ import { roundToTwo } from 'src/shared/utils/parseNumber';
  * http://people.maths.ox.ac.uk/trefethen/bmi_calc.html
  */
 export function calcBMI(height: Cm, weight: Kg): BMI {
-  // formula: (1.3 * weight) / ((((height / 100) * height) / 100) * Math.sqrt(height / 100));
-  const bHeight = Big(height);
-  const part1 = Big(weight).mul(1.3);
-  // prettier-ignore
-  const part2 = bHeight.div(100).mul(bHeight).div(100).mul(bHeight.div(100).sqrt());
-  const bmi = part1.div(part2);
+  const bmi = (weight * 1.3) / calcBMICoeff(height);
   return roundToTwo(bmi) as BMI;
 }
 
@@ -59,4 +57,14 @@ function getGenericBMICategory(bmi: BMI): BMICategory {
   if (bmi < 50) return 'Obese IV';
   if (bmi < 60) return 'Obese V';
   return 'Obese VI+';
+}
+
+export function getHealthyRange(gender: Gender, height: Cm): [Kg, Kg] {
+  const [lowerBMI, upperBMI] = gender === 'male' ? [20, 25] : [19, 24];
+
+  const coeff = calcBMICoeff(height);
+  const targetLower = (lowerBMI / 1.3) * coeff;
+  const targetUpper = (upperBMI / 1.3) * coeff;
+
+  return [roundToTwo(targetLower) as Kg, roundToTwo(targetUpper) as Kg];
 }
