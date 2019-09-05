@@ -1,11 +1,9 @@
-/* tslint:disable:no-duplicate-string max-classes-per-file */
 import Big from 'big.js';
 import { BMI, Cm, Gender, Kg } from 'src/app/shared/types';
 import { roundToTwo } from 'src/shared/utils/parseNumber';
 
 /**
- * Вычисляет ИМТ, используя "новую" формулу
- *
+ * Вычисляет ИМТ, используя "новую" формулу.
  * http://people.maths.ox.ac.uk/trefethen/bmi_calc.html
  */
 export function calcBMI(height: Cm, weight: Kg): BMI {
@@ -52,9 +50,9 @@ type SuggestedNextDiff = {
 
 class BMICategory {
   readonly name: BMICategoryName;
-  readonly position: number;
-  readonly lowerBMI: { [gender in Gender]: BMI };
-  readonly upperBMI: { [gender in Gender]: BMI };
+  private readonly position: number;
+  private readonly lowerBMI: { [gender in Gender]: BMI };
+  private readonly upperBMI: { [gender in Gender]: BMI };
 
   constructor({ name, position, lowerBMI, upperBMI }: IBMICategoryParams) {
     this.name = name;
@@ -63,8 +61,8 @@ class BMICategory {
     this.upperBMI = upperBMI;
   }
 
-  getRangeBMI(gender: Gender): [BMI, BMI] {
-    return [this.lowerBMI[gender], this.upperBMI[gender]];
+  inRange(gender: Gender, bmi: BMI): boolean {
+    return bmi >= this.lowerBMI[gender] && bmi < this.upperBMI[gender];
   }
 
   getRangeWeight(gender: Gender, height: Cm): [Kg, Kg] {
@@ -85,6 +83,10 @@ class BMICategory {
       toHealthy: this.toHealthy(gender, height, weight),
       toNext: this.toNext(gender, height, weight),
     };
+  }
+
+  private getRangeBMI(gender: Gender): [BMI, BMI] {
+    return [this.lowerBMI[gender], this.upperBMI[gender]];
   }
 
   private toHealthy(gender: Gender, height: Cm, weight: Kg): Kg {
@@ -154,127 +156,13 @@ function addCategories() {
   }
 }
 
-addCategories();
-
-// categories.set(
-//   -3,
-//   new BMICategory({
-//     name: 'Very severely underweight',
-//     position: -3,
-//     lowerBMI: { female: -Infinity as BMI, male: -Infinity as BMI },
-//     upperBMI: { female: 15 as BMI, male: 15 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   -2,
-//   new BMICategory({
-//     name: 'Severely underweight',
-//     position: -2,
-//     lowerBMI: { female: 15 as BMI, male: 15 as BMI },
-//     upperBMI: { female: 16 as BMI, male: 18 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   -1,
-//   new BMICategory({
-//     name: 'Underweight',
-//     position: -1,
-//     lowerBMI: { female: 16 as BMI, male: 18 as BMI },
-//     upperBMI: { female: 19 as BMI, male: 20 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   0,
-//   new BMICategory({
-//     name: 'Normal',
-//     position: 0,
-//     lowerBMI: { female: 19 as BMI, male: 20 as BMI },
-//     upperBMI: { female: 24 as BMI, male: 25 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   1,
-//   new BMICategory({
-//     name: 'Overweight',
-//     position: 1,
-//     lowerBMI: { female: 24 as BMI, male: 25 as BMI },
-//     upperBMI: { female: 30 as BMI, male: 30 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   2,
-//   new BMICategory({
-//     name: 'Obese I',
-//     position: 2,
-//     lowerBMI: { female: 30 as BMI, male: 30 as BMI },
-//     upperBMI: { female: 35 as BMI, male: 35 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   3,
-//   new BMICategory({
-//     name: 'Obese II',
-//     position: 3,
-//     lowerBMI: { female: 35 as BMI, male: 35 as BMI },
-//     upperBMI: { female: 40 as BMI, male: 40 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   4,
-//   new BMICategory({
-//     name: 'Obese III',
-//     position: 4,
-//     lowerBMI: { female: 40 as BMI, male: 40 as BMI },
-//     upperBMI: { female: 45 as BMI, male: 45 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   5,
-//   new BMICategory({
-//     name: 'Obese IV',
-//     position: 5,
-//     lowerBMI: { female: 45 as BMI, male: 45 as BMI },
-//     upperBMI: { female: 50 as BMI, male: 50 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   6,
-//   new BMICategory({
-//     name: 'Obese V',
-//     position: 6,
-//     lowerBMI: { female: 50 as BMI, male: 50 as BMI },
-//     upperBMI: { female: 60 as BMI, male: 60 as BMI },
-//   }),
-// );
-//
-// categories.set(
-//   7,
-//   new BMICategory({
-//     name: 'Obese VI+',
-//     position: 7,
-//     lowerBMI: { female: 60 as BMI, male: 60 as BMI },
-//     upperBMI: { female: Infinity as BMI, male: Infinity as BMI },
-//   }),
-// );
-
 export function getBMICategoryName(gender: Gender, bmi: BMI): BMICategoryName {
   return getBMICategory(gender, bmi).name;
 }
 
 function getBMICategory(gender: Gender, bmi: BMI): BMICategory {
   for (const cat of categories.values()) {
-    const part1 = bmi >= cat.lowerBMI[gender];
-    const part2 = bmi < cat.upperBMI[gender];
-    if (part1 && part2) return cat;
+    if (cat.inRange(gender, bmi)) return cat;
   }
   throw Error(`BMI category not found. gender: "${gender}", bmi: "${bmi}"`);
 }
@@ -282,7 +170,6 @@ function getBMICategory(gender: Gender, bmi: BMI): BMICategory {
 export function getHealthyRange(gender: Gender, height: Cm): [Kg, Kg] {
   const normal = categories.get(0);
   if (normal == null) throw Error('normal category not found');
-
   return normal.getRangeWeight(gender, height);
 }
 
@@ -296,3 +183,5 @@ function roundUp(value: number | Big): Kg {
   // prettier-ignore
   return parseInt(Big(value).round(0, 3 /* ROUND_UP */).toFixed(), 10) as Kg;
 }
+
+addCategories();

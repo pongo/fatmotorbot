@@ -21,8 +21,8 @@ class BMICategory {
         this.lowerBMI = lowerBMI;
         this.upperBMI = upperBMI;
     }
-    getRangeBMI(gender) {
-        return [this.lowerBMI[gender], this.upperBMI[gender]];
+    inRange(gender, bmi) {
+        return bmi >= this.lowerBMI[gender] && bmi < this.upperBMI[gender];
     }
     getRangeWeight(gender, height) {
         const [lowerBMI, upperBMI] = this.getRangeBMI(gender);
@@ -39,6 +39,9 @@ class BMICategory {
             toHealthy: this.toHealthy(gender, height, weight),
             toNext: this.toNext(gender, height, weight),
         };
+    }
+    getRangeBMI(gender) {
+        return [this.lowerBMI[gender], this.upperBMI[gender]];
     }
     toHealthy(gender, height, weight) {
         const [healthyLower, healthyUpper] = getHealthyRange(gender, height);
@@ -92,16 +95,13 @@ function addCategories() {
         }));
     }
 }
-addCategories();
 function getBMICategoryName(gender, bmi) {
     return getBMICategory(gender, bmi).name;
 }
 exports.getBMICategoryName = getBMICategoryName;
 function getBMICategory(gender, bmi) {
     for (const cat of categories.values()) {
-        const part1 = bmi >= cat.lowerBMI[gender];
-        const part2 = bmi < cat.upperBMI[gender];
-        if (part1 && part2)
+        if (cat.inRange(gender, bmi))
             return cat;
     }
     throw Error(`BMI category not found. gender: "${gender}", bmi: "${bmi}"`);
@@ -122,4 +122,5 @@ exports.getSuggestedWeightDiff = getSuggestedWeightDiff;
 function roundUp(value) {
     return parseInt(big_js_1.default(value).round(0, 3).toFixed(), 10);
 }
+addCategories();
 //# sourceMappingURL=BMI.js.map

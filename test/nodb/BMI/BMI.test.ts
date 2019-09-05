@@ -26,7 +26,7 @@ describe('calcBMI()', () => {
   });
 });
 
-describe('getBMICategory()', () => {
+describe('getBMICategoryName()', () => {
   it('should return category for females', () => {
     const expected: { [cat in BMICategoryName]: number[] } = {
       'Very severely underweight': [14],
