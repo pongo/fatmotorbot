@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { BMICategory, calcBMI, getBMICategory, getHealthyRange } from 'src/app/bot/BMI/BMI';
+import { BMICategoryName, calcBMI, getBMICategory, getHealthyRange } from 'src/app/bot/BMI/BMI';
 import { BMI, cm, kg } from 'src/app/shared/types';
 
 describe('calcBMI()', () => {
@@ -22,7 +22,7 @@ describe('calcBMI()', () => {
 
 describe('getBMICategory()', () => {
   it('should return category for females', () => {
-    const expected: { [cat in BMICategory]: number[] } = {
+    const expected: { [cat in BMICategoryName]: number[] } = {
       'Very severely underweight': [14],
       'Severely underweight': [15],
       Underweight: [16, 18],
@@ -43,7 +43,7 @@ describe('getBMICategory()', () => {
   });
 
   it('should return category for males', () => {
-    const expected: { [cat in BMICategory]: number[] } = {
+    const expected: { [cat in BMICategoryName]: number[] } = {
       'Very severely underweight': [14],
       'Severely underweight': [15, 17],
       Underweight: [18, 19],

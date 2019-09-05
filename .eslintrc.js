@@ -67,6 +67,7 @@ module.exports = {
     "@typescript-eslint/interface-name-prefix": 0,
     "@typescript-eslint/no-empty-interface": 0,
     "@typescript-eslint/no-parameter-properties": 0,
+    "@typescript-eslint/no-unused-vars": 0,
     "@typescript-eslint/no-use-before-define": ["error", { classes: true, functions: false }],
     "@typescript-eslint/prefer-interface": 0,
     "@typescript-eslint/tslint/config": [
