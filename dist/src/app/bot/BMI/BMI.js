@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const big_js_1 = __importDefault(require("big.js"));
 const parseNumber_1 = require("src/shared/utils/parseNumber");
-const StacklessError_1 = require("src/shared/utils/StacklessError");
 function calcBMI(height, weight) {
     const bmi = (weight * 1.3) / calcBMICoeff(height);
     return parseNumber_1.roundToTwo(bmi);
@@ -16,11 +15,9 @@ function calcBMICoeff(height) {
 }
 const categories = new Map();
 class BMICategory {
-    constructor({ name, position, lowerBMI, upperBMI, prev, next }) {
+    constructor({ name, position, lowerBMI, upperBMI }) {
         this.name = name;
         this.position = position;
-        this.prev = prev;
-        this.next = next;
         this.lowerBMI = lowerBMI;
         this.upperBMI = upperBMI;
     }
@@ -51,10 +48,11 @@ class BMICategory {
     toNext(gender, height, weight) {
         if (this.position === -1 || this.position === 1)
             return null;
-        const nextName = this.position < 0 ? this.next : this.prev;
-        const next = categories.get(nextName);
-        if (next == null)
-            throw new StacklessError_1.StacklessError('next should be defined', { gender, height, weight, name: this.name });
+        const nextPosition = this.position < 0 ? this.position + 1 : this.position - 1;
+        const next = categories.get(nextPosition);
+        if (next == null) {
+            throw new Error(`next should be defined. ${JSON.stringify({ gender, height, weight, name: this.name })}`);
+        }
         const [lower, upper] = next.getRangeWeight(gender, height);
         const nextWeight = this.position < 0 ? lower : upper;
         const diff = roundUp(big_js_1.default(nextWeight).minus(weight));
@@ -64,105 +62,37 @@ class BMICategory {
         };
     }
 }
-const VerySeverelyUnderweight = new BMICategory({
-    name: 'Very severely underweight',
-    position: -3,
-    prev: undefined,
-    next: 'Severely underweight',
-    lowerBMI: { female: -Infinity, male: -Infinity },
-    upperBMI: { female: 15, male: 15 },
-});
-categories.set(VerySeverelyUnderweight.name, VerySeverelyUnderweight);
-const SeverelyUnderweight = new BMICategory({
-    name: 'Severely underweight',
-    position: -2,
-    prev: 'Very severely underweight',
-    next: 'Underweight',
-    lowerBMI: { female: 15, male: 15 },
-    upperBMI: { female: 16, male: 18 },
-});
-categories.set(SeverelyUnderweight.name, SeverelyUnderweight);
-const Underweight = new BMICategory({
-    name: 'Underweight',
-    position: -1,
-    prev: 'Severely underweight',
-    next: 'Normal',
-    lowerBMI: { female: 16, male: 18 },
-    upperBMI: { female: 19, male: 20 },
-});
-categories.set(Underweight.name, Underweight);
-const Normal = new BMICategory({
-    name: 'Normal',
-    position: 0,
-    prev: 'Underweight',
-    next: 'Overweight',
-    lowerBMI: { female: 19, male: 20 },
-    upperBMI: { female: 24, male: 25 },
-});
-categories.set(Normal.name, Normal);
-const Overweight = new BMICategory({
-    name: 'Overweight',
-    position: 1,
-    prev: 'Normal',
-    next: 'Obese I',
-    lowerBMI: { female: 24, male: 25 },
-    upperBMI: { female: 30, male: 30 },
-});
-categories.set(Overweight.name, Overweight);
-const Obese1 = new BMICategory({
-    name: 'Obese I',
-    position: 2,
-    prev: 'Overweight',
-    next: 'Obese I',
-    lowerBMI: { female: 30, male: 30 },
-    upperBMI: { female: 35, male: 35 },
-});
-categories.set(Obese1.name, Obese1);
-const Obese2 = new BMICategory({
-    name: 'Obese II',
-    position: 3,
-    prev: 'Obese I',
-    next: 'Obese III',
-    lowerBMI: { female: 35, male: 35 },
-    upperBMI: { female: 40, male: 40 },
-});
-categories.set(Obese2.name, Obese2);
-const Obese3 = new BMICategory({
-    name: 'Obese III',
-    position: 4,
-    prev: 'Obese II',
-    next: 'Obese IV',
-    lowerBMI: { female: 40, male: 40 },
-    upperBMI: { female: 45, male: 45 },
-});
-categories.set(Obese3.name, Obese3);
-const Obese4 = new BMICategory({
-    name: 'Obese IV',
-    position: 5,
-    prev: 'Obese III',
-    next: 'Obese V',
-    lowerBMI: { female: 45, male: 45 },
-    upperBMI: { female: 50, male: 50 },
-});
-categories.set(Obese4.name, Obese4);
-const Obese5 = new BMICategory({
-    name: 'Obese V',
-    position: 6,
-    prev: 'Obese IV',
-    next: 'Obese VI+',
-    lowerBMI: { female: 50, male: 50 },
-    upperBMI: { female: 60, male: 60 },
-});
-categories.set(Obese5.name, Obese5);
-const Obese6 = new BMICategory({
-    name: 'Obese VI+',
-    position: 7,
-    prev: 'Obese V',
-    next: undefined,
-    lowerBMI: { female: 60, male: 60 },
-    upperBMI: { female: Infinity, male: Infinity },
-});
-categories.set(Obese6.name, Obese6);
+function addCategories() {
+    const names = [
+        ['Very severely underweight', [15, 15]],
+        ['Severely underweight', [16, 18]],
+        ['Underweight', [19, 20]],
+        ['Normal', [24, 25]],
+        ['Overweight', [30, 30]],
+        ['Obese I', [35, 35]],
+        ['Obese II', [40, 40]],
+        ['Obese III', [45, 45]],
+        ['Obese IV', [50, 50]],
+        ['Obese V', [60, 60]],
+        ['Obese VI+', [Infinity, Infinity]],
+    ];
+    let pos = -3;
+    let lower = [-Infinity, -Infinity];
+    for (const [name, upper] of names) {
+        addCategory(pos, name, lower, upper);
+        lower = upper;
+        pos += 1;
+    }
+    function addCategory(position, name, lowerBMI, upperBMI) {
+        categories.set(position, new BMICategory({
+            name,
+            position,
+            lowerBMI: { female: lowerBMI[0], male: lowerBMI[1] },
+            upperBMI: { female: upperBMI[0], male: upperBMI[1] },
+        }));
+    }
+}
+addCategories();
 function getBMICategoryName(gender, bmi) {
     return getBMICategory(gender, bmi).name;
 }
@@ -177,7 +107,7 @@ function getBMICategory(gender, bmi) {
     throw Error(`BMI category not found. gender: "${gender}", bmi: "${bmi}"`);
 }
 function getHealthyRange(gender, height) {
-    const normal = categories.get('Normal');
+    const normal = categories.get(0);
     if (normal == null)
         throw Error('normal category not found');
     return normal.getRangeWeight(gender, height);
