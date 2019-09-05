@@ -87,6 +87,6 @@ export class WeightUseCase {
  * Проверяет правильно ли указан вес.
  */
 export function validateWeight(value: number | null): Kg | null {
-  if (value !== null && value >= 1 && value <= 500) return value as Kg;
+  if (value !== null && value >= 1 && value <= 999) return value as Kg;
   return null;
 }

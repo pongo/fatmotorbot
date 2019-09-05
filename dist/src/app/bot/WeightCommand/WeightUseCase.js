@@ -49,7 +49,7 @@ class WeightUseCase {
 }
 exports.WeightUseCase = WeightUseCase;
 function validateWeight(value) {
-    if (value !== null && value >= 1 && value <= 500)
+    if (value !== null && value >= 1 && value <= 999)
         return value;
     return null;
 }

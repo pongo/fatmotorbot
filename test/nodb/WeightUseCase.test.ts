@@ -162,10 +162,10 @@ describe('validateWeight()', () => {
   it('value should be >= 1 and <= 500', () => {
     assert.isNull(validateWeight(0));
     assert.isNull(validateWeight(-100));
-    assert.isNull(validateWeight(501));
+    assert.isNull(validateWeight(1000));
 
     assert.equal(validateWeight(50.5), kg(50.5));
     assert.equal(validateWeight(1), kg(1));
-    assert.equal(validateWeight(500), kg(500));
+    assert.equal(validateWeight(999), kg(999));
   });
 });
