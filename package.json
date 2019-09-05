@@ -14,7 +14,8 @@
     "test:watch": "npm test --- --watch --watch-extensions ts --reporter min",
     "cov": "nyc mocha --require source-map-support/register -t 10000 test/nodb/**/*.test.ts && npm run open_cov",
     "cov:db": "nyc mocha --require source-map-support/register -t 10000 test/**/*.test.ts && npm run open_cov",
-    "open_cov": "open-cli ./coverage/lcov-report/index.html"
+    "open_cov": "open-cli ./coverage/lcov-report/index.html",
+    "heroku-postbuild": "node dist/src/migrate.js"
   },
   "repository": {
     "type": "git",
