@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "isolatedModules": true,
+    "isolatedModules": false,
 
     "outDir": "dist",
     "rootDirs": [

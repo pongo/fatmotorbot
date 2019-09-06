@@ -10,15 +10,15 @@ function weightPresenter(result, now) {
         return presentError(result.error);
     const data = result.value;
     switch (data.case) {
-        case WeightUseCase_1.WeightCases.addFirst:
+        case "add:first":
             return presentAddFirst(data);
-        case WeightUseCase_1.WeightCases.addDiff:
+        case "add:diff":
             return presentAddDiff(data);
-        case WeightUseCase_1.WeightCases.currentEmpty:
+        case "current:empty":
             return presentCurrentEmpty();
-        case WeightUseCase_1.WeightCases.currentFirst:
+        case "current:first":
             return presentCurrentFirst(data, now);
-        case WeightUseCase_1.WeightCases.currentDiff:
+        case "current:diff":
             return presentCurrentDiff(data, now);
         default:
             return 'Ошибочный кейс';
