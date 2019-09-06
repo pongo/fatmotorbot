@@ -29,7 +29,7 @@ class BMICategory {
         const coeff = calcBMICoeff(height);
         const lower = (lowerBMI / 1.3) * coeff;
         const upper = (upperBMI / 1.3) * coeff;
-        return [roundUp(lower), roundUp(upper)];
+        return [roundUpKg(lower), roundUpKg(upper)];
     }
     getSuggest(gender, height, weight) {
         if (this.name === 'Normal')
@@ -46,7 +46,7 @@ class BMICategory {
     toHealthy(gender, height, weight) {
         const [healthyLower, healthyUpper] = getHealthyRange(gender, height);
         const healthyWeight = this.position < 0 ? healthyLower : healthyUpper;
-        return roundUp(big_js_1.default(healthyWeight).minus(weight));
+        return roundUpKg(big_js_1.default(healthyWeight).minus(weight));
     }
     toNext(gender, height, weight) {
         if (this.position === -1 || this.position === 1)
@@ -58,7 +58,7 @@ class BMICategory {
         }
         const [lower, upper] = next.getRangeWeight(gender, height);
         const nextWeight = this.position < 0 ? lower : upper;
-        const diff = roundUp(big_js_1.default(nextWeight).minus(weight));
+        const diff = roundUpKg(big_js_1.default(nextWeight).minus(weight));
         return {
             categoryName: next.name,
             diff,
@@ -119,7 +119,7 @@ function getSuggestedWeightDiff(gender, height, weight) {
     return category.getSuggest(gender, height, weight);
 }
 exports.getSuggestedWeightDiff = getSuggestedWeightDiff;
-function roundUp(value) {
+function roundUpKg(value) {
     return parseInt(big_js_1.default(value).round(0, 3).toFixed(), 10);
 }
 addCategories();

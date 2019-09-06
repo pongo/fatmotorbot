@@ -34,7 +34,7 @@ const categories: Map<Position, BMICategory> = new Map();
 
 interface IBMICategoryParams {
   name: BMICategoryName;
-  position: number;
+  position: Position;
   lowerBMI: { [gender in Gender]: BMI };
   upperBMI: { [gender in Gender]: BMI };
 }
@@ -50,7 +50,7 @@ type SuggestedNextDiff = {
 
 class BMICategory {
   readonly name: BMICategoryName;
-  private readonly position: number;
+  private readonly position: Position;
   private readonly lowerBMI: { [gender in Gender]: BMI };
   private readonly upperBMI: { [gender in Gender]: BMI };
 
@@ -72,7 +72,7 @@ class BMICategory {
     const lower = (lowerBMI / 1.3) * coeff;
     const upper = (upperBMI / 1.3) * coeff;
 
-    return [roundUp(lower), roundUp(upper)];
+    return [roundUpKg(lower), roundUpKg(upper)];
   }
 
   getSuggest(gender: Gender, height: Cm, weight: Kg): SuggestedWeightDiff {
@@ -92,7 +92,7 @@ class BMICategory {
   private toHealthy(gender: Gender, height: Cm, weight: Kg): Kg {
     const [healthyLower, healthyUpper] = getHealthyRange(gender, height);
     const healthyWeight = this.position < 0 ? healthyLower : healthyUpper;
-    return roundUp(Big(healthyWeight).minus(weight));
+    return roundUpKg(Big(healthyWeight).minus(weight));
   }
 
   private toNext(gender: Gender, height: Cm, weight: Kg): SuggestedNextDiff | null {
@@ -106,7 +106,7 @@ class BMICategory {
 
     const [lower, upper] = next.getRangeWeight(gender, height);
     const nextWeight = this.position < 0 ? lower : upper;
-    const diff = roundUp(Big(nextWeight).minus(weight));
+    const diff = roundUpKg(Big(nextWeight).minus(weight));
     return {
       categoryName: next.name,
       diff,
@@ -116,6 +116,7 @@ class BMICategory {
 
 // eslint-disable-next-line fatmotorbot/max-lines-per-function-ignore-nested
 function addCategories() {
+  // [female, male]
   const names: [BMICategoryName, [number, number]][] = [
     ['Very severely underweight', [15, 15]],
     ['Severely underweight', [16, 18]],
@@ -139,7 +140,7 @@ function addCategories() {
 
   // eslint-disable-next-line max-params
   function addCategory(
-    position: number,
+    position: Position,
     name: BMICategoryName,
     lowerBMI: [number, number],
     upperBMI: [number, number],
@@ -179,7 +180,7 @@ export function getSuggestedWeightDiff(gender: Gender, height: Cm, weight: Kg): 
   return category.getSuggest(gender, height, weight);
 }
 
-function roundUp(value: number | Big): Kg {
+function roundUpKg(value: number | Big): Kg {
   // prettier-ignore
   return parseInt(Big(value).round(0, 3 /* ROUND_UP */).toFixed(), 10) as Kg;
 }

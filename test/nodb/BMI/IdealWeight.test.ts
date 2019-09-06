@@ -82,8 +82,10 @@ describe('Ideal Weight calculation', () => {
   it('tetona', () => {
     assert.equal(tetona(cm(171)), kg(67.45));
   });
+});
 
-  it('calcIdealWeight', () => {
+describe('calcIdealWeight()', () => {
+  it('should return average ideal weight', () => {
     assert.equal(calcIdealWeight(cm(171), 'male'), 66.25);
   });
 });
