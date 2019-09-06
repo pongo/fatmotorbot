@@ -4,17 +4,10 @@ const errors_1 = require("src/app/shared/errors");
 const measureDifference_1 = require("src/app/shared/measureDifference");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");
-var WeightCases;
-(function (WeightCases) {
-    WeightCases["addFirst"] = "add:first";
-    WeightCases["addDiff"] = "add:diff";
-    WeightCases["currentEmpty"] = "current:empty";
-    WeightCases["currentFirst"] = "current:first";
-    WeightCases["currentDiff"] = "current:diff";
-})(WeightCases = exports.WeightCases || (exports.WeightCases = {}));
 class WeightUseCase {
-    constructor(weightRepository) {
+    constructor(weightRepository, bmiUseCase) {
         this.weightRepository = weightRepository;
+        this.bmiUseCase = bmiUseCase;
     }
     async add(userId, date, weightString) {
         console.log(`WeightUseCase.add(${userId}, new Date('${date.toISOString()}'), \`${weightString}\`);`);
@@ -27,24 +20,26 @@ class WeightUseCase {
         const addResult = await this.weightRepository.add(userId, weight, date);
         if (addResult.isErr)
             return addResult;
+        const bmi = await this.bmiUseCase.get(userId, weight);
         if (previousMeasuresResult.value.length === 0)
-            return result_1.Result.ok({ case: WeightCases.addFirst, weight });
+            return result_1.Result.ok({ case: "add:first", weight, bmi });
         const diff = measureDifference_1.measureDifference({ date, value: weight }, previousMeasuresResult.value);
-        return result_1.Result.ok({ case: WeightCases.addDiff, diff, weight });
+        return result_1.Result.ok({ case: "add:diff", diff, weight, bmi });
     }
     async getCurrent(userId, now) {
-        console.log(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
+        console.debug(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
         const measuresResult = await this.weightRepository.getAll(userId);
         if (measuresResult.isErr)
             return measuresResult;
         const measures = measuresResult.value;
         if (measures.length === 0)
-            return result_1.Result.ok({ case: WeightCases.currentEmpty });
+            return result_1.Result.ok({ case: "current:empty" });
         const current = measures[0];
+        const bmi = await this.bmiUseCase.get(userId, current.value);
         if (measures.length === 1)
-            return result_1.Result.ok({ case: WeightCases.currentFirst, current });
+            return result_1.Result.ok({ case: "current:first", current, bmi });
         const diff = measureDifference_1.measureDifference(current, measures, now);
-        return result_1.Result.ok({ case: WeightCases.currentDiff, diff, current });
+        return result_1.Result.ok({ case: "current:diff", diff, current, bmi });
     }
 }
 exports.WeightUseCase = WeightUseCase;

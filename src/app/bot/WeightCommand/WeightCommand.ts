@@ -1,3 +1,5 @@
+import { BMIUseCase } from 'src/app/bot/BMI/BMIUseCase';
+import { IInfoUseCaseGet } from 'src/app/bot/InfoCommand/InfoUseCase';
 import { weightPresenter } from 'src/app/bot/WeightCommand/weightPresenter';
 import { IWeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
 import { WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
@@ -10,8 +12,13 @@ import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGate
 export class WeightCommand {
   private readonly usecase: WeightUseCase;
 
-  constructor(private readonly repository: IWeightRepository, private readonly telegram: TelegramGateway) {
-    this.usecase = new WeightUseCase(this.repository);
+  constructor(
+    private readonly repository: IWeightRepository,
+    private readonly telegram: TelegramGateway,
+    private readonly infoUseCase: IInfoUseCaseGet,
+  ) {
+    const bmiUseCase = new BMIUseCase(this.infoUseCase);
+    this.usecase = new WeightUseCase(this.repository, bmiUseCase);
   }
 
   enable() {

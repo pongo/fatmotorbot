@@ -15,9 +15,9 @@ export function parseNumber(str: string): number | null {
 /**
  * Округляет с точностью 2 знака после запятой
  */
-export function roundToTwo(num: number | Big): number {
+export function roundToTwo(num: number | Big, dp = 2): number {
   // prettier-ignore
-  return parseFloat(Big(num).toFixed(2));
+  return parseFloat(Big(num).toFixed(dp));
 }
 
 // Вычитание: current - other

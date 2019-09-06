@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
 const slonik_1 = require("slonik");
+const bmiPresenter_1 = require("src/app/bot/BMI/bmiPresenter");
 const errors_1 = require("src/app/shared/errors");
 const measureDifference_1 = require("src/app/shared/measureDifference");
 function weightPresenter(result, now) {
@@ -9,15 +10,15 @@ function weightPresenter(result, now) {
         return presentError(result.error);
     const data = result.value;
     switch (data.case) {
-        case WeightUseCase_1.WeightCases.addFirst:
+        case "add:first":
             return presentAddFirst(data);
-        case WeightUseCase_1.WeightCases.addDiff:
+        case "add:diff":
             return presentAddDiff(data);
-        case WeightUseCase_1.WeightCases.currentEmpty:
+        case "current:empty":
             return presentCurrentEmpty();
-        case WeightUseCase_1.WeightCases.currentFirst:
+        case "current:first":
             return presentCurrentFirst(data, now);
-        case WeightUseCase_1.WeightCases.currentDiff:
+        case "current:diff":
             return presentCurrentDiff(data, now);
         default:
             return 'Ошибочный кейс';
@@ -31,20 +32,20 @@ function presentError(error) {
         return 'Что-то не так с базой данных. Вызывайте техподдержку!';
     return 'Ошибочная ошибка';
 }
-function presentAddFirst({ weight }) {
-    return `${getHeader(weight)}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
+function presentAddFirst({ weight, bmi }) {
+    return `${getHeader(weight)}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.\n\n${bmiPresenter_1.bmiPresenter(bmi)}`;
 }
-function presentAddDiff({ diff, weight }) {
+function presentAddDiff({ diff, weight, bmi }) {
     const previous = presentDiff(diff);
-    return `${getHeader(weight)}${previous}`;
+    return `${getHeader(weight)}${previous}\n\n${bmiPresenter_1.bmiPresenter(bmi)}`;
 }
 function presentCurrentEmpty() {
     return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
 }
-function presentCurrentFirst({ current }, now) {
+function presentCurrentFirst({ current, bmi }, now) {
     const { date, value } = current;
     const note = getNoteByDaysAgo(date_fns_1.differenceInCalendarDays(now, date));
-    return `${getHeader(value)}${note}`;
+    return `${getHeader(value)}${note}\n\n${bmiPresenter_1.bmiPresenter(bmi)}`;
     function getNoteByDaysAgo(daysAgo) {
         if (daysAgo <= 5)
             return 'Регулярно делай замеры, например, каждую пятницу утром.';
@@ -57,10 +58,10 @@ function presentCurrentFirst({ current }, now) {
         return 'Но было это чертовски давно, рискнешь встать на весы?';
     }
 }
-function presentCurrentDiff({ current, diff }, now) {
+function presentCurrentDiff({ current, diff, bmi }, now) {
     const header = headerRelativeDate(current);
     const previous = presentDiff(diff);
-    return `${header}${previous}`;
+    return `${header}${previous}\n\n${bmiPresenter_1.bmiPresenter(bmi)}`;
     function headerRelativeDate({ date, value }) {
         const markToHeader = {
             current: 'Твой вес',

@@ -2,6 +2,9 @@
 /* tslint:disable:no-require-imports no-submodule-imports no-unsafe-any */
 require('module-alias')({ base: process.cwd() });
 // ...
+import { InfoCommand } from 'src/app/bot/InfoCommand/InfoCommand';
+import { InfoRepository } from 'src/app/bot/InfoCommand/InfoRepository';
+import { InfoUseCase } from 'src/app/bot/InfoCommand/InfoUseCase';
 import { WeightCommand } from 'src/app/bot/WeightCommand/WeightCommand';
 import { WeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
 import { createDB } from 'src/shared/infrastructure/createDB';
@@ -13,7 +16,10 @@ async function main() {
   const db = createDB(config.DATABASE_URL);
   const telegram = new TelegramGateway(config.BOT_TOKEN);
 
-  new WeightCommand(new WeightRepository(db), telegram).enable();
+  const infoRepository = new InfoRepository(db);
+  const infoUseCase = new InfoUseCase(infoRepository);
+  new InfoCommand(infoUseCase, telegram).enable();
+  new WeightCommand(new WeightRepository(db), telegram, infoUseCase).enable();
 
   telegram.onStartCommand(`Команды:\n\n/weight 45.5 — добавляет вес.\n/weight — предыдущие замеры.`);
 
