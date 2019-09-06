@@ -14,9 +14,9 @@ function infoPresenter(result) {
 exports.infoPresenter = infoPresenter;
 function presentNoData() {
     return `
-Укажи свои данные командой: /info {пол} {рост}, где:
-• {пол} — м или ж
-• {рост в см} — 185
+Укажи свои данные командой: /info пол рост, где:
+• пол — м или ж
+• рост в см — 185
 
 Пример: /info ж 164
 `.trim();
