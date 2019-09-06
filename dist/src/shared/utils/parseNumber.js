@@ -16,8 +16,8 @@ function parseNumber(str) {
     return roundToTwo(parseFloat(num));
 }
 exports.parseNumber = parseNumber;
-function roundToTwo(num) {
-    return parseFloat(big_js_1.default(num).toFixed(2));
+function roundToTwo(num, dp = 2) {
+    return parseFloat(big_js_1.default(num).toFixed(dp));
 }
 exports.roundToTwo = roundToTwo;
 function minus(current, other) {

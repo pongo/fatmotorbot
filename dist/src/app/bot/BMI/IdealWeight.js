@@ -99,7 +99,7 @@ const formulas = [
 ];
 function calcIdealWeight(height, gender) {
     const values = formulas.map(f => f(height, gender));
-    return parseNumber_1.roundToTwo(stats_lite_1.median(values));
+    return parseNumber_1.roundToTwo(stats_lite_1.median(values), 0);
 }
 exports.calcIdealWeight = calcIdealWeight;
 //# sourceMappingURL=IdealWeight.js.map

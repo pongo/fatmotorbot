@@ -39,11 +39,11 @@ interface IBMICategoryParams {
   upperBMI: { [gender in Gender]: BMI };
 }
 
-type SuggestedWeightDiff =
+export type SuggestedWeightDiff =
   | { alreadyHealthy: true }
   | { alreadyHealthy: false; toHealthy: Kg; toNext: SuggestedNextDiff | null };
 
-type SuggestedNextDiff = {
+export type SuggestedNextDiff = {
   categoryName: BMICategoryName;
   diff: Kg;
 };
@@ -72,7 +72,7 @@ class BMICategory {
     const lower = (lowerBMI / 1.3) * coeff;
     const upper = (upperBMI / 1.3) * coeff;
 
-    return [roundUpKg(lower), roundUpKg(upper)];
+    return [roundToTwo(lower) as Kg, roundToTwo(upper) as Kg];
   }
 
   getSuggest(gender: Gender, height: Cm, weight: Kg): SuggestedWeightDiff {
@@ -104,7 +104,7 @@ class BMICategory {
       throw new Error(`next should be defined. ${JSON.stringify({ gender, height, weight, name: this.name })}`);
     }
 
-    const [lower, upper] = next.getRangeWeight(gender, height);
+    const [lower, upper] = next.getRangeWeight(gender, height).map(roundUpKg);
     const nextWeight = this.position < 0 ? lower : upper;
     const diff = roundUpKg(Big(nextWeight).minus(weight));
     return {

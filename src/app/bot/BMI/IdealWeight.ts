@@ -107,5 +107,5 @@ const formulas = [
 
 export function calcIdealWeight(height: Cm, gender: Gender): Kg {
   const values = formulas.map(f => f(height, gender));
-  return roundToTwo(median(values)) as Kg;
+  return roundToTwo(median(values), 0) as Kg;
 }

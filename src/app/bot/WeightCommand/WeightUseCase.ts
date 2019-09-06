@@ -1,4 +1,5 @@
 import { SlonikError } from 'slonik';
+import { BMIResultOrError, IBMIUseCase } from 'src/app/bot/BMI/BMIUseCase';
 import { IWeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { measureDifference, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
@@ -19,12 +20,14 @@ export type WeightAdded = WeightAddedFirst | WeightAddedDiff;
 export type WeightAddedFirst = {
   case: WeightCases.addFirst;
   weight: Kg;
+  bmi: BMIResultOrError;
 };
 
 export type WeightAddedDiff = {
   case: WeightCases.addDiff;
   diff: MeasureDifferenceSummary<Kg>;
   weight: Kg;
+  bmi: BMIResultOrError;
 };
 
 type WeightAddedErrors = InvalidFormatError | SlonikError;
@@ -38,16 +41,18 @@ export type CurrentWeightEmpty = {
 export type CurrentWeightFirst = {
   case: WeightCases.currentFirst;
   current: Measure<Kg>;
+  bmi: BMIResultOrError;
 };
 
 export type CurrentWeightDiff = {
   case: WeightCases.currentDiff;
   current: Measure<Kg>;
   diff: MeasureDifferenceSummary<Kg>;
+  bmi: BMIResultOrError;
 };
 
 export class WeightUseCase {
-  constructor(private readonly weightRepository: IWeightRepository) {}
+  constructor(private readonly weightRepository: IWeightRepository, private readonly bmiUseCase: IBMIUseCase) {}
 
   async add(userId: TelegramUserId, date: Date, weightString: string): Promise<Result<WeightAdded, WeightAddedErrors>> {
     console.log(`WeightUseCase.add(${userId}, new Date('${date.toISOString()}'), \`${weightString}\`);`);
@@ -60,14 +65,15 @@ export class WeightUseCase {
     const addResult = await this.weightRepository.add(userId, weight, date);
     if (addResult.isErr) return addResult;
 
-    if (previousMeasuresResult.value.length === 0) return Result.ok({ case: WeightCases.addFirst, weight });
+    const bmi = await this.bmiUseCase.get(userId, weight);
+    if (previousMeasuresResult.value.length === 0) return Result.ok({ case: WeightCases.addFirst, weight, bmi });
 
     const diff = measureDifference({ date, value: weight }, previousMeasuresResult.value);
-    return Result.ok({ case: WeightCases.addDiff, diff, weight });
+    return Result.ok({ case: WeightCases.addDiff, diff, weight, bmi });
   }
 
   async getCurrent(userId: TelegramUserId, now: Date): Promise<Result<CurrentWeight, SlonikError>> {
-    console.log(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
+    console.debug(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
 
     const measuresResult = await this.weightRepository.getAll(userId);
     if (measuresResult.isErr) return measuresResult;
@@ -76,10 +82,11 @@ export class WeightUseCase {
     if (measures.length === 0) return Result.ok({ case: WeightCases.currentEmpty });
 
     const current = measures[0];
-    if (measures.length === 1) return Result.ok({ case: WeightCases.currentFirst, current });
+    const bmi = await this.bmiUseCase.get(userId, current.value);
+    if (measures.length === 1) return Result.ok({ case: WeightCases.currentFirst, current, bmi });
 
     const diff = measureDifference(current, measures, now);
-    return Result.ok({ case: WeightCases.currentDiff, diff, current });
+    return Result.ok({ case: WeightCases.currentDiff, diff, current, bmi });
   }
 }
 

@@ -29,7 +29,7 @@ class BMICategory {
         const coeff = calcBMICoeff(height);
         const lower = (lowerBMI / 1.3) * coeff;
         const upper = (upperBMI / 1.3) * coeff;
-        return [roundUpKg(lower), roundUpKg(upper)];
+        return [parseNumber_1.roundToTwo(lower), parseNumber_1.roundToTwo(upper)];
     }
     getSuggest(gender, height, weight) {
         if (this.name === 'Normal')
@@ -56,7 +56,7 @@ class BMICategory {
         if (next == null) {
             throw new Error(`next should be defined. ${JSON.stringify({ gender, height, weight, name: this.name })}`);
         }
-        const [lower, upper] = next.getRangeWeight(gender, height);
+        const [lower, upper] = next.getRangeWeight(gender, height).map(roundUpKg);
         const nextWeight = this.position < 0 ? lower : upper;
         const diff = roundUpKg(big_js_1.default(nextWeight).minus(weight));
         return {

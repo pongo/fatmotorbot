@@ -72,8 +72,8 @@ describe('getBMICategoryName()', () => {
 
 describe('getHealthyRange()', () => {
   it('should return healthy range for height', () => {
-    assert.deepEqual(getHealthyRange('male', cm(180)), [67, 84], 'male');
-    assert.deepEqual(getHealthyRange('female', cm(180)), [64, 81], 'female');
+    assert.deepEqual(getHealthyRange('male', cm(180)), [66.88, 83.59], 'male');
+    assert.deepEqual(getHealthyRange('female', cm(180)), [63.53, 80.25], 'female');
   });
 });
 
@@ -123,7 +123,7 @@ describe('getSuggestedWeightDiff()', () => {
       getSuggestedWeightDiff('male', cm(200), kg(115)),
       {
         alreadyHealthy: false,
-        toHealthy: kg(-6),
+        toHealthy: kg(-7),
         toNext: null,
       },
       '115 kg',
@@ -132,7 +132,7 @@ describe('getSuggestedWeightDiff()', () => {
       getSuggestedWeightDiff('male', cm(200), kg(150)),
       {
         alreadyHealthy: false,
-        toHealthy: kg(-41),
+        toHealthy: kg(-42),
         toNext: {
           categoryName: 'Overweight',
           diff: kg(-19),

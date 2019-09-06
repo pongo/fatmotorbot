@@ -1,5 +1,6 @@
 import { differenceInCalendarDays } from 'date-fns';
 import { SlonikError } from 'slonik';
+import { bmiPresenter } from 'src/app/bot/BMI/bmiPresenter';
 import {
   CurrentWeight,
   CurrentWeightDiff,
@@ -40,23 +41,23 @@ function presentError(error: InvalidFormatError | SlonikError | Error) {
   return 'Ошибочная ошибка';
 }
 
-function presentAddFirst({ weight }: WeightAddedFirst) {
-  return `${getHeader(weight)}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`;
+function presentAddFirst({ weight, bmi }: WeightAddedFirst) {
+  return `${getHeader(weight)}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.\n\n${bmiPresenter(bmi)}`;
 }
 
-function presentAddDiff({ diff, weight }: WeightAddedDiff) {
+function presentAddDiff({ diff, weight, bmi }: WeightAddedDiff) {
   const previous = presentDiff(diff);
-  return `${getHeader(weight)}${previous}`;
+  return `${getHeader(weight)}${previous}\n\n${bmiPresenter(bmi)}`;
 }
 
 function presentCurrentEmpty() {
   return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
 }
 
-function presentCurrentFirst({ current }: CurrentWeightFirst, now: Date): string {
+function presentCurrentFirst({ current, bmi }: CurrentWeightFirst, now: Date): string {
   const { date, value } = current;
   const note = getNoteByDaysAgo(differenceInCalendarDays(now, date));
-  return `${getHeader(value)}${note}`;
+  return `${getHeader(value)}${note}\n\n${bmiPresenter(bmi)}`;
 
   function getNoteByDaysAgo(daysAgo: number) {
     if (daysAgo <= 5) return 'Регулярно делай замеры, например, каждую пятницу утром.';
@@ -67,10 +68,10 @@ function presentCurrentFirst({ current }: CurrentWeightFirst, now: Date): string
   }
 }
 
-function presentCurrentDiff({ current, diff }: CurrentWeightDiff, now: Date): string {
+function presentCurrentDiff({ current, diff, bmi }: CurrentWeightDiff, now: Date): string {
   const header = headerRelativeDate(current);
   const previous = presentDiff(diff);
-  return `${header}${previous}`;
+  return `${header}${previous}\n\n${bmiPresenter(bmi)}`;
 
   function headerRelativeDate({ date, value }: Measure<Kg>) {
     const markToHeader: { [key in DateMark]: string } = {

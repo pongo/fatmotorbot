@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 import { SlonikError } from 'slonik';
+import { BMIResultOrError } from 'src/app/bot/BMI/BMIUseCase';
 import { weightPresenter } from 'src/app/bot/WeightCommand/weightPresenter';
 import {
   CurrentWeightDiff,
@@ -10,6 +11,9 @@ import {
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
+
+const bmiResult: BMIResultOrError = Result.ok({ case: 'need-user-info' as const });
+const bmiStr = `\n\nДля расчета ИМТ не хватает данных. Укажи их при помощи /info`;
 
 describe('weightPresenter()', () => {
   describe('add()', () => {
@@ -24,8 +28,8 @@ describe('weightPresenter()', () => {
 
     it('first add', () => {
       assert.equal(
-        weightPresenter(Result.ok({ case: WeightCases.addFirst, weight: kg(100) }), new Date()),
-        `Твой вес: 100 кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.`,
+        weightPresenter(Result.ok({ case: WeightCases.addFirst, weight: kg(100), bmi: bmiResult }), new Date()),
+        `Твой вес: 100 кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.${bmiStr}`,
       );
     });
 
@@ -37,10 +41,11 @@ describe('weightPresenter()', () => {
           daysAgo: { difference: kg(1), value: kg(49), date: new Date('2019-08-27') },
           monthAgo: { difference: kg(-5), value: kg(55), date: new Date('2019-07-28') },
         },
+        bmi: bmiResult,
       };
       assert.equal(
         weightPresenter(Result.ok(data), new Date('2019-08-29')),
-        `Твой вес: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)`,
+        `Твой вес: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)${bmiStr}`,
       );
     });
   });
@@ -62,33 +67,37 @@ describe('weightPresenter()', () => {
 
     it('one measure', () => {
       function gen(date: Date) {
-        const data: CurrentWeightFirst = { case: WeightCases.currentFirst, current: { date, value: kg(100) } };
+        const data: CurrentWeightFirst = {
+          case: WeightCases.currentFirst,
+          current: { date, value: kg(100) },
+          bmi: bmiResult,
+        };
         return Result.ok(data);
       }
 
       assert.equal(
         weightPresenter(gen(new Date('2019-08-29')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nРегулярно делай замеры, например, каждую пятницу утром.`,
+        `Твой вес: 100 кг.\n\nРегулярно делай замеры, например, каждую пятницу утром.${bmiStr}`,
       );
 
       assert.equal(
         weightPresenter(gen(new Date('2019-08-22')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nПрошла неделя с последнего замера, пора взвешиваться!`,
+        `Твой вес: 100 кг.\n\nПрошла неделя с последнего замера, пора взвешиваться!${bmiStr}`,
       );
 
       assert.equal(
         weightPresenter(gen(new Date('2019-07-22')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nНесколько недель прошло, сколько ты теперь весишь?`,
+        `Твой вес: 100 кг.\n\nНесколько недель прошло, сколько ты теперь весишь?${bmiStr}`,
       );
 
       assert.equal(
         weightPresenter(gen(new Date('2019-05-22')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nИ было это пару месяцев назад, сколько же ты теперь весишь?`,
+        `Твой вес: 100 кг.\n\nИ было это пару месяцев назад, сколько же ты теперь весишь?${bmiStr}`,
       );
 
       assert.equal(
         weightPresenter(gen(new Date('2018-05-22')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nНо было это чертовски давно, рискнешь встать на весы?`,
+        `Твой вес: 100 кг.\n\nНо было это чертовски давно, рискнешь встать на весы?${bmiStr}`,
       );
     });
 
@@ -100,10 +109,11 @@ describe('weightPresenter()', () => {
           daysAgo: { difference: kg(1), value: kg(49), date: new Date('2019-08-27') },
           monthAgo: { difference: kg(-5), value: kg(55), date: new Date('2019-07-28') },
         },
+        bmi: bmiResult,
       };
       assert.equal(
         weightPresenter(Result.ok(data), new Date('2019-08-29')),
-        `Вес вчера: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)`,
+        `Вес вчера: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)${bmiStr}`,
       );
     });
   });
