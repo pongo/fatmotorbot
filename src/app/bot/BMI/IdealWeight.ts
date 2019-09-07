@@ -83,19 +83,18 @@ export function breitman(height: Cm): Kg {
   return roundToTwo(weight) as Kg;
 }
 
-export function tetona(height: Cm): Kg {
-  const weight = height - (100 + (height - 100) / 20);
+export function tetona(height: Cm, gender: Gender): Kg {
+  const coeff = gender === 'male' ? 20 : 10;
+  const weight = height - (100 + (height - 100) / coeff);
   return roundToTwo(weight) as Kg;
 }
 
 const formulas = [
   averageHealthyBMI,
-  breitman,
   broca,
   brocaBrugsh,
   devine,
   hamwi,
-  insurance,
   kuper,
   lemmens,
   lorenz,

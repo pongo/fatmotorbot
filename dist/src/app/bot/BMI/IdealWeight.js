@@ -76,19 +76,18 @@ function breitman(height) {
     return parseNumber_1.roundToTwo(weight);
 }
 exports.breitman = breitman;
-function tetona(height) {
-    const weight = height - (100 + (height - 100) / 20);
+function tetona(height, gender) {
+    const coeff = gender === 'male' ? 20 : 10;
+    const weight = height - (100 + (height - 100) / coeff);
     return parseNumber_1.roundToTwo(weight);
 }
 exports.tetona = tetona;
 const formulas = [
     averageHealthyBMI,
-    breitman,
     broca,
     brocaBrugsh,
     devine,
     hamwi,
-    insurance,
     kuper,
     lemmens,
     lorenz,
