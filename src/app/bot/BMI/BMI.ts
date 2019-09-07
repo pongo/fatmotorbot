@@ -32,12 +32,12 @@ type Position = number;
 
 const categories: Map<Position, BMICategory> = new Map();
 
-interface IBMICategoryParams {
+type BMICategoryParams = {
   name: BMICategoryName;
   position: Position;
   lowerBMI: { [gender in Gender]: BMI };
   upperBMI: { [gender in Gender]: BMI };
-}
+};
 
 export type SuggestedWeightDiff =
   | { alreadyHealthy: true }
@@ -54,7 +54,7 @@ class BMICategory {
   private readonly lowerBMI: { [gender in Gender]: BMI };
   private readonly upperBMI: { [gender in Gender]: BMI };
 
-  constructor({ name, position, lowerBMI, upperBMI }: IBMICategoryParams) {
+  constructor({ name, position, lowerBMI, upperBMI }: BMICategoryParams) {
     this.name = name;
     this.position = position;
     this.lowerBMI = lowerBMI;
