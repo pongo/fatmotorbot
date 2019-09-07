@@ -29,5 +29,14 @@ describe('Result', () => {
   it('combine() without errors', () => {
     assert.deepEqual(Result.combine([Result.ok(1), Result.ok(2), Result.ok(3)]), Result.ok([1, 2, 3]));
     assert.deepEqual(Result.combine([]), Result.ok([]));
+    assert.deepEqual(
+      Result.combine<[string, number]>([Result.ok(''), Result.ok(1)]),
+      Result.ok(['', 1] as [string, number]),
+    );
+  });
+
+  it('unwrap()', () => {
+    assert.equal(Result.unwrap(Result.ok(1)), 1);
+    assert.throws(() => Result.unwrap(Result.err('1')), '1');
   });
 });

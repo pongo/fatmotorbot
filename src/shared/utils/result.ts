@@ -18,6 +18,7 @@ export const Result = {
   ok,
   err,
   combine,
+  unwrap,
 };
 
 function ok<T = undefined>(value?: T): Result<T, never> {
@@ -41,9 +42,16 @@ function err<E extends Error = Error>(error: E | string, data?: unknown): Result
 type ResultsOfT<T extends unknown[]> = { [P in keyof T]: Result<T[P]> };
 type OksOfT<T extends unknown[]> = { [P in keyof T]: Ok<T[P]> };
 
+// const result = Result.combine<[Gender, Cm]>([validateGender(), validateHeight()]);`
+// const [gender, height] = result.value;
 function combine<T extends unknown[]>(results: ResultsOfT<T>): Result<T> {
   for (const result of results) {
     if (result.isErr) return result;
   }
   return Result.ok((results as OksOfT<T>).map(result => result.value) as T);
+}
+
+function unwrap<T = undefined, E extends Error = Error>(result: Result<T, E>): T {
+  if (result.isErr) throw result.error;
+  return result.value;
 }

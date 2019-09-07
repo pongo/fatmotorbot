@@ -5,6 +5,7 @@ exports.Result = {
     ok,
     err,
     combine,
+    unwrap,
 };
 function ok(value) {
     return {
@@ -26,5 +27,10 @@ function combine(results) {
             return result;
     }
     return exports.Result.ok(results.map(result => result.value));
+}
+function unwrap(result) {
+    if (result.isErr)
+        throw result.error;
+    return result.value;
 }
 //# sourceMappingURL=result.js.map
