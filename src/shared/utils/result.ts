@@ -6,7 +6,7 @@ export type Ok<T> = {
   readonly value: T;
 };
 
-export type Err<E extends Error> = {
+export type Err<E extends Error = Error> = {
   readonly isOk: false;
   readonly isErr: true;
   readonly error: E;
@@ -38,9 +38,12 @@ function err<E extends Error = Error>(error: E | string, data?: unknown): Result
   } as const;
 }
 
-function combine<T = undefined, E extends Error = Error>(results: Result<T, E>[]): Err<E> | Ok<T[]> {
+type ResultsOfT<T extends unknown[]> = { [P in keyof T]: Result<T[P]> };
+type OksOfT<T extends unknown[]> = { [P in keyof T]: Ok<T[P]> };
+
+function combine<T extends unknown[]>(results: ResultsOfT<T>): Result<T> {
   for (const result of results) {
     if (result.isErr) return result;
   }
-  return Result.ok((results as Ok<T>[]).map(result => result.value));
+  return Result.ok((results as OksOfT<T>).map(result => result.value) as T);
 }
