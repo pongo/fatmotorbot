@@ -27,6 +27,7 @@ export class InfoUseCase implements IInfoUseCase {
 
     const result = await this.infoRepository.get(userId);
     if (result.isErr) return result;
+
     if (result.value == null) return Result.ok({ case: 'get:none' });
     return Result.ok({ case: 'get', data: result.value });
   }

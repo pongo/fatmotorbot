@@ -42,7 +42,8 @@ function presentError(error: InvalidFormatError | SlonikError | Error) {
 }
 
 function presentAddFirst({ weight, bmi }: WeightAddedFirst) {
-  return `${getHeader(weight)}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.\n\n${bmiPresenter(bmi)}`;
+  const header = getHeader(weight);
+  return `${header}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.\n\n${bmiPresenter(bmi)}`;
 }
 
 function presentAddDiff({ diff, weight, bmi }: WeightAddedDiff) {
@@ -108,7 +109,6 @@ function presentDiff(diff: MeasureDifferenceSummary<Kg>) {
     ['yearAgo', 'Год :ago:'],
     ['yearsAgo', 'Годы назад'],
   ];
-
   return dates.reduce(reducer, '').trim();
 
   function reducer(acc: string, [mark, text]: [DateMark, string]): string {

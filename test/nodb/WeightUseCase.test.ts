@@ -164,16 +164,16 @@ describe('WeightUseCase', () => {
 
 describe('validateWeight()', () => {
   it('value should be not null', () => {
-    assert.isTrue(validateWeight(null).isErr);
+    assert.isNull(validateWeight(null));
   });
 
   it('value should be >= 1 and <= 500', () => {
-    assert.isTrue(validateWeight(0).isErr);
-    assert.isTrue(validateWeight(-100).isErr);
-    assert.isTrue(validateWeight(1000).isErr);
+    assert.isNull(validateWeight(0));
+    assert.isNull(validateWeight(-100));
+    assert.isNull(validateWeight(1000));
 
-    assert.equal(Result.unwrap(validateWeight(50.5)), kg(50.5));
-    assert.equal(Result.unwrap(validateWeight(1)), kg(1));
-    assert.equal(Result.unwrap(validateWeight(999)), kg(999));
+    assert.equal(validateWeight(50.5), kg(50.5));
+    assert.equal(validateWeight(1), kg(1));
+    assert.equal(validateWeight(999), kg(999));
   });
 });

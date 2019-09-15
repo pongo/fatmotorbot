@@ -1,5 +1,5 @@
 import { SlonikError } from 'slonik';
-import { BMICategoryName, SuggestedNextDiff } from 'src/app/bot/BMI/BMI';
+import { BMICategoryName, SuggestedNextDiff } from 'src/app/bot/BMI/BMICategory';
 import { BMIResult, BMIResultOrError } from 'src/app/bot/BMI/BMIUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { Kg } from 'src/app/shared/types';
@@ -44,6 +44,7 @@ const interpretNextCategory: { [name in BMICategoryName]: string } = {
 
 function presentBMI(data: BMIResult): string {
   if (data.case === 'need-user-info') return 'Для расчета ИМТ не хватает данных. Укажи их при помощи /info';
+
   const { bmi, healthyRange, categoryName, ideal, suggest } = data;
   return `ИМТ: ${bmi} — ${interpretCategory[categoryName]} ${healthy()}. А твой идеальный вес: ${ideal} кг.`;
 

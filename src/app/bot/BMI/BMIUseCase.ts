@@ -1,12 +1,6 @@
 import { SlonikError } from 'slonik';
-import {
-  BMICategoryName,
-  calcBMI,
-  getBMICategoryName,
-  getHealthyRange,
-  getSuggestedWeightDiff,
-  SuggestedWeightDiff,
-} from 'src/app/bot/BMI/BMI';
+import { calcBMI, getBMICategoryName, getHealthyRange, getSuggestedWeightDiff } from 'src/app/bot/BMI/BMI';
+import { BMICategoryName, SuggestedWeightDiff } from 'src/app/bot/BMI/BMICategory';
 import { calcIdealWeight } from 'src/app/bot/BMI/IdealWeight';
 import { IInfoUseCaseGet } from 'src/app/bot/InfoCommand/InfoUseCase';
 import { BMI, Kg, TelegramUserId } from 'src/app/shared/types';

@@ -56,43 +56,46 @@ export class WeightUseCase {
 
   async add(userId: TelegramUserId, date: Date, weightString: string): Promise<Result<WeightAdded, WeightAddedErrors>> {
     console.log(`WeightUseCase.add(${userId}, new Date('${date.toISOString()}'), \`${weightString}\`);`);
-    try {
-      const weight = Result.unwrap(validateWeight(parseNumber(weightString)));
-      const previousMeasures = Result.unwrap(await this.weightRepository.getAll(userId));
-      Result.unwrap(await this.weightRepository.add(userId, weight, date));
-      const bmi = await this.bmiUseCase.get(userId, weight);
 
-      if (previousMeasures.length === 0) return Result.ok({ case: WeightCases.addFirst, weight, bmi });
+    const weight = validateWeight(parseNumber(weightString));
+    if (weight == null) return Result.err(new InvalidFormatError());
 
-      const diff = measureDifference({ date, value: weight }, previousMeasures);
-      return Result.ok({ case: WeightCases.addDiff, diff, weight, bmi });
-    } catch (e) {
-      return Result.err(e);
-    }
+    const previousMeasuresResult = await this.weightRepository.getAll(userId);
+    if (previousMeasuresResult.isErr) return previousMeasuresResult;
+
+    const addResult = await this.weightRepository.add(userId, weight, date);
+    if (addResult.isErr) return addResult;
+
+    const bmi = await this.bmiUseCase.get(userId, weight);
+    const previousMeasures = previousMeasuresResult.value;
+    if (previousMeasures.length === 0) return Result.ok({ case: WeightCases.addFirst, weight, bmi });
+
+    const diff = measureDifference({ date, value: weight }, previousMeasures);
+    return Result.ok({ case: WeightCases.addDiff, diff, weight, bmi });
   }
 
   async getCurrent(userId: TelegramUserId, now: Date): Promise<Result<CurrentWeight, SlonikError>> {
     console.debug(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
-    try {
-      const measures = Result.unwrap(await this.weightRepository.getAll(userId));
-      if (measures.length === 0) return Result.ok({ case: WeightCases.currentEmpty });
 
-      const current = measures[0];
-      const bmi = await this.bmiUseCase.get(userId, current.value);
-      if (measures.length === 1) return Result.ok({ case: WeightCases.currentFirst, current, bmi });
+    const measuresResult = await this.weightRepository.getAll(userId);
+    if (measuresResult.isErr) return measuresResult;
 
-      const diff = measureDifference(current, measures, now);
-      return Result.ok({ case: WeightCases.currentDiff, diff, current, bmi });
-    } catch (e) {
-      return Result.err(e);
-    }
+    const measures = measuresResult.value;
+    if (measures.length === 0) return Result.ok({ case: WeightCases.currentEmpty });
+
+    const current = measures[0];
+    const bmi = await this.bmiUseCase.get(userId, current.value);
+    if (measures.length === 1) return Result.ok({ case: WeightCases.currentFirst, current, bmi });
+
+    const diff = measureDifference(current, measures, now);
+    return Result.ok({ case: WeightCases.currentDiff, diff, current, bmi });
   }
 }
 
 /**
  * Проверяет правильно ли указан вес.
  */
-export function validateWeight(value: number | null): Result<Kg> {
-  if (value !== null && value >= 1 && value <= 999) return Result.ok(value as Kg);
-  return Result.err(new InvalidFormatError());
+export function validateWeight(value: number | null): Kg | null {
+  if (value !== null && value >= 1 && value <= 999) return value as Kg;
+  return null;
 }
