@@ -33,7 +33,8 @@ function presentError(error) {
     return 'Ошибочная ошибка';
 }
 function presentAddFirst({ weight, bmi }) {
-    return `${getHeader(weight)}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.\n\n${bmiPresenter_1.bmiPresenter(bmi)}`;
+    const header = getHeader(weight);
+    return `${header}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.\n\n${bmiPresenter_1.bmiPresenter(bmi)}`;
 }
 function presentAddDiff({ diff, weight, bmi }) {
     const previous = presentDiff(diff);
