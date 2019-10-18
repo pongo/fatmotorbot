@@ -23,6 +23,7 @@ export class WeightCommand {
 
   enable() {
     this.telegram.onCommand('weight', this.weightHandler.bind(this));
+    this.telegram.onCommand('w', this.weightHandler.bind(this));
   }
 
   private async weightHandler(command: Command) {

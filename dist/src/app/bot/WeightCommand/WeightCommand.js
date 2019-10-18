@@ -13,6 +13,7 @@ class WeightCommand {
     }
     enable() {
         this.telegram.onCommand('weight', this.weightHandler.bind(this));
+        this.telegram.onCommand('w', this.weightHandler.bind(this));
     }
     async weightHandler(command) {
         const userId = command.from.id;
