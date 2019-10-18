@@ -30,7 +30,7 @@ describe('BMIUseCase', () => {
       case: 'bmi',
       bmi: 18.36 as BMI,
       categoryName: 'Underweight',
-      healthyRange: [kg(58.83), kg(73.53)],
+      healthyRange: [kg(58.83), kg(73.5)],
       suggest: {
         alreadyHealthy: false,
         toHealthy: kg(5),

@@ -67,8 +67,9 @@ describe('getBMICategoryName()', () => {
 
 describe('getHealthyRange()', () => {
   it('should return healthy range for height', () => {
-    assert.deepEqual(getHealthyRange('male', cm(180)), [66.88, 83.59], 'male');
-    assert.deepEqual(getHealthyRange('female', cm(180)), [63.53, 80.25], 'female');
+    assert.deepEqual(getHealthyRange('male', cm(180)), [66.88, 83.56], 'male');
+    assert.deepEqual(getHealthyRange('female', cm(180)), [63.53, 80.22], 'female');
+    assert.deepEqual(getHealthyRange('male', cm(175)), [62.33, 77.88], 'male');
   });
 });
 

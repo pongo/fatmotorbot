@@ -53,8 +53,8 @@ describe('Ideal Weight calculation', () => {
   });
 
   it('averageHealthyBMI', () => {
-    assert.equal(averageHealthyBMI(cm(171), 'male'), kg(66.18));
-    assert.equal(averageHealthyBMI(cm(171), 'female'), kg(63.24));
+    assert.equal(averageHealthyBMI(cm(171), 'male'), kg(66.16));
+    assert.equal(averageHealthyBMI(cm(171), 'female'), kg(63.23));
   });
 
   it('lorenz', () => {

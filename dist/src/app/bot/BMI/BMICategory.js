@@ -26,7 +26,7 @@ class BMICategory {
         const [lowerBMI, upperBMI] = this.getRangeBMI(gender);
         const coeff = BMICalc_1.calcBMICoeff(height);
         const lower = (lowerBMI / 1.3) * coeff;
-        const upper = (upperBMI / 1.3) * coeff;
+        const upper = ((upperBMI - 0.01) / 1.3) * coeff;
         return [parseNumber_1.roundToTwo(lower), parseNumber_1.roundToTwo(upper)];
     }
     getSuggest(gender, height, weight) {

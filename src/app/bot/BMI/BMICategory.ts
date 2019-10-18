@@ -60,7 +60,7 @@ export class BMICategory {
 
     const coeff = calcBMICoeff(height);
     const lower = (lowerBMI / 1.3) * coeff;
-    const upper = (upperBMI / 1.3) * coeff;
+    const upper = ((upperBMI - 0.01) / 1.3) * coeff; // у upperBMI не включительное сравнение, поэтому уменьшаем
 
     return [roundToTwo(lower) as Kg, roundToTwo(upper) as Kg];
   }
