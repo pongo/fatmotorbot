@@ -1,12 +1,14 @@
 import { SlonikError } from 'slonik';
+import { BMIResult, calcBMIResult } from 'src/app/bot/BMI/BMIUseCase';
 import { IInfoRepository, UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
+import { IWeightRepositoryGetCurrent } from 'src/app/bot/WeightCommand/WeightRepository';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { Cm, Gender, TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
 
 export type InfoAddErrors = InvalidFormatError | SlonikError;
-export type InfoSetResult = { case: 'set'; data: UserInfo };
+export type InfoSetResult = { case: 'set'; data: UserInfo; bmi: null | BMIResult };
 export type InfoGetResult = { case: 'get:none' } | { case: 'get'; data: UserInfo };
 
 export interface IInfoUseCaseGet {
@@ -20,7 +22,10 @@ interface IInfoUseCaseSet {
 interface IInfoUseCase extends IInfoUseCaseGet, IInfoUseCaseSet {}
 
 export class InfoUseCase implements IInfoUseCase {
-  constructor(private readonly infoRepository: IInfoRepository) {}
+  constructor(
+    private readonly infoRepository: IInfoRepository,
+    private readonly weightRepository: IWeightRepositoryGetCurrent,
+  ) {}
 
   async get(userId: TelegramUserId): Promise<Result<InfoGetResult, SlonikError>> {
     console.debug(`InfoUseCase.get(${userId});`);
@@ -41,7 +46,11 @@ export class InfoUseCase implements IInfoUseCase {
     const addResult = await this.infoRepository.set(userId, data);
     if (addResult.isErr) return addResult;
 
-    return Result.ok({ case: 'set', data });
+    const weightResult = await this.weightRepository.getCurrent(userId);
+    const weight = weightResult.isErr ? null : weightResult.value;
+    const bmi = weight == null ? null : calcBMIResult(weight, data);
+
+    return Result.ok({ case: 'set', data, bmi });
   }
 }
 

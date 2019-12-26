@@ -13,18 +13,21 @@ class BMIUseCase {
             return infoResult;
         if (infoResult.value.case === 'get:none')
             return result_1.Result.ok({ case: 'need-user-info' });
-        const { gender, height } = infoResult.value.data;
-        const bmi = BMI_1.calcBMI(height, weight);
-        const result = {
-            case: 'bmi',
-            bmi,
-            categoryName: BMI_1.getBMICategoryName(gender, bmi),
-            healthyRange: BMI_1.getHealthyRange(gender, height),
-            suggest: BMI_1.getSuggestedWeightDiff(gender, height, weight),
-            ideal: IdealWeight_1.calcIdealWeight(height, gender),
-        };
+        const result = calcBMIResult(weight, infoResult.value.data);
         return result_1.Result.ok(result);
     }
 }
 exports.BMIUseCase = BMIUseCase;
+function calcBMIResult(weight, { gender, height }) {
+    const bmi = BMI_1.calcBMI(height, weight);
+    return {
+        case: 'bmi',
+        bmi,
+        categoryName: BMI_1.getBMICategoryName(gender, bmi),
+        healthyRange: BMI_1.getHealthyRange(gender, height),
+        suggest: BMI_1.getSuggestedWeightDiff(gender, height, weight),
+        ideal: IdealWeight_1.calcIdealWeight(height, gender),
+    };
+}
+exports.calcBMIResult = calcBMIResult;
 //# sourceMappingURL=BMIUseCase.js.map

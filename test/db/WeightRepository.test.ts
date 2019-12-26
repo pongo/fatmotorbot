@@ -53,6 +53,12 @@ describe('WeightRepository', () => {
       assert.isTrue(addResult.isOk);
       assert.deepEqual(actual, Result.ok([m(date, kg(100))]));
     });
+
+    it('getCurrent() should return null', async () => {
+      const repository = new WeightRepository(db);
+      const actual = await repository.getCurrent(u(1));
+      assert.deepEqual(actual, Result.ok(null));
+    });
   });
 
   describe('on db with measures', () => {
@@ -83,6 +89,12 @@ describe('WeightRepository', () => {
           m(new Date('2019-07-28 16:58:24.918000'), kg(100)),
         ]),
       );
+    });
+
+    it('getCurrent() should return current weight as Kg', async () => {
+      const repository = new WeightRepository(db);
+      const actual = await repository.getCurrent(u(1));
+      assert.deepEqual(actual, Result.ok(kg(90)));
     });
   });
 });

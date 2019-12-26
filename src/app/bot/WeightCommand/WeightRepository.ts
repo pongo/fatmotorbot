@@ -5,7 +5,11 @@ import { toTimestamp } from 'src/shared/utils/utils';
 
 export type MeasuresFromNewestToOldest<T extends number> = Measure<T>[];
 
-export interface IWeightRepository {
+export interface IWeightRepositoryGetCurrent {
+  getCurrent(userId: TelegramUserId): Promise<Result<Kg | null, SlonikError>>;
+}
+
+export interface IWeightRepository extends IWeightRepositoryGetCurrent {
   add(userId: TelegramUserId, weight: Kg, date: Date): Promise<Result>;
   getAll(userId: TelegramUserId): Promise<Result<MeasuresFromNewestToOldest<Kg>, SlonikError>>;
 }
@@ -42,6 +46,24 @@ export class WeightRepository implements IWeightRepository {
       return Result.ok(measures);
     } catch (e) {
       console.error('WeightRepository.getAll()', e);
+      return Result.err(e);
+    }
+  }
+
+  async getCurrent(userId: TelegramUserId): Promise<Result<Kg | null, SlonikError>> {
+    try {
+      const result = await this.db.maybeOne(sql`
+        SELECT value
+        FROM measures
+        WHERE value_type = ${weightValueType}
+          AND user_id = ${userId}
+        ORDER BY date DESC
+        LIMIT 1;
+      `);
+      const current = result == null ? result : result.value as Kg;
+      return Result.ok(current);
+    } catch (e) {
+      console.error('WeightRepository.getCurrent()', e);
       return Result.err(e);
     }
   }

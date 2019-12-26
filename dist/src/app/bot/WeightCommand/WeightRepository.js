@@ -38,6 +38,24 @@ class WeightRepository {
             return result_1.Result.err(e);
         }
     }
+    async getCurrent(userId) {
+        try {
+            const result = await this.db.maybeOne(slonik_1.sql `
+        SELECT value
+        FROM measures
+        WHERE value_type = ${weightValueType}
+          AND user_id = ${userId}
+        ORDER BY date DESC
+        LIMIT 1;
+      `);
+            const current = result == null ? result : result.value;
+            return result_1.Result.ok(current);
+        }
+        catch (e) {
+            console.error('WeightRepository.getCurrent()', e);
+            return result_1.Result.err(e);
+        }
+    }
 }
 exports.WeightRepository = WeightRepository;
 //# sourceMappingURL=WeightRepository.js.map

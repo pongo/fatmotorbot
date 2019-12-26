@@ -1,4 +1,6 @@
 import { SlonikError } from 'slonik';
+import { bmiPresenter } from 'src/app/bot/BMI/bmiPresenter';
+import { BMIResult } from 'src/app/bot/BMI/BMIUseCase';
 import { InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/bot/InfoCommand/InfoUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { Result } from 'src/shared/utils/result';
@@ -8,7 +10,7 @@ export function infoPresenter(result: Result<InfoGetResult | InfoSetResult, Info
   if (result.isErr) return presentError(result.error);
   if (result.value.case === 'get:none') return presentNoData();
   if (result.value.case === 'get') return presentUserData(result.value.data);
-  return presentSetData(result.value.data);
+  return presentSetData(result.value.data, result.value.bmi);
 }
 
 function presentNoData() {
@@ -32,6 +34,7 @@ function presentUserData(data: UserInfo) {
   return `${gender}, ${data.height} см`;
 }
 
-function presentSetData(data: UserInfo) {
-  return `Сохранил твои данные: ${presentUserData(data).toLowerCase()}`;
+function presentSetData(data: UserInfo, bmi: null | BMIResult) {
+  const bmiText = bmi == null ? '' : `.\n\n${bmiPresenter(Result.ok(bmi))}`;
+  return `Сохранил твои данные: ${presentUserData(data).toLowerCase()}${bmiText}`;
 }

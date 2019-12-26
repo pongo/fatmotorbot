@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { IInfoRepository, UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
-import { InfoUseCase, validateData } from 'src/app/bot/InfoCommand/InfoUseCase';
+import { InfoSetResult, InfoUseCase, validateData } from 'src/app/bot/InfoCommand/InfoUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
-import { cm } from 'src/app/shared/types';
+import { cm, kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { u } from 'test/utils';
 
@@ -11,7 +11,8 @@ describe('InfoUseCase', () => {
   describe('get()', () => {
     it('should return null if no data', async () => {
       const repo: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(null) };
-      const usecase = new InfoUseCase(repo);
+      const weightRepo = { getCurrent: sinon.fake.throws('') };
+      const usecase = new InfoUseCase(repo, weightRepo);
 
       const actual = await usecase.get(u(1));
 
@@ -24,7 +25,8 @@ describe('InfoUseCase', () => {
         set: sinon.fake.throws(''),
         get: async () => Result.ok(data),
       };
-      const usecase = new InfoUseCase(repo);
+      const weightRepo = { getCurrent: sinon.fake.throws('') };
+      const usecase = new InfoUseCase(repo, weightRepo);
 
       const actual = await usecase.get(u(1));
 
@@ -35,23 +37,40 @@ describe('InfoUseCase', () => {
   describe('set()', () => {
     it('should return error on invalid format', async () => {
       const repo = { set: sinon.fake.throws(''), get: sinon.fake.throws('') };
-      const usecase = new InfoUseCase(repo);
+      const weightRepo = { getCurrent: sinon.fake.returns(Result.ok(null)) };
+      const usecase = new InfoUseCase(repo, weightRepo);
 
       const actual = await usecase.set(u(1), []);
 
       assert.deepEqual(actual, Result.err(new InvalidFormatError()));
     });
 
-    it('should add valid data to db', async () => {
+    it('should add valid data to empty db', async () => {
       const data: UserInfo = { gender: 'female', height: cm(150) };
       const repo = { set: sinon.fake.returns(Result.ok()), get: sinon.fake.throws('') };
-      const usecase = new InfoUseCase(repo);
+      const weightEmptyRepo = { getCurrent: sinon.fake.returns(Result.ok(null)) };
+      const usecase = new InfoUseCase(repo, weightEmptyRepo);
 
       const actual = await usecase.set(u(1), ['ж', '150']);
 
       sinon.assert.calledOnce(repo.set);
       sinon.assert.calledWith(repo.set, u(1), data);
-      assert.deepEqual(actual, Result.ok({ case: 'set' as const, data }));
+      assert.deepEqual<Result<InfoSetResult>>(actual, Result.ok({ case: 'set' as const, data, bmi: null }));
+    });
+
+    it('should add valid data to db with weight', async () => {
+      const data: UserInfo = { gender: 'female', height: cm(150) };
+      const repo = { set: sinon.fake.returns(Result.ok()), get: sinon.fake.throws('') };
+      const weightRepo = { getCurrent: sinon.fake.returns(Result.ok(kg(100))) };
+      const usecase = new InfoUseCase(repo, weightRepo);
+
+      const actual = await usecase.set(u(1), ['ж', '150']);
+
+      sinon.assert.calledOnce(repo.set);
+      sinon.assert.calledWith(repo.set, u(1), data);
+      if (actual.isErr) throw new Error('actual2 should be ok');
+      assert.isNotNull(actual.value.bmi);
+      assert.equal(actual.value.bmi!.case, 'bmi');
     });
   });
 });

@@ -2,6 +2,7 @@ import { SlonikError } from 'slonik';
 import { calcBMI, getBMICategoryName, getHealthyRange, getSuggestedWeightDiff } from 'src/app/bot/BMI/BMI';
 import { BMICategoryName, SuggestedWeightDiff } from 'src/app/bot/BMI/BMICategory';
 import { calcIdealWeight, IdealWeight } from 'src/app/bot/BMI/IdealWeight';
+import { UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
 import { IInfoUseCaseGet } from 'src/app/bot/InfoCommand/InfoUseCase';
 import { BMI, Kg, TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
@@ -32,16 +33,19 @@ export class BMIUseCase implements IBMIUseCase {
 
     if (infoResult.value.case === 'get:none') return Result.ok({ case: 'need-user-info' });
 
-    const { gender, height } = infoResult.value.data;
-    const bmi = calcBMI(height, weight);
-    const result: BMIResult = {
-      case: 'bmi',
-      bmi,
-      categoryName: getBMICategoryName(gender, bmi),
-      healthyRange: getHealthyRange(gender, height),
-      suggest: getSuggestedWeightDiff(gender, height, weight),
-      ideal: calcIdealWeight(height, gender),
-    };
+    const result = calcBMIResult(weight, infoResult.value.data);
     return Result.ok(result);
   }
+}
+
+export function calcBMIResult(weight: Kg, { gender, height }: UserInfo): BMIResult {
+  const bmi = calcBMI(height, weight);
+  return {
+    case: 'bmi',
+    bmi,
+    categoryName: getBMICategoryName(gender, bmi),
+    healthyRange: getHealthyRange(gender, height),
+    suggest: getSuggestedWeightDiff(gender, height, weight),
+    ideal: calcIdealWeight(height, gender),
+  };
 }

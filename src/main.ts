@@ -17,9 +17,10 @@ async function main() {
   const telegram = new TelegramGateway(config.BOT_TOKEN);
 
   const infoRepository = new InfoRepository(db);
-  const infoUseCase = new InfoUseCase(infoRepository);
+  const weightRepository = new WeightRepository(db);
+  const infoUseCase = new InfoUseCase(infoRepository, weightRepository);
   new InfoCommand(infoUseCase, telegram).enable();
-  new WeightCommand(new WeightRepository(db), telegram, infoUseCase).enable();
+  new WeightCommand(weightRepository, telegram, infoUseCase).enable();
 
   telegram.onStartCommand(`Команды:\n\n/weight 45.5 — добавляет вес.\n/weight — предыдущие замеры.`);
 

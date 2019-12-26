@@ -1,7 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const slonik_1 = require("slonik");
+const bmiPresenter_1 = require("src/app/bot/BMI/bmiPresenter");
 const errors_1 = require("src/app/shared/errors");
+const result_1 = require("src/shared/utils/result");
 function infoPresenter(result) {
     if (result.isErr)
         return presentError(result.error);
@@ -9,7 +11,7 @@ function infoPresenter(result) {
         return presentNoData();
     if (result.value.case === 'get')
         return presentUserData(result.value.data);
-    return presentSetData(result.value.data);
+    return presentSetData(result.value.data, result.value.bmi);
 }
 exports.infoPresenter = infoPresenter;
 function presentNoData() {
@@ -32,7 +34,8 @@ function presentUserData(data) {
     const gender = data.gender === 'female' ? 'Женщина' : 'Мужчина';
     return `${gender}, ${data.height} см`;
 }
-function presentSetData(data) {
-    return `Сохранил твои данные: ${presentUserData(data).toLowerCase()}`;
+function presentSetData(data, bmi) {
+    const bmiText = bmi == null ? '' : `.\n\n${bmiPresenter_1.bmiPresenter(result_1.Result.ok(bmi))}`;
+    return `Сохранил твои данные: ${presentUserData(data).toLowerCase()}${bmiText}`;
 }
 //# sourceMappingURL=infoPresenter.js.map
