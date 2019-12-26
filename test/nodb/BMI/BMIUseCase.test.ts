@@ -36,7 +36,7 @@ describe('BMIUseCase', () => {
         toHealthy: kg(5),
         toNext: null,
       },
-      ideal: kg(66),
+      ideal: { avg: kg(66), min: kg(63), max: kg(68)},
     };
     assert.deepEqual(actual, Result.ok(expected));
   });

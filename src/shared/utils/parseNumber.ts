@@ -20,6 +20,19 @@ export function roundToTwo(num: number | Big, dp = 2): number {
   return parseFloat(Big(num).toFixed(dp));
 }
 
+function round(num: number | Big, roundingMode: number, dp = 2): number {
+  // prettier-ignore
+  return parseFloat(Big(num).round(dp, roundingMode).toFixed(dp));
+}
+
+export function roundDown(num: number | Big, dp = 2): number {
+  return round(num, 0, dp);
+}
+
+export function roundUp(num: number | Big, dp = 2): number {
+  return round(num, 3, dp);
+}
+
 // Вычитание: current - other
 export function minus<T extends number>(current: T, other: T): T {
   return roundToTwo(Big(current).minus(other)) as T;

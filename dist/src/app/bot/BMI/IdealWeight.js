@@ -98,7 +98,10 @@ const formulas = [
 ];
 function calcIdealWeight(height, gender) {
     const values = formulas.map(f => f(height, gender));
-    return parseNumber_1.roundToTwo(stats_lite_1.median(values), 0);
+    const avg = parseNumber_1.roundToTwo(stats_lite_1.median(values), 0);
+    const min = parseNumber_1.roundDown(Math.min(...values), 0);
+    const max = parseNumber_1.roundUp(Math.max(...values), 0);
+    return { avg, min, max };
 }
 exports.calcIdealWeight = calcIdealWeight;
 //# sourceMappingURL=IdealWeight.js.map

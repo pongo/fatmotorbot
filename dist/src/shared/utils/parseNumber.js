@@ -20,6 +20,17 @@ function roundToTwo(num, dp = 2) {
     return parseFloat(big_js_1.default(num).toFixed(dp));
 }
 exports.roundToTwo = roundToTwo;
+function round(num, roundingMode, dp = 2) {
+    return parseFloat(big_js_1.default(num).round(dp, roundingMode).toFixed(dp));
+}
+function roundDown(num, dp = 2) {
+    return round(num, 0, dp);
+}
+exports.roundDown = roundDown;
+function roundUp(num, dp = 2) {
+    return round(num, 3, dp);
+}
+exports.roundUp = roundUp;
 function minus(current, other) {
     return roundToTwo(big_js_1.default(current).minus(other));
 }

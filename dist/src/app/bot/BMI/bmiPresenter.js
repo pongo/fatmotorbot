@@ -42,7 +42,7 @@ function presentBMI(data) {
     if (data.case === 'need-user-info')
         return 'Для расчета ИМТ не хватает данных. Укажи их при помощи /info';
     const { bmi, healthyRange, categoryName, ideal, suggest } = data;
-    return `ИМТ: ${bmi} — ${interpretCategory[categoryName]} ${healthy()}. А твой идеальный вес: ${ideal} кг.`;
+    return `ИМТ: ${bmi} — ${interpretCategory[categoryName]} ${healthy()}. А твой идеальный вес: ${presentIdeal()}.`;
     function healthy() {
         const [hLower, hUpper] = healthyRange;
         const range = `от ${hLower} до ${hUpper} кг`;
@@ -60,6 +60,9 @@ function presentBMI(data) {
     function diffKg(to) {
         const action = to >= 0 ? 'набрать' : 'сбросить';
         return `${action} ${Math.abs(to)} кг`;
+    }
+    function presentIdeal() {
+        return `${ideal.avg} кг (${ideal.min}–${ideal.max})`;
     }
 }
 //# sourceMappingURL=bmiPresenter.js.map

@@ -87,8 +87,8 @@ describe('Ideal Weight calculation', () => {
 
 describe('calcIdealWeight()', () => {
   it('should return average ideal weight', () => {
-    assert.equal(calcIdealWeight(cm(171), 'male'), 66);
-    assert.equal(calcIdealWeight(cm(165), 'female'), 58);
-    assert.equal(calcIdealWeight(cm(164), 'female'), 57);
+    assert.deepEqual(calcIdealWeight(cm(171), 'male'), { avg: 66, min: 63, max: 68 });
+    assert.deepEqual(calcIdealWeight(cm(165), 'female'), { avg: 58, min: 54, max: 62 });
+    assert.deepEqual(calcIdealWeight(cm(164), 'female'), { avg: 57, min: 53, max: 64 });
   });
 });

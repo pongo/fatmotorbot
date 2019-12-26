@@ -6,7 +6,7 @@
  */
 import { getHealthyRange } from 'src/app/bot/BMI/BMI';
 import { Cm, Gender, Kg } from 'src/app/shared/types';
-import { roundToTwo } from 'src/shared/utils/parseNumber';
+import { roundDown, roundToTwo, roundUp } from 'src/shared/utils/parseNumber';
 import { median } from 'stats-lite';
 
 export function broca(height: Cm, gender: Gender): Kg {
@@ -104,7 +104,16 @@ const formulas = [
   tetona,
 ];
 
-export function calcIdealWeight(height: Cm, gender: Gender): Kg {
+export type IdealWeight = {
+  avg: Kg;
+  min: Kg;
+  max: Kg;
+};
+
+export function calcIdealWeight(height: Cm, gender: Gender): IdealWeight {
   const values = formulas.map(f => f(height, gender));
-  return roundToTwo(median(values), 0) as Kg;
+  const avg = roundToTwo(median(values), 0) as Kg;
+  const min = roundDown(Math.min(...values), 0) as Kg;
+  const max = roundUp(Math.max(...values), 0) as Kg;
+  return { avg, min, max };
 }
