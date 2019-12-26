@@ -18,7 +18,8 @@ describe('Bugs', () => {
 async function getBMIResult(gender: Gender, height: number, weight: number) {
   const userInfo: UserInfo = { gender, height: cm(height) };
   const repo: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(userInfo) };
-  const infoUseCase = new InfoUseCase(repo);
+  const weightRepo = { getCurrent: sinon.fake.throws('') };
+  const infoUseCase = new InfoUseCase(repo, weightRepo);
   const usecase = new BMIUseCase(infoUseCase);
   return usecase.get(u(1), kg(weight));
 }

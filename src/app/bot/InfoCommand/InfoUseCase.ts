@@ -1,5 +1,6 @@
 import { SlonikError } from 'slonik';
-import { BMIResult, calcBMIResult } from 'src/app/bot/BMI/BMIUseCase';
+import { calcBMIResult } from 'src/app/bot/BMI/calcBMIResult';
+import { BMIResult } from 'src/app/bot/BMI/types';
 import { IInfoRepository, UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
 import { IWeightRepositoryGetCurrent } from 'src/app/bot/WeightCommand/WeightRepository';
 import { InvalidFormatError } from 'src/app/shared/errors';

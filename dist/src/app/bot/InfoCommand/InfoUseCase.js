@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BMIUseCase_1 = require("src/app/bot/BMI/BMIUseCase");
+const calcBMIResult_1 = require("src/app/bot/BMI/calcBMIResult");
 const errors_1 = require("src/app/shared/errors");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");
@@ -28,7 +28,7 @@ class InfoUseCase {
             return addResult;
         const weightResult = await this.weightRepository.getCurrent(userId);
         const weight = weightResult.isErr ? null : weightResult.value;
-        const bmi = weight == null ? null : BMIUseCase_1.calcBMIResult(weight, data);
+        const bmi = weight == null ? null : calcBMIResult_1.calcBMIResult(weight, data);
         return result_1.Result.ok({ case: 'set', data, bmi });
     }
 }

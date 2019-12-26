@@ -49,7 +49,7 @@ describe('infoPresenter()', () => {
 
     it('valid data', () => {
       assert.equal(
-        infoPresenter(Result.ok({ case: 'set', data: { gender: 'female', height: cm(150) } })),
+        infoPresenter(Result.ok({ case: 'set', data: { gender: 'female', height: cm(150) }, bmi: null })),
         `Сохранил твои данные: женщина, 150 см`,
       );
     });

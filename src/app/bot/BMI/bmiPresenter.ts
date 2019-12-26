@@ -1,6 +1,7 @@
 import { SlonikError } from 'slonik';
 import { BMICategoryName, SuggestedNextDiff } from 'src/app/bot/BMI/BMICategory';
-import { BMIResult, BMIResultOrError } from 'src/app/bot/BMI/BMIUseCase';
+import { BMIResultOrError } from 'src/app/bot/BMI/BMIUseCase';
+import { BMIResult } from 'src/app/bot/BMI/types';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { Kg } from 'src/app/shared/types';
 

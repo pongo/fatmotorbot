@@ -17,6 +17,7 @@ describe('WeightUseCase', () => {
       const repository = {
         add: sinon.fake.returns(Result.ok()),
         getAll: async () => Result.ok([]),
+        getCurrent: sinon.fake.throws(''),
       };
       const usecase = new WeightUseCase(repository, bmiUseCase);
 
@@ -34,7 +35,11 @@ describe('WeightUseCase', () => {
 
     it('should return error on invalid weight', async () => {
       const today = new Date('2019-08-23');
-      const repository = { add: sinon.fake(), getAll: sinon.fake.throws('should not be called') };
+      const repository = {
+        add: sinon.fake(),
+        getAll: sinon.fake.throws('should not be called'),
+        getCurrent: sinon.fake.throws(''),
+      };
       const usecase = new WeightUseCase(repository, bmiUseCase);
 
       const actual = await usecase.add(u(1), today, '');
@@ -52,6 +57,7 @@ describe('WeightUseCase', () => {
       const repository = {
         add: async () => Result.ok(),
         getAll: async () => Result.ok([m(yesterday, kg(20)), m(daysAgo, kg(15))]),
+        getCurrent: sinon.fake.throws(''),
       };
       const usecase = new WeightUseCase(repository, bmiUseCase);
 
@@ -72,7 +78,11 @@ describe('WeightUseCase', () => {
 
   describe('getCurrent()', () => {
     it('should return empty if there is no measures', async () => {
-      const repository = { add: sinon.fake.throws('should not be called'), getAll: async () => Result.ok([]) };
+      const repository = {
+        add: sinon.fake.throws('should not be called'),
+        getAll: async () => Result.ok([]),
+        getCurrent: sinon.fake.throws(''),
+      };
       const usecase = new WeightUseCase(repository, bmiUseCase);
 
       const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
@@ -88,6 +98,7 @@ describe('WeightUseCase', () => {
         const repository = {
           add: sinon.fake.throws('should not be called'),
           getAll: async () => Result.ok([current]),
+          getCurrent: sinon.fake.throws(''),
         };
         const usecase = new WeightUseCase(repository, bmiUseCase);
 
@@ -102,6 +113,7 @@ describe('WeightUseCase', () => {
         const repository = {
           add: sinon.fake.throws('should not be called'),
           getAll: async () => Result.ok([current]),
+          getCurrent: sinon.fake.throws(''),
         };
         const usecase = new WeightUseCase(repository, bmiUseCase);
 
@@ -120,6 +132,7 @@ describe('WeightUseCase', () => {
         const repository = {
           add: sinon.fake.throws('should not be called'),
           getAll: async () => Result.ok([current, m(weekAgo, kg(61))]),
+          getCurrent: sinon.fake.throws(''),
         };
         const usecase = new WeightUseCase(repository, bmiUseCase);
 
@@ -142,6 +155,7 @@ describe('WeightUseCase', () => {
         const repository = {
           add: sinon.fake.throws('should not be called'),
           getAll: async () => Result.ok([current, m(earlier, kg(60)), m(yesterday, kg(64))]),
+          getCurrent: sinon.fake.throws(''),
         };
         const usecase = new WeightUseCase(repository, bmiUseCase);
 

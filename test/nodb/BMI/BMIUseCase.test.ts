@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { BMIResult, BMIUseCase } from 'src/app/bot/BMI/BMIUseCase';
+import { BMIUseCase } from 'src/app/bot/BMI/BMIUseCase';
+import { BMIResult } from 'src/app/bot/BMI/types';
 import { IInfoRepository, UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
 import { InfoUseCase } from 'src/app/bot/InfoCommand/InfoUseCase';
 import { BMI, cm, kg } from 'src/app/shared/types';
@@ -10,7 +11,8 @@ import { u } from 'test/utils';
 describe('BMIUseCase', () => {
   it('no user info', async () => {
     const repo: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(null) };
-    const infoUseCase = new InfoUseCase(repo);
+    const weightRepo = { getCurrent: sinon.fake.throws('') };
+    const infoUseCase = new InfoUseCase(repo, weightRepo);
     const usecase = new BMIUseCase(infoUseCase);
 
     const actual = await usecase.get(u(1), kg(54));
@@ -21,7 +23,8 @@ describe('BMIUseCase', () => {
   it('return bmi data', async () => {
     const userInfo: UserInfo = { gender: 'male', height: cm(171) };
     const repo: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(userInfo) };
-    const infoUseCase = new InfoUseCase(repo);
+    const weightRepo = { getCurrent: sinon.fake.throws('') };
+    const infoUseCase = new InfoUseCase(repo, weightRepo);
     const usecase = new BMIUseCase(infoUseCase);
 
     const actual = await usecase.get(u(1), kg(54));
