@@ -1,7 +1,8 @@
-import { calcBMIResult } from 'src/app/core/BMI/calcBMIResult';
+import { BMIUseCase } from 'src/app/core/BMI/BMIUseCase';
 import { BMIResult } from 'src/app/core/BMI/types';
 import { IInfoRepository, UserInfo } from 'src/app/core/Info/InfoRepository';
-import { IWeightRepositoryGetCurrent } from 'src/app/core/Weight/WeightRepository';
+import { IWeightRepository } from 'src/app/core/Weight/WeightRepository';
+import { WeightCases, WeightUseCase } from 'src/app/core/Weight/WeightUseCase';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { Cm, Gender, TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';
@@ -22,10 +23,15 @@ interface IInfoUseCaseSet {
 interface IInfoUseCase extends IInfoUseCaseGet, IInfoUseCaseSet {}
 
 export class InfoUseCase implements IInfoUseCase {
+  private readonly weightUseCase: WeightUseCase;
+
   constructor(
     private readonly infoRepository: IInfoRepository,
-    private readonly weightRepository: IWeightRepositoryGetCurrent,
-  ) {}
+    readonly weightRepository: IWeightRepository,
+  ) {
+    const bmiUseCase = new BMIUseCase(this);
+    this.weightUseCase = new WeightUseCase(weightRepository, bmiUseCase);
+  }
 
   async get(userId: TelegramUserId): Promise<Result<InfoGetResult, DatabaseError>> {
     console.debug(`InfoUseCase.get(${userId});`);
@@ -46,11 +52,19 @@ export class InfoUseCase implements IInfoUseCase {
     const addResult = await this.infoRepository.set(userId, data);
     if (addResult.isErr) return addResult;
 
-    const weightResult = await this.weightRepository.getCurrent(userId);
-    const weight = weightResult.isErr ? null : weightResult.value;
-    const bmi = weight == null ? null : calcBMIResult(weight, data);
+    const weightResult = await this.weightUseCase.getCurrent(userId, new Date());
+    const bmi = getBmiFromResult();
 
     return Result.ok({ case: 'set', data, bmi });
+
+    function getBmiFromResult() {
+      if (weightResult.isErr) return null;
+      if (weightResult.value.case === WeightCases.currentEmpty) return null;
+
+      const bmiResult = weightResult.value.bmi;
+      if (bmiResult.isErr) return null;
+      return bmiResult.value;
+    }
   }
 }
 
