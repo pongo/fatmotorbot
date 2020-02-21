@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BMI_1 = require("src/app/bot/BMI/BMI");
+const BMI_1 = require("src/app/core/BMI/BMI");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const stats_lite_1 = require("stats-lite");
 function broca(height, gender) {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BMICategory_1 = require("src/app/bot/BMI/BMICategory");
+const BMICategory_1 = require("src/app/core/BMI/BMICategory");
 const BMICalc_1 = require("./BMICalc");
 function getSuggestedWeightDiff(gender, height, weight) {
     const bmi = BMICalc_1.calcBMI(height, weight);

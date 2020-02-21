@@ -1,6 +1,6 @@
 import { differenceInCalendarDays } from 'date-fns';
 import { SlonikError } from 'slonik';
-import { bmiPresenter } from 'src/app/bot/BMI/bmiPresenter';
+import { bmiPresenter } from 'src/app/core/BMI/bmiPresenter';
 import {
   CurrentWeight,
   CurrentWeightDiff,
@@ -9,7 +9,7 @@ import {
   WeightAddedDiff,
   WeightAddedFirst,
   WeightCases,
-} from 'src/app/bot/WeightCommand/WeightUseCase';
+} from 'src/app/core/Weight/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { DateMark, getDateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
 import { Kg, Measure } from 'src/app/shared/types';

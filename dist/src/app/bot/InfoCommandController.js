@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const infoPresenter_1 = require("src/app/bot/InfoCommand/infoPresenter");
-class InfoCommand {
+const infoPresenter_1 = require("src/app/core/Info/infoPresenter");
+class InfoCommandController {
     constructor(usecase, telegram) {
         this.usecase = usecase;
         this.telegram = telegram;
@@ -16,5 +16,5 @@ class InfoCommand {
         await this.telegram.sendMessage(command.chatId, msg, command.messageId);
     }
 }
-exports.InfoCommand = InfoCommand;
-//# sourceMappingURL=InfoCommand.js.map
+exports.InfoCommandController = InfoCommandController;
+//# sourceMappingURL=InfoCommandController.js.map

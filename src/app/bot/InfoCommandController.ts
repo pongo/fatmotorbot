@@ -1,12 +1,12 @@
-import { infoPresenter } from 'src/app/bot/InfoCommand/infoPresenter';
-import { InfoUseCase } from 'src/app/bot/InfoCommand/InfoUseCase';
+import { infoPresenter } from 'src/app/core/Info/infoPresenter';
+import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
 import { TelegramUserId } from 'src/app/shared/types';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
 
 /**
  * Контроллер команды /info
  */
-export class InfoCommand {
+export class InfoCommandController {
   constructor(private readonly usecase: InfoUseCase, private readonly telegram: TelegramGateway) {}
 
   enable() {

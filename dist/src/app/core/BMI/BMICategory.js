@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const big_js_1 = __importDefault(require("big.js"));
-const BMICalc_1 = require("src/app/bot/BMI/BMICalc");
+const BMICalc_1 = require("src/app/core/BMI/BMICalc");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 class BMICategory {
     constructor({ name, position, lowerBMI, upperBMI }) {

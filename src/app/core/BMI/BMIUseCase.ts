@@ -1,7 +1,7 @@
 import { SlonikError } from 'slonik';
-import { calcBMIResult } from 'src/app/bot/BMI/calcBMIResult';
-import { BMIResult } from 'src/app/bot/BMI/types';
-import { IInfoUseCaseGet } from 'src/app/bot/InfoCommand/InfoUseCase';
+import { calcBMIResult } from 'src/app/core/BMI/calcBMIResult';
+import { BMIResult } from 'src/app/core/BMI/types';
+import { IInfoUseCaseGet } from 'src/app/core/Info/InfoUseCase';
 import { Kg, TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 

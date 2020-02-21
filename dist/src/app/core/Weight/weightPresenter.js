@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
 const slonik_1 = require("slonik");
-const bmiPresenter_1 = require("src/app/bot/BMI/bmiPresenter");
+const bmiPresenter_1 = require("src/app/core/BMI/bmiPresenter");
 const errors_1 = require("src/app/shared/errors");
 const measureDifference_1 = require("src/app/shared/measureDifference");
 function weightPresenter(result, now) {

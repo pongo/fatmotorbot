@@ -1,5 +1,5 @@
 import { differenceInCalendarDays, isSameSecond } from 'date-fns';
-import { MeasuresFromNewestToOldest } from 'src/app/bot/WeightCommand/WeightRepository';
+import { MeasuresFromNewestToOldest } from 'src/app/core/Weight/WeightRepository';
 import { Measure } from 'src/app/shared/types';
 import { minus } from 'src/shared/utils/parseNumber';
 

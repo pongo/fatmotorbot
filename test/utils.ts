@@ -1,4 +1,4 @@
-import { MeasuresFromNewestToOldest } from 'src/app/bot/WeightCommand/WeightRepository';
+import { MeasuresFromNewestToOldest } from 'src/app/core/Weight/WeightRepository';
 import { Measure, TelegramUserId } from 'src/app/shared/types';
 
 /**

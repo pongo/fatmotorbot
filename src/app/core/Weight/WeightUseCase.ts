@@ -1,6 +1,6 @@
 import { SlonikError } from 'slonik';
-import { BMIResultOrError, IBMIUseCase } from 'src/app/bot/BMI/BMIUseCase';
-import { IWeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
+import { BMIResultOrError, IBMIUseCase } from 'src/app/core/BMI/BMIUseCase';
+import { IWeightRepository } from 'src/app/core/Weight/WeightRepository';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { measureDifference, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
 import { Kg, Measure, TelegramUserId } from 'src/app/shared/types';

@@ -1,5 +1,5 @@
-import { BMICategoryName, SuggestedWeightDiff } from 'src/app/bot/BMI/BMICategory';
-import { IdealWeight } from 'src/app/bot/BMI/IdealWeight';
+import { BMICategoryName, SuggestedWeightDiff } from 'src/app/core/BMI/BMICategory';
+import { IdealWeight } from 'src/app/core/BMI/IdealWeight';
 import { BMI, Kg } from 'src/app/shared/types';
 
 export type BMIResult =

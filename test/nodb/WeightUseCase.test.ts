@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { BMIResultOrError } from 'src/app/bot/BMI/BMIUseCase';
-import { validateWeight, WeightCases, WeightUseCase } from 'src/app/bot/WeightCommand/WeightUseCase';
+import { BMIResultOrError } from 'src/app/core/BMI/BMIUseCase';
+import { validateWeight, WeightCases, WeightUseCase } from 'src/app/core/Weight/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';

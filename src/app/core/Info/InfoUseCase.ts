@@ -1,8 +1,8 @@
 import { SlonikError } from 'slonik';
-import { calcBMIResult } from 'src/app/bot/BMI/calcBMIResult';
-import { BMIResult } from 'src/app/bot/BMI/types';
-import { IInfoRepository, UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
-import { IWeightRepositoryGetCurrent } from 'src/app/bot/WeightCommand/WeightRepository';
+import { calcBMIResult } from 'src/app/core/BMI/calcBMIResult';
+import { BMIResult } from 'src/app/core/BMI/types';
+import { IInfoRepository, UserInfo } from 'src/app/core/Info/InfoRepository';
+import { IWeightRepositoryGetCurrent } from 'src/app/core/Weight/WeightRepository';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { Cm, Gender, TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';

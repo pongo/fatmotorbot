@@ -1,7 +1,7 @@
 import { SlonikError } from 'slonik';
-import { bmiPresenter } from 'src/app/bot/BMI/bmiPresenter';
-import { BMIResult } from 'src/app/bot/BMI/types';
-import { InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/bot/InfoCommand/InfoUseCase';
+import { bmiPresenter } from 'src/app/core/BMI/bmiPresenter';
+import { BMIResult } from 'src/app/core/BMI/types';
+import { InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/core/Info/InfoUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { Result } from 'src/shared/utils/result';
 import { UserInfo } from './InfoRepository';

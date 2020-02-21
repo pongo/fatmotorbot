@@ -1,9 +1,9 @@
-import { getSuggestedWeightDiff } from 'src/app/bot/BMI/BMI';
-import { calcBMI } from 'src/app/bot/BMI/BMICalc';
-import { getBMICategoryName, getHealthyRange } from 'src/app/bot/BMI/BMICategory';
-import { calcIdealWeight } from 'src/app/bot/BMI/IdealWeight';
-import { BMIResult } from 'src/app/bot/BMI/types';
-import { UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
+import { getSuggestedWeightDiff } from 'src/app/core/BMI/BMI';
+import { calcBMI } from 'src/app/core/BMI/BMICalc';
+import { getBMICategoryName, getHealthyRange } from 'src/app/core/BMI/BMICategory';
+import { calcIdealWeight } from 'src/app/core/BMI/IdealWeight';
+import { BMIResult } from 'src/app/core/BMI/types';
+import { UserInfo } from 'src/app/core/Info/InfoRepository';
 import { Kg } from 'src/app/shared/types';
 
 export function calcBMIResult(weight: Kg, { gender, height }: UserInfo): BMIResult {

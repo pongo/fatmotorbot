@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import { calcBMI, getBMICategoryName, getHealthyRange, getSuggestedWeightDiff } from 'src/app/bot/BMI/BMI';
-import { BMICategoryName } from 'src/app/bot/BMI/BMICategory';
+import { calcBMI, getBMICategoryName, getHealthyRange, getSuggestedWeightDiff } from 'src/app/core/BMI/BMI';
+import { BMICategoryName } from 'src/app/core/BMI/BMICategory';
 import { BMI, cm, kg } from 'src/app/shared/types';
 
 describe('calcBMI()', () => {

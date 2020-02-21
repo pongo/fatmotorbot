@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BMI_1 = require("src/app/bot/BMI/BMI");
-const BMICalc_1 = require("src/app/bot/BMI/BMICalc");
-const BMICategory_1 = require("src/app/bot/BMI/BMICategory");
-const IdealWeight_1 = require("src/app/bot/BMI/IdealWeight");
+const BMI_1 = require("src/app/core/BMI/BMI");
+const BMICalc_1 = require("src/app/core/BMI/BMICalc");
+const BMICategory_1 = require("src/app/core/BMI/BMICategory");
+const IdealWeight_1 = require("src/app/core/BMI/IdealWeight");
 function calcBMIResult(weight, { gender, height }) {
     const bmi = BMICalc_1.calcBMI(height, weight);
     return {

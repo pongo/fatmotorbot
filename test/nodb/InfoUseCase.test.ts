@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { IInfoRepository, UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
-import { InfoSetResult, InfoUseCase, validateData } from 'src/app/bot/InfoCommand/InfoUseCase';
+import { IInfoRepository, UserInfo } from 'src/app/core/Info/InfoRepository';
+import { InfoSetResult, InfoUseCase, validateData } from 'src/app/core/Info/InfoUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { cm, kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';

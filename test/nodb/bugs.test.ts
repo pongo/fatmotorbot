@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { bmiPresenter } from 'src/app/bot/BMI/bmiPresenter';
-import { BMIUseCase } from 'src/app/bot/BMI/BMIUseCase';
-import { IInfoRepository, UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
-import { InfoUseCase } from 'src/app/bot/InfoCommand/InfoUseCase';
+import { bmiPresenter } from 'src/app/core/BMI/bmiPresenter';
+import { BMIUseCase } from 'src/app/core/BMI/BMIUseCase';
+import { IInfoRepository, UserInfo } from 'src/app/core/Info/InfoRepository';
+import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
 import { cm, Gender, kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { u } from 'test/utils';

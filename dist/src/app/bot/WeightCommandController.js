@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BMIUseCase_1 = require("src/app/bot/BMI/BMIUseCase");
-const weightPresenter_1 = require("src/app/bot/WeightCommand/weightPresenter");
-const WeightUseCase_1 = require("src/app/bot/WeightCommand/WeightUseCase");
-class WeightCommand {
+const BMIUseCase_1 = require("src/app/core/BMI/BMIUseCase");
+const weightPresenter_1 = require("src/app/core/Weight/weightPresenter");
+const WeightUseCase_1 = require("src/app/core/Weight/WeightUseCase");
+class WeightCommandController {
     constructor(repository, telegram, infoUseCase) {
         this.repository = repository;
         this.telegram = telegram;
@@ -24,5 +24,5 @@ class WeightCommand {
         await this.telegram.sendMessage(command.chatId, msg, command.messageId);
     }
 }
-exports.WeightCommand = WeightCommand;
-//# sourceMappingURL=WeightCommand.js.map
+exports.WeightCommandController = WeightCommandController;
+//# sourceMappingURL=WeightCommandController.js.map

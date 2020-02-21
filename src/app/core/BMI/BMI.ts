@@ -1,4 +1,4 @@
-import { getBMICategory, SuggestedWeightDiff } from 'src/app/bot/BMI/BMICategory';
+import { getBMICategory, SuggestedWeightDiff } from 'src/app/core/BMI/BMICategory';
 import { Cm, Gender, Kg } from 'src/app/shared/types';
 import { calcBMI } from './BMICalc';
 

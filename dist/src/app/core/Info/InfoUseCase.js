@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const calcBMIResult_1 = require("src/app/bot/BMI/calcBMIResult");
+const calcBMIResult_1 = require("src/app/core/BMI/calcBMIResult");
 const errors_1 = require("src/app/shared/errors");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");

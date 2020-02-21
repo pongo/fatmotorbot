@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { calcBMICoeff } from 'src/app/bot/BMI/BMICalc';
+import { calcBMICoeff } from 'src/app/core/BMI/BMICalc';
 import { BMI, Cm, Gender, Kg } from 'src/app/shared/types';
 import { roundToTwo } from 'src/shared/utils/parseNumber';
 
