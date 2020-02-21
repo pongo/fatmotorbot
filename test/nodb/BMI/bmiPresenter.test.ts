@@ -8,6 +8,7 @@ import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
 import { DatabaseError } from 'src/app/shared/errors';
 import { cm, Gender, kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
+import { WeightRepositoryMockSinon } from 'test/repositoryMocks';
 import { u } from 'test/utils';
 
 describe('bmiPresenter()', () => {
@@ -84,7 +85,7 @@ describe('bmiPresenter()', () => {
 async function getBMIResult(gender: Gender, height: number, weight: number) {
   const userInfo: UserInfo = { gender, height: cm(height) };
   const repo: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(userInfo) };
-  const weightRepo = { getCurrent: sinon.fake.throws('') };
+  const weightRepo = WeightRepositoryMockSinon();
   const infoUseCase = new InfoUseCase(repo, weightRepo);
   const usecase = new BMIUseCase(infoUseCase);
   return usecase.get(u(1), kg(weight));
