@@ -3,6 +3,7 @@ import { calcBMICoeff } from 'src/app/core/BMI/BMICalc';
 import { BMICategoryName, SuggestedNextDiff, SuggestedWeightDiff } from 'src/app/core/BMI/types';
 import { BMI, Cm, Gender, Kg } from 'src/app/shared/types';
 import { roundToTwo } from 'src/shared/utils/parseNumber';
+import { noop } from 'src/shared/utils/utils';
 
 type Position = number;
 type BMICategoryParams = {
@@ -13,8 +14,6 @@ type BMICategoryParams = {
 };
 
 export class BMICategory {
-  static categories: Map<Position, BMICategory> = new Map();
-
   readonly name: BMICategoryName;
   private readonly position: Position;
   private readonly lowerBMI: { [gender in Gender]: BMI };
@@ -25,12 +24,6 @@ export class BMICategory {
     this.position = position;
     this.lowerBMI = lowerBMI;
     this.upperBMI = upperBMI;
-  }
-
-  static getHealthyRange(gender: Gender, height: Cm): [Kg, Kg] {
-    const normal = BMICategory.categories.get(0);
-    if (normal == null) throw Error('normal category not found');
-    return normal.getRangeWeight(gender, height);
   }
 
   inRange(gender: Gender, bmi: BMI): boolean {
@@ -62,7 +55,7 @@ export class BMICategory {
   }
 
   private toHealthy(gender: Gender, height: Cm, weight: Kg): Kg {
-    const [healthyLower, healthyUpper] = BMICategory.getHealthyRange(gender, height);
+    const [healthyLower, healthyUpper] = getHealthyRange(gender, height);
     const healthyWeight = this.position < 0 ? healthyLower : healthyUpper;
     return roundUpKg(Big(healthyWeight).minus(weight));
   }
@@ -71,7 +64,7 @@ export class BMICategory {
     if (this.position === -1 || this.position === 1) return null;
 
     const nextPosition = this.position < 0 ? this.position + 1 : this.position - 1;
-    const next = BMICategory.categories.get(nextPosition);
+    const next = getBMICategoryByPosition(nextPosition);
     if (next == null) {
       throw new Error(`next should be defined. ${JSON.stringify({ gender, height, weight, name: this.name })}`);
     }
@@ -86,25 +79,47 @@ export class BMICategory {
   }
 }
 
-// eslint-disable-next-line fatmotorbot/max-lines-per-function-ignore-nested
-function addCategories() {
+class BMICategories {
+  private readonly categories = new Map<Position, BMICategory>();
+
+  getByPosition(position: Position): BMICategory | undefined {
+    this.checkCategories();
+
+    return this.categories.get(position);
+  }
+
+  getByBMI(gender: Gender, bmi: BMI): BMICategory {
+    this.checkCategories();
+
+    for (const cat of this.categories.values()) {
+      if (cat.inRange(gender, bmi)) return cat;
+    }
+    throw Error(`BMI category not found. gender: "${gender}", bmi: "${bmi}"`);
+  }
+
+  getHealthyRange(gender: Gender, height: Cm): [Kg, Kg] {
+    this.checkCategories();
+
+    const normal = this.categories.get(0);
+    if (normal == null) throw Error('normal category not found');
+    return normal.getRangeWeight(gender, height);
+  }
+
+  private checkCategories() {
+    addCategories(this.categories);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    this.checkCategories = noop;
+  }
+}
+
+function addCategories(categories: Map<Position, BMICategory>) {
   type FemaleBMI = number;
   type MaleBMI = number;
-  const names: [BMICategoryName, [FemaleBMI, MaleBMI]][] = [
-    ['Very severely underweight', [15, 15]],
-    ['Severely underweight', [16, 18]],
-    ['Underweight', [19, 20]],
-    ['Normal', [24, 25]],
-    ['Overweight', [30, 30]],
-    ['Obese I', [35, 35]],
-    ['Obese II', [40, 40]],
-    ['Obese III', [45, 45]],
-    ['Obese IV', [50, 50]],
-    ['Obese V', [60, 60]],
-    ['Obese VI+', [Infinity, Infinity]],
-  ];
+
+  const names = getNames();
   let pos = -3;
   let lower = [-Infinity, -Infinity] as [FemaleBMI, MaleBMI];
+
   for (const [name, upper] of names) {
     addCategory(pos, name, lower, upper);
     lower = upper;
@@ -118,7 +133,7 @@ function addCategories() {
     lowerBMI: [FemaleBMI, MaleBMI],
     upperBMI: [FemaleBMI, MaleBMI],
   ) {
-    BMICategory.categories.set(
+    categories.set(
       position,
       new BMICategory({
         name,
@@ -128,6 +143,28 @@ function addCategories() {
       }),
     );
   }
+
+  function getNames(): [BMICategoryName, [FemaleBMI, MaleBMI]][] {
+    return [
+      ['Very severely underweight', [15, 15]],
+      ['Severely underweight', [16, 18]],
+      ['Underweight', [19, 20]],
+      ['Normal', [24, 25]],
+      ['Overweight', [30, 30]],
+      ['Obese I', [35, 35]],
+      ['Obese II', [40, 40]],
+      ['Obese III', [45, 45]],
+      ['Obese IV', [50, 50]],
+      ['Obese V', [60, 60]],
+      ['Obese VI+', [Infinity, Infinity]],
+    ];
+  }
+}
+
+const bmiCategories = new BMICategories();
+
+function getBMICategoryByPosition(position: Position): BMICategory | undefined {
+  return bmiCategories.getByPosition(position);
 }
 
 export function getBMICategoryName(gender: Gender, bmi: BMI): BMICategoryName {
@@ -135,19 +172,14 @@ export function getBMICategoryName(gender: Gender, bmi: BMI): BMICategoryName {
 }
 
 export function getBMICategory(gender: Gender, bmi: BMI): BMICategory {
-  for (const cat of BMICategory.categories.values()) {
-    if (cat.inRange(gender, bmi)) return cat;
-  }
-  throw Error(`BMI category not found. gender: "${gender}", bmi: "${bmi}"`);
+  return bmiCategories.getByBMI(gender, bmi);
 }
 
 export function getHealthyRange(gender: Gender, height: Cm): [Kg, Kg] {
-  return BMICategory.getHealthyRange(gender, height);
+  return bmiCategories.getHealthyRange(gender, height);
 }
 
 function roundUpKg(value: number | Big): Kg {
   // prettier-ignore
   return parseInt(Big(value).round(0, 3 /* ROUND_UP */).toFixed(), 10) as Kg;
 }
-
-addCategories();
