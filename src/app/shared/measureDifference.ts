@@ -1,6 +1,5 @@
 import { differenceInCalendarDays, isSameSecond } from 'date-fns';
-import { MeasuresFromNewestToOldest } from 'src/app/core/Weight/WeightRepository';
-import { Measure } from 'src/app/shared/types';
+import { Measure, MeasuresFromNewestToOldest, MeasuresFromOldestToNewest } from 'src/app/shared/types';
 import { minus } from 'src/shared/utils/parseNumber';
 
 export type MeasureDifferenceSummary<T extends number> = {
@@ -48,7 +47,7 @@ export function measureDifference<T extends number>(
   previous: MeasuresFromNewestToOldest<T>,
   relativeDate?: Date,
 ): MeasureDifferenceSummary<T> {
-  const sorted = [...previous].reverse(); // reverse() сортирует от самых старых к новым
+  const sorted: MeasuresFromOldestToNewest<T> = [...previous].reverse();
   const result: MeasureDifferenceSummary<T> = {};
 
   for (const { date, value } of sorted) {

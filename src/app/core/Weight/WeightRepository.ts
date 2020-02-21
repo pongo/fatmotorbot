@@ -1,10 +1,8 @@
 import { DatabasePoolType, SlonikError, sql } from 'slonik';
 import { DatabaseError } from 'src/app/shared/errors';
-import { Kg, Measure, MeasureValueType, TelegramUserId } from 'src/app/shared/types';
+import { Kg, MeasuresFromNewestToOldest, MeasureValueType, TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { toTimestamp } from 'src/shared/utils/utils';
-
-export type MeasuresFromNewestToOldest<T extends number> = Measure<T>[];
 
 export interface IWeightRepositoryGetCurrent {
   getCurrent(userId: TelegramUserId): Promise<Result<Kg | null, DatabaseError>>;

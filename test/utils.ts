@@ -1,5 +1,4 @@
-import { MeasuresFromNewestToOldest } from 'src/app/core/Weight/WeightRepository';
-import { Measure, TelegramUserId } from 'src/app/shared/types';
+import { Measure, MeasuresFromNewestToOldest, TelegramUserId } from 'src/app/shared/types';
 
 /**
  * Возвращает новый отсортированный массив.
