@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const slonik_1 = require("slonik");
+const errors_1 = require("src/app/shared/errors");
 const result_1 = require("src/shared/utils/result");
 const utils_1 = require("src/shared/utils/utils");
 const weightValueType = 'weight';
@@ -35,7 +36,7 @@ class WeightRepository {
         }
         catch (e) {
             console.error('WeightRepository.getAll()', e);
-            return result_1.Result.err(e);
+            return result_1.Result.err(new errors_1.DatabaseError(e));
         }
     }
     async getCurrent(userId) {
@@ -53,7 +54,7 @@ class WeightRepository {
         }
         catch (e) {
             console.error('WeightRepository.getCurrent()', e);
-            return result_1.Result.err(e);
+            return result_1.Result.err(new errors_1.DatabaseError(e));
         }
     }
 }

@@ -5,13 +5,14 @@ import { bmiPresenter } from 'src/app/core/BMI/bmiPresenter';
 import { BMIUseCase } from 'src/app/core/BMI/BMIUseCase';
 import { IInfoRepository, UserInfo } from 'src/app/core/Info/InfoRepository';
 import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
+import { DatabaseError } from 'src/app/shared/errors';
 import { cm, Gender, kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { u } from 'test/utils';
 
 describe('bmiPresenter()', () => {
   it('error', () => {
-    assert.equal(bmiPresenter(Result.err(new SlonikError('ops'))), 'ИМТ: <i>ошибка в бд</i>');
+    assert.equal(bmiPresenter(Result.err(new DatabaseError(new SlonikError('ops')))), 'ИМТ: <i>ошибка в бд</i>');
   });
 
   it('need user info', () => {

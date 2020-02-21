@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const slonik_1 = require("slonik");
+const errors_1 = require("src/app/shared/errors");
 const result_1 = require("src/shared/utils/result");
 class InfoRepository {
     constructor(db) {
@@ -19,7 +20,7 @@ class InfoRepository {
         }
         catch (e) {
             console.error('InfoRepository.set()', e);
-            return result_1.Result.err(e);
+            return result_1.Result.err(new errors_1.DatabaseError(e));
         }
     }
     async get(userId) {
@@ -35,7 +36,7 @@ class InfoRepository {
         }
         catch (e) {
             console.error('InfoRepository.get()', e);
-            return result_1.Result.err(e);
+            return result_1.Result.err(new errors_1.DatabaseError(e));
         }
     }
 }

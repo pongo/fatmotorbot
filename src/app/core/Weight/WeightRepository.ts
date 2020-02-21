@@ -1,4 +1,5 @@
 import { DatabasePoolType, SlonikError, sql } from 'slonik';
+import { DatabaseError } from 'src/app/shared/errors';
 import { Kg, Measure, MeasureValueType, TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { toTimestamp } from 'src/shared/utils/utils';
@@ -6,12 +7,12 @@ import { toTimestamp } from 'src/shared/utils/utils';
 export type MeasuresFromNewestToOldest<T extends number> = Measure<T>[];
 
 export interface IWeightRepositoryGetCurrent {
-  getCurrent(userId: TelegramUserId): Promise<Result<Kg | null, SlonikError>>;
+  getCurrent(userId: TelegramUserId): Promise<Result<Kg | null, DatabaseError>>;
 }
 
 export interface IWeightRepository extends IWeightRepositoryGetCurrent {
   add(userId: TelegramUserId, weight: Kg, date: Date): Promise<Result>;
-  getAll(userId: TelegramUserId): Promise<Result<MeasuresFromNewestToOldest<Kg>, SlonikError>>;
+  getAll(userId: TelegramUserId): Promise<Result<MeasuresFromNewestToOldest<Kg>, DatabaseError>>;
 }
 
 const weightValueType: MeasureValueType = 'weight';
@@ -19,7 +20,7 @@ const weightValueType: MeasureValueType = 'weight';
 export class WeightRepository implements IWeightRepository {
   constructor(private readonly db: DatabasePoolType) {}
 
-  async add(userId: TelegramUserId, weight: Kg, date: Date): Promise<Result<undefined, SlonikError>> {
+  async add(userId: TelegramUserId, weight: Kg, date: Date): Promise<Result<undefined, DatabaseError>> {
     try {
       await this.db.any(sql`
         INSERT INTO measures (user_id, value_type, value, date)
@@ -32,7 +33,7 @@ export class WeightRepository implements IWeightRepository {
     }
   }
 
-  async getAll(userId: TelegramUserId): Promise<Result<MeasuresFromNewestToOldest<Kg>, SlonikError>> {
+  async getAll(userId: TelegramUserId): Promise<Result<MeasuresFromNewestToOldest<Kg>, DatabaseError>> {
     try {
       const result = await this.db.any(sql`
         SELECT date, value
@@ -46,11 +47,11 @@ export class WeightRepository implements IWeightRepository {
       return Result.ok(measures);
     } catch (e) {
       console.error('WeightRepository.getAll()', e);
-      return Result.err(e);
+      return Result.err(new DatabaseError(e as SlonikError));
     }
   }
 
-  async getCurrent(userId: TelegramUserId): Promise<Result<Kg | null, SlonikError>> {
+  async getCurrent(userId: TelegramUserId): Promise<Result<Kg | null, DatabaseError>> {
     try {
       const result = await this.db.maybeOne(sql`
         SELECT value
@@ -64,7 +65,7 @@ export class WeightRepository implements IWeightRepository {
       return Result.ok(current);
     } catch (e) {
       console.error('WeightRepository.getCurrent()', e);
-      return Result.err(e);
+      return Result.err(new DatabaseError(e as SlonikError));
     }
   }
 }

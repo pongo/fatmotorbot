@@ -1,5 +1,4 @@
 import { differenceInCalendarDays } from 'date-fns';
-import { SlonikError } from 'slonik';
 import { bmiPresenter } from 'src/app/core/BMI/bmiPresenter';
 import {
   CurrentWeight,
@@ -10,7 +9,7 @@ import {
   WeightAddedFirst,
   WeightCases,
 } from 'src/app/core/Weight/WeightUseCase';
-import { InvalidFormatError } from 'src/app/shared/errors';
+import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { DateMark, getDateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
 import { Kg, Measure } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
@@ -35,9 +34,9 @@ export function weightPresenter(result: Result<CurrentWeight | WeightAdded>, now
   }
 }
 
-function presentError(error: InvalidFormatError | SlonikError | Error) {
+function presentError(error: InvalidFormatError | DatabaseError | Error) {
   if (error instanceof InvalidFormatError) return 'Какой-какой у тебя вес?';
-  if (error instanceof SlonikError) return 'Что-то не так с базой данных. Вызывайте техподдержку!';
+  if (error instanceof DatabaseError) return 'Что-то не так с базой данных. Вызывайте техподдержку!';
   return 'Ошибочная ошибка';
 }
 

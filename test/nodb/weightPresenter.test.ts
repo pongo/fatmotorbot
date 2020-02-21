@@ -8,7 +8,7 @@ import {
   WeightAddedDiff,
   WeightCases,
 } from 'src/app/core/Weight/WeightUseCase';
-import { InvalidFormatError } from 'src/app/shared/errors';
+import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
@@ -21,7 +21,7 @@ describe('weightPresenter()', () => {
       assert.equal(weightPresenter(Result.err(new InvalidFormatError()), new Date()), 'Какой-какой у тебя вес?');
 
       assert.equal(
-        weightPresenter(Result.err(new SlonikError('oops')), new Date()),
+        weightPresenter(Result.err(new DatabaseError(new SlonikError('ops'))), new Date()),
         'Что-то не так с базой данных. Вызывайте техподдержку!',
       );
     });
@@ -53,7 +53,7 @@ describe('weightPresenter()', () => {
   describe('getCurrent()', () => {
     it('error', () => {
       assert.equal(
-        weightPresenter(Result.err(new SlonikError('oops')), new Date()),
+        weightPresenter(Result.err(new DatabaseError(new SlonikError('ops'))), new Date()),
         'Что-то не так с базой данных. Вызывайте техподдержку!',
       );
     });

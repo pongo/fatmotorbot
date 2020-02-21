@@ -1,7 +1,6 @@
-import { SlonikError } from 'slonik';
 import { BMIResultOrError, IBMIUseCase } from 'src/app/core/BMI/BMIUseCase';
 import { IWeightRepository } from 'src/app/core/Weight/WeightRepository';
-import { InvalidFormatError } from 'src/app/shared/errors';
+import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { measureDifference, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
 import { Kg, Measure, TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';
@@ -30,7 +29,7 @@ export type WeightAddedDiff = {
   bmi: BMIResultOrError;
 };
 
-type WeightAddedErrors = InvalidFormatError | SlonikError;
+type WeightAddedErrors = InvalidFormatError | DatabaseError;
 
 export type CurrentWeight = CurrentWeightEmpty | CurrentWeightFirst | CurrentWeightDiff;
 
@@ -74,7 +73,7 @@ export class WeightUseCase {
     return Result.ok({ case: WeightCases.addDiff, diff, weight, bmi });
   }
 
-  async getCurrent(userId: TelegramUserId, now: Date): Promise<Result<CurrentWeight, SlonikError>> {
+  async getCurrent(userId: TelegramUserId, now: Date): Promise<Result<CurrentWeight, DatabaseError>> {
     console.debug(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
 
     const measuresResult = await this.weightRepository.getAll(userId);

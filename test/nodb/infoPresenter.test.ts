@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { SlonikError } from 'slonik';
 import { infoPresenter } from 'src/app/core/Info/infoPresenter';
-import { InvalidFormatError } from 'src/app/shared/errors';
+import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { cm } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
@@ -9,7 +9,7 @@ describe('infoPresenter()', () => {
   describe('get()', () => {
     it('error', () => {
       assert.equal(
-        infoPresenter(Result.err(new SlonikError('oops'))),
+        infoPresenter(Result.err(new DatabaseError(new SlonikError('ops')))),
         'Что-то не так с базой данных. Вызывайте техподдержку!',
       );
     });

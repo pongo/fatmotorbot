@@ -1,8 +1,7 @@
-import { SlonikError } from 'slonik';
 import { BMICategoryName, SuggestedNextDiff } from 'src/app/core/BMI/BMICategory';
 import { BMIResultOrError } from 'src/app/core/BMI/BMIUseCase';
 import { BMIResult } from 'src/app/core/BMI/types';
-import { InvalidFormatError } from 'src/app/shared/errors';
+import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { Kg } from 'src/app/shared/types';
 
 export function bmiPresenter(result: BMIResultOrError): string {
@@ -10,8 +9,10 @@ export function bmiPresenter(result: BMIResultOrError): string {
   return presentBMI(result.value);
 }
 
-function presentError(error: InvalidFormatError | SlonikError | Error) {
-  if (error instanceof SlonikError) return 'ИМТ: <i>ошибка в бд</i>';
+function presentError(error: InvalidFormatError | DatabaseError | Error) {
+  if (error instanceof DatabaseError) {
+    return 'ИМТ: <i>ошибка в бд</i>';
+  }
   return 'ИМТ: Ошибочная ошибка';
 }
 

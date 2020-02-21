@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const slonik_1 = require("slonik");
 const bmiPresenter_1 = require("src/app/core/BMI/bmiPresenter");
 const errors_1 = require("src/app/shared/errors");
 const result_1 = require("src/shared/utils/result");
@@ -26,7 +25,7 @@ function presentNoData() {
 function presentError(error) {
     if (error instanceof errors_1.InvalidFormatError)
         return 'Не могу разобрать твои каракули. Пиши точно как я указал';
-    if (error instanceof slonik_1.SlonikError)
+    if (error instanceof errors_1.DatabaseError)
         return 'Что-то не так с базой данных. Вызывайте техподдержку!';
     return 'Ошибочная ошибка';
 }

@@ -1,11 +1,11 @@
-import { SlonikError } from 'slonik';
 import { calcBMIResult } from 'src/app/core/BMI/calcBMIResult';
 import { BMIResult } from 'src/app/core/BMI/types';
 import { IInfoUseCaseGet } from 'src/app/core/Info/InfoUseCase';
+import { DatabaseError } from 'src/app/shared/errors';
 import { Kg, TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
-export type BMIResultOrError = Result<BMIResult, SlonikError>;
+export type BMIResultOrError = Result<BMIResult, DatabaseError>;
 
 export interface IBMIUseCase {
   get(userId: TelegramUserId, weight: Kg): Promise<BMIResultOrError>;

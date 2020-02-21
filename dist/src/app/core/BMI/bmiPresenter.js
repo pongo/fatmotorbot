@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const slonik_1 = require("slonik");
+const errors_1 = require("src/app/shared/errors");
 function bmiPresenter(result) {
     if (result.isErr)
         return presentError(result.error);
@@ -8,8 +8,9 @@ function bmiPresenter(result) {
 }
 exports.bmiPresenter = bmiPresenter;
 function presentError(error) {
-    if (error instanceof slonik_1.SlonikError)
+    if (error instanceof errors_1.DatabaseError) {
         return 'ИМТ: <i>ошибка в бд</i>';
+    }
     return 'ИМТ: Ошибочная ошибка';
 }
 const interpretCategory = {

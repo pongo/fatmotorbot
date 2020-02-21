@@ -1,8 +1,7 @@
-import { SlonikError } from 'slonik';
 import { bmiPresenter } from 'src/app/core/BMI/bmiPresenter';
 import { BMIResult } from 'src/app/core/BMI/types';
 import { InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/core/Info/InfoUseCase';
-import { InvalidFormatError } from 'src/app/shared/errors';
+import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { Result } from 'src/shared/utils/result';
 import { UserInfo } from './InfoRepository';
 
@@ -23,9 +22,9 @@ function presentNoData() {
 `.trim();
 }
 
-function presentError(error: InvalidFormatError | SlonikError | Error) {
+function presentError(error: InvalidFormatError | DatabaseError | Error) {
   if (error instanceof InvalidFormatError) return 'Не могу разобрать твои каракули. Пиши точно как я указал';
-  if (error instanceof SlonikError) return 'Что-то не так с базой данных. Вызывайте техподдержку!';
+  if (error instanceof DatabaseError) return 'Что-то не так с базой данных. Вызывайте техподдержку!';
   return 'Ошибочная ошибка';
 }
 
