@@ -20,7 +20,7 @@ describe('WeightRepository', () => {
           AND state = 'idle in transaction';
 
         DROP TABLE IF EXISTS measures;
-        CREATE TEMP TABLE IF NOT EXISTS measures
+        CREATE UNLOGGED TABLE IF NOT EXISTS measures
         (
             measure_id serial PRIMARY KEY,
             user_id    integer        NOT NULL,
@@ -28,6 +28,14 @@ describe('WeightRepository', () => {
             value      decimal(20, 2) NOT NULL, --- 20 is big enough
             date       timestamptz DEFAULT CURRENT_TIMESTAMP
         );
+      `);
+    });
+  });
+
+  after(async () => {
+    await db.connect(async connection => {
+      return connection.query(sql`
+        DROP TABLE IF EXISTS measures;
       `);
     });
   });
