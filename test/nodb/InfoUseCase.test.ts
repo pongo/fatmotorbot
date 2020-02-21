@@ -16,7 +16,7 @@ describe('InfoUseCase', () => {
 
       const actual = await usecase.get(u(1));
 
-      assert.deepEqual(actual, Result.ok({ case: 'get:none' as const }));
+      assert.deepEqual(actual, Result.ok({ case: 'get:no-user-info' as const }));
     });
 
     it('should return user data', async () => {

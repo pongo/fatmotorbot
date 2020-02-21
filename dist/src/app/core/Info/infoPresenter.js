@@ -6,7 +6,7 @@ const result_1 = require("src/shared/utils/result");
 function infoPresenter(result) {
     if (result.isErr)
         return presentError(result.error);
-    if (result.value.case === 'get:none')
+    if (result.value.case === 'get:no-user-info')
         return presentNoData();
     if (result.value.case === 'get')
         return presentUserData(result.value.data);

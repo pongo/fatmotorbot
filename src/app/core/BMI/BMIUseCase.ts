@@ -18,7 +18,7 @@ export class BMIUseCase implements IBMIUseCase {
     const infoResult = await this.infoUseCase.get(userId);
     if (infoResult.isErr) return infoResult;
 
-    if (infoResult.value.case === 'get:none') return Result.ok({ case: 'need-user-info' });
+    if (infoResult.value.case === 'get:no-user-info') return Result.ok({ case: 'need-user-info' });
 
     const result = calcBMIResult(weight, infoResult.value.data);
     return Result.ok(result);

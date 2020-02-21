@@ -10,7 +10,7 @@ class BMIUseCase {
         const infoResult = await this.infoUseCase.get(userId);
         if (infoResult.isErr)
             return infoResult;
-        if (infoResult.value.case === 'get:none')
+        if (infoResult.value.case === 'get:no-user-info')
             return result_1.Result.ok({ case: 'need-user-info' });
         const result = calcBMIResult_1.calcBMIResult(weight, infoResult.value.data);
         return result_1.Result.ok(result);

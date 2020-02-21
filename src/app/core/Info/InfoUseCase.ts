@@ -9,7 +9,7 @@ import { Result } from 'src/shared/utils/result';
 
 export type InfoAddErrors = InvalidFormatError | DatabaseError;
 export type InfoSetResult = { case: 'set'; data: UserInfo; bmi: null | BMIResult };
-export type InfoGetResult = { case: 'get:none' } | { case: 'get'; data: UserInfo };
+export type InfoGetResult = { case: 'get:no-user-info' } | { case: 'get'; data: UserInfo };
 
 export interface IInfoUseCaseGet {
   get(userId: TelegramUserId): Promise<Result<InfoGetResult, DatabaseError>>;
@@ -33,7 +33,7 @@ export class InfoUseCase implements IInfoUseCase {
     const result = await this.infoRepository.get(userId);
     if (result.isErr) return result;
 
-    if (result.value == null) return Result.ok({ case: 'get:none' });
+    if (result.value == null) return Result.ok({ case: 'get:no-user-info' });
     return Result.ok({ case: 'get', data: result.value });
   }
 

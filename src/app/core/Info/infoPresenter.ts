@@ -7,7 +7,7 @@ import { UserInfo } from './InfoRepository';
 
 export function infoPresenter(result: Result<InfoGetResult | InfoSetResult, InfoAddErrors>) {
   if (result.isErr) return presentError(result.error);
-  if (result.value.case === 'get:none') return presentNoData();
+  if (result.value.case === 'get:no-user-info') return presentNoData();
   if (result.value.case === 'get') return presentUserData(result.value.data);
   return presentSetData(result.value.data, result.value.bmi);
 }

@@ -15,7 +15,7 @@ class InfoUseCase {
         if (result.isErr)
             return result;
         if (result.value == null)
-            return result_1.Result.ok({ case: 'get:none' });
+            return result_1.Result.ok({ case: 'get:no-user-info' });
         return result_1.Result.ok({ case: 'get', data: result.value });
     }
     async set(userId, args) {

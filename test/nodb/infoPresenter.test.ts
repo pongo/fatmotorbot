@@ -16,7 +16,7 @@ describe('infoPresenter()', () => {
 
     it('no data', () => {
       assert.equal(
-        infoPresenter(Result.ok({ case: 'get:none' as const })),
+        infoPresenter(Result.ok({ case: 'get:no-user-info' as const })),
         `
 Укажи свои данные командой: /info пол рост, где:
 • пол — м или ж
