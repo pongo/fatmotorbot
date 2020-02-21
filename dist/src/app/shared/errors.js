@@ -8,4 +8,13 @@ class InvalidFormatError extends StacklessError_1.StacklessError {
     }
 }
 exports.InvalidFormatError = InvalidFormatError;
+class DatabaseError extends StacklessError_1.StacklessError {
+    constructor(slonikError) {
+        super('DatabaseError');
+        this.slonikError = slonikError;
+        this.name = 'DatabaseError';
+        this.message = slonikError.message;
+    }
+}
+exports.DatabaseError = DatabaseError;
 //# sourceMappingURL=errors.js.map

@@ -2,14 +2,13 @@
 /* tslint:disable:no-require-imports no-submodule-imports no-unsafe-any */
 require('module-alias')({ base: process.cwd() });
 // ...
-import { InfoCommand } from 'src/app/bot/InfoCommand/InfoCommand';
-import { InfoRepository } from 'src/app/bot/InfoCommand/InfoRepository';
-import { InfoUseCase } from 'src/app/bot/InfoCommand/InfoUseCase';
-import { WeightCommand } from 'src/app/bot/WeightCommand/WeightCommand';
-import { WeightRepository } from 'src/app/bot/WeightCommand/WeightRepository';
+import { InfoCommandController } from 'src/app/bot/InfoCommandController';
+import { WeightCommandController } from 'src/app/bot/WeightCommandController';
+import { InfoRepository } from 'src/app/core/Info/InfoRepository';
+import { WeightRepository } from 'src/app/core/Weight/WeightRepository';
+import { parseConfig } from 'src/config';
 import { createDB } from 'src/shared/infrastructure/createDB';
 import { TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
-import { parseConfig } from './config';
 
 async function main() {
   const config = parseConfig();
@@ -18,10 +17,9 @@ async function main() {
 
   const infoRepository = new InfoRepository(db);
   const weightRepository = new WeightRepository(db);
-  const infoUseCase = new InfoUseCase(infoRepository, weightRepository);
-  new InfoCommand(infoUseCase, telegram).enable();
-  new WeightCommand(weightRepository, telegram, infoUseCase).enable();
 
+  new InfoCommandController(telegram, infoRepository, weightRepository).enable();
+  new WeightCommandController(telegram, weightRepository, infoRepository).enable();
   telegram.onStartCommand(`Команды:\n\n/weight 45.5 — добавляет вес.\n/weight — предыдущие замеры.`);
 
   await telegram.connect({
@@ -32,4 +30,4 @@ async function main() {
   console.log('Bot started');
 }
 
-main(); // tslint:disable-line:no-floating-promises
+main().catch(console.error);

@@ -206,7 +206,7 @@ module.exports = {
             }
 
             if (skipBlankLines) {
-              if (line.match(/^\s*$/u)) {
+              if (line != null && line.match(/^\s*$/u)) {
                 continue;
               }
             }

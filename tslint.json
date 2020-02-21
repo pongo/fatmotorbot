@@ -69,13 +69,7 @@
     "no-void-expression": [true, "ignore-arrow-function-shorthand"],
     "object-literal-sort-keys": false,
     "object-shorthand-properties-first": false,
-    "ordered-imports": [
-      true,
-      {
-        "import-sources-order": "case-insensitive",
-        "named-imports-order": "any"
-      }
-    ],
+    "ordered-imports": false,
     "prefer-array-literal": false,
     "prefer-type-cast": false,
     "space-before-function-paren": [
@@ -100,6 +94,7 @@
     "quotemark": false,
     "no-shadowed-variable": false,
     "align": false,
-    "no-non-null-assertion": false
+    "no-non-null-assertion": false,
+    "no-unsafe-any": false
   }
 }

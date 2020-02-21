@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import { sql } from 'slonik';
-import { InfoRepository, UserInfo } from 'src/app/bot/InfoCommand/InfoRepository';
+import { InfoRepository } from 'src/app/core/Info/InfoRepository';
+import { UserInfo } from 'src/app/core/Info/types';
 import { cm } from 'src/app/shared/types';
 import { parseConfig } from 'src/config';
 import { createDB } from 'src/shared/infrastructure/createDB';
@@ -20,7 +21,7 @@ describe('InfoRepository', () => {
           AND state = 'idle in transaction';
 
         DROP TABLE IF EXISTS users;
-        CREATE TEMP TABLE IF NOT EXISTS users
+        CREATE UNLOGGED TABLE IF NOT EXISTS users
         (
             user_id integer NOT NULL
                 CONSTRAINT users_pk
@@ -28,6 +29,14 @@ describe('InfoRepository', () => {
             gender  varchar(255),
             height  numeric(20, 2)
         );
+      `);
+    });
+  });
+
+  after(async () => {
+    await db.connect(async connection => {
+      return connection.query(sql`
+        DROP TABLE IF EXISTS users;
       `);
     });
   });
