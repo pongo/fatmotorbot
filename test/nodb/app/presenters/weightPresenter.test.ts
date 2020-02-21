@@ -1,13 +1,8 @@
 import { assert } from 'chai';
 import { SlonikError } from 'slonik';
-import { BMIResultOrError } from 'src/app/core/BMI/BMIUseCase';
+import { BMIResultOrError } from 'src/app/core/BMI/types';
+import { CurrentWeightDiff, CurrentWeightFirst, WeightAddedDiff, WeightCases } from 'src/app/core/Weight/types';
 import { weightPresenter } from 'src/app/core/Weight/weightPresenter';
-import {
-  CurrentWeightDiff,
-  CurrentWeightFirst,
-  WeightAddedDiff,
-  WeightCases,
-} from 'src/app/core/Weight/WeightUseCase';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';

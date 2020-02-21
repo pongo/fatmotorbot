@@ -1,20 +1,18 @@
 import { BMIUseCase } from 'src/app/core/BMI/BMIUseCase';
-import { BMIResult } from 'src/app/core/BMI/types';
-import { IInfoRepository, UserInfo } from 'src/app/core/Info/InfoRepository';
-import { IWeightRepository } from 'src/app/core/Weight/WeightRepository';
-import { WeightCases, WeightUseCase } from 'src/app/core/Weight/WeightUseCase';
+import {
+  IInfoRepository,
+  IInfoUseCaseGet,
+  InfoAddErrors,
+  InfoGetResult,
+  InfoSetResult,
+  UserInfo,
+} from 'src/app/core/Info/types';
+import { IWeightRepository, WeightCases } from 'src/app/core/Weight/types';
+import { WeightUseCase } from 'src/app/core/Weight/WeightUseCase';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { Cm, Gender, TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
-
-export type InfoAddErrors = InvalidFormatError | DatabaseError;
-export type InfoSetResult = { case: 'set'; data: UserInfo; bmi: null | BMIResult };
-export type InfoGetResult = { case: 'get:no-user-info' } | { case: 'get'; data: UserInfo };
-
-export interface IInfoUseCaseGet {
-  get(userId: TelegramUserId): Promise<Result<InfoGetResult, DatabaseError>>;
-}
 
 interface IInfoUseCaseSet {
   set(userId: TelegramUserId, args: string[]): Promise<Result<InfoSetResult, InfoAddErrors>>;

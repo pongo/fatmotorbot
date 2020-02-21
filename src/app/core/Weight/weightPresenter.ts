@@ -8,7 +8,7 @@ import {
   WeightAddedDiff,
   WeightAddedFirst,
   WeightCases,
-} from 'src/app/core/Weight/WeightUseCase';
+} from 'src/app/core/Weight/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { DateMark, getDateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
 import { Kg, Measure } from 'src/app/shared/types';

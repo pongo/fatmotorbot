@@ -1,54 +1,16 @@
-import { BMIResultOrError, IBMIUseCase } from 'src/app/core/BMI/BMIUseCase';
-import { IWeightRepository } from 'src/app/core/Weight/WeightRepository';
+import { IBMIUseCase } from 'src/app/core/BMI/types';
+import {
+  CurrentWeight,
+  IWeightRepository,
+  WeightAdded,
+  WeightAddedErrors,
+  WeightCases,
+} from 'src/app/core/Weight/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
-import { measureDifference, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
-import { Kg, Measure, TelegramUserId } from 'src/app/shared/types';
+import { measureDifference } from 'src/app/shared/measureDifference';
+import { Kg, TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
-
-export const enum WeightCases {
-  addFirst = 'add:first',
-  addDiff = 'add:diff',
-  currentEmpty = 'current:empty',
-  currentFirst = 'current:first',
-  currentDiff = 'current:diff',
-}
-
-export type WeightAdded = WeightAddedFirst | WeightAddedDiff;
-
-export type WeightAddedFirst = {
-  case: WeightCases.addFirst;
-  weight: Kg;
-  bmi: BMIResultOrError;
-};
-
-export type WeightAddedDiff = {
-  case: WeightCases.addDiff;
-  diff: MeasureDifferenceSummary<Kg>;
-  weight: Kg;
-  bmi: BMIResultOrError;
-};
-
-type WeightAddedErrors = InvalidFormatError | DatabaseError;
-
-export type CurrentWeight = CurrentWeightEmpty | CurrentWeightFirst | CurrentWeightDiff;
-
-export type CurrentWeightEmpty = {
-  case: WeightCases.currentEmpty;
-};
-
-export type CurrentWeightFirst = {
-  case: WeightCases.currentFirst;
-  current: Measure<Kg>;
-  bmi: BMIResultOrError;
-};
-
-export type CurrentWeightDiff = {
-  case: WeightCases.currentDiff;
-  current: Measure<Kg>;
-  diff: MeasureDifferenceSummary<Kg>;
-  bmi: BMIResultOrError;
-};
 
 export class WeightUseCase {
   constructor(private readonly weightRepository: IWeightRepository, private readonly bmiUseCase: IBMIUseCase) {}

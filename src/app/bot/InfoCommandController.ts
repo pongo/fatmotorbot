@@ -1,7 +1,7 @@
 import { infoPresenter } from 'src/app/core/Info/infoPresenter';
-import { IInfoRepository } from 'src/app/core/Info/InfoRepository';
 import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
-import { IWeightRepository } from 'src/app/core/Weight/WeightRepository';
+import { IInfoRepository } from 'src/app/core/Info/types';
+import { IWeightRepository } from 'src/app/core/Weight/types';
 import { TelegramUserId } from 'src/app/shared/types';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
 

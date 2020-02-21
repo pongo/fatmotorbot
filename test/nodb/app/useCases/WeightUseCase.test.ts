@@ -1,8 +1,10 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { BMIResultOrError, BMIUseCase } from 'src/app/core/BMI/BMIUseCase';
+import { BMIUseCase } from 'src/app/core/BMI/BMIUseCase';
+import { BMIResultOrError } from 'src/app/core/BMI/types';
 import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
-import { validateWeight, WeightCases, WeightUseCase } from 'src/app/core/Weight/WeightUseCase';
+import { WeightCases } from 'src/app/core/Weight/types';
+import { validateWeight, WeightUseCase } from 'src/app/core/Weight/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';

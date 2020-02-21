@@ -3,7 +3,7 @@ import { calcBMI } from 'src/app/core/BMI/BMICalc';
 import { getBMICategoryName, getHealthyRange } from 'src/app/core/BMI/BMICategory';
 import { calcIdealWeight } from 'src/app/core/BMI/IdealWeight';
 import { BMIResult } from 'src/app/core/BMI/types';
-import { UserInfo } from 'src/app/core/Info/InfoRepository';
+import { UserInfo } from 'src/app/core/Info/types';
 import { Kg } from 'src/app/shared/types';
 
 export function calcBMIResult(weight: Kg, { gender, height }: UserInfo): BMIResult {

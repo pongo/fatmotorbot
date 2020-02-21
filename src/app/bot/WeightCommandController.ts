@@ -1,8 +1,8 @@
 import { BMIUseCase } from 'src/app/core/BMI/BMIUseCase';
 import { InfoRepository } from 'src/app/core/Info/InfoRepository';
 import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
+import { IWeightRepository } from 'src/app/core/Weight/types';
 import { weightPresenter } from 'src/app/core/Weight/weightPresenter';
-import { IWeightRepository } from 'src/app/core/Weight/WeightRepository';
 import { WeightUseCase } from 'src/app/core/Weight/WeightUseCase';
 import { TelegramUserId } from 'src/app/shared/types';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';

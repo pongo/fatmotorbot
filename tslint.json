@@ -94,6 +94,7 @@
     "quotemark": false,
     "no-shadowed-variable": false,
     "align": false,
-    "no-non-null-assertion": false
+    "no-non-null-assertion": false,
+    "no-unsafe-any": false
   }
 }

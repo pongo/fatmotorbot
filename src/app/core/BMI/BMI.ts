@@ -1,5 +1,6 @@
 import { calcBMI } from 'src/app/core/BMI/BMICalc';
-import { getBMICategory, SuggestedWeightDiff } from 'src/app/core/BMI/BMICategory';
+import { getBMICategory } from 'src/app/core/BMI/BMICategory';
+import { SuggestedWeightDiff } from 'src/app/core/BMI/types';
 import { Cm, Gender, Kg } from 'src/app/shared/types';
 
 export function getSuggestedWeightDiff(gender: Gender, height: Cm, weight: Kg): SuggestedWeightDiff {

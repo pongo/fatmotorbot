@@ -1,17 +1,9 @@
 import { DatabasePoolType, SlonikError, sql } from 'slonik';
+import { IWeightRepository } from 'src/app/core/Weight/types';
 import { DatabaseError } from 'src/app/shared/errors';
 import { Kg, MeasuresFromNewestToOldest, MeasureValueType, TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { toTimestamp } from 'src/shared/utils/utils';
-
-export interface IWeightRepositoryGetCurrent {
-  getCurrent(userId: TelegramUserId): Promise<Result<Kg | null, DatabaseError>>;
-}
-
-export interface IWeightRepository extends IWeightRepositoryGetCurrent {
-  add(userId: TelegramUserId, weight: Kg, date: Date): Promise<Result>;
-  getAll(userId: TelegramUserId): Promise<Result<MeasuresFromNewestToOldest<Kg>, DatabaseError>>;
-}
 
 const weightValueType: MeasureValueType = 'weight';
 

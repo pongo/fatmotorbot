@@ -1,17 +1,8 @@
 import { DatabasePoolType, SlonikError, sql } from 'slonik';
+import { IInfoRepository, UserInfo } from 'src/app/core/Info/types';
 import { DatabaseError } from 'src/app/shared/errors';
-import { Cm, Gender, TelegramUserId } from 'src/app/shared/types';
+import { TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
-
-export type UserInfo = {
-  gender: Gender;
-  height: Cm;
-};
-
-export interface IInfoRepository {
-  get(userId: TelegramUserId): Promise<Result<UserInfo | null, DatabaseError>>;
-  set(userId: TelegramUserId, data: UserInfo): Promise<Result<undefined, DatabaseError>>;
-}
 
 export class InfoRepository implements IInfoRepository {
   constructor(private readonly db: DatabasePoolType) {}
