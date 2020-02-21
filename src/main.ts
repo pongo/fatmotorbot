@@ -7,9 +7,9 @@ import { WeightCommandController } from 'src/app/bot/WeightCommandController';
 import { InfoRepository } from 'src/app/core/Info/InfoRepository';
 import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
 import { WeightRepository } from 'src/app/core/Weight/WeightRepository';
+import { parseConfig } from 'src/config';
 import { createDB } from 'src/shared/infrastructure/createDB';
 import { TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
-import { parseConfig } from './config';
 
 async function main() {
   const config = parseConfig();
@@ -32,4 +32,4 @@ async function main() {
   console.log('Bot started');
 }
 
-main(); // tslint:disable-line:no-floating-promises
+main().catch(console.error);

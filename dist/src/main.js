@@ -6,9 +6,9 @@ const WeightCommandController_1 = require("src/app/bot/WeightCommandController")
 const InfoRepository_1 = require("src/app/core/Info/InfoRepository");
 const InfoUseCase_1 = require("src/app/core/Info/InfoUseCase");
 const WeightRepository_1 = require("src/app/core/Weight/WeightRepository");
+const config_1 = require("src/config");
 const createDB_1 = require("src/shared/infrastructure/createDB");
 const TelegramGateway_1 = require("src/shared/infrastructure/TelegramGateway");
-const config_1 = require("./config");
 async function main() {
     const config = config_1.parseConfig();
     const db = createDB_1.createDB(config.DATABASE_URL);
@@ -26,5 +26,5 @@ async function main() {
     });
     console.log('Bot started');
 }
-main();
+main().catch(console.error);
 //# sourceMappingURL=main.js.map
