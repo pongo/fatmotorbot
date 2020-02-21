@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const BMIUseCase_1 = require("src/app/core/BMI/BMIUseCase");
+const InfoUseCase_1 = require("src/app/core/Info/InfoUseCase");
 const weightPresenter_1 = require("src/app/core/Weight/weightPresenter");
 const WeightUseCase_1 = require("src/app/core/Weight/WeightUseCase");
 class WeightCommandController {
-    constructor(repository, telegram, infoUseCase) {
-        this.repository = repository;
+    constructor(telegram, weightRepository, infoRepository) {
         this.telegram = telegram;
-        this.infoUseCase = infoUseCase;
-        const bmiUseCase = new BMIUseCase_1.BMIUseCase(this.infoUseCase);
-        this.usecase = new WeightUseCase_1.WeightUseCase(this.repository, bmiUseCase);
+        const infoUseCase = new InfoUseCase_1.InfoUseCase(infoRepository, weightRepository);
+        const bmiUseCase = new BMIUseCase_1.BMIUseCase(infoUseCase);
+        this.usecase = new WeightUseCase_1.WeightUseCase(weightRepository, bmiUseCase);
     }
     enable() {
         this.telegram.onCommand('weight', this.weightHandler.bind(this));

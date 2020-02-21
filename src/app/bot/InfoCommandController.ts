@@ -1,5 +1,7 @@
 import { infoPresenter } from 'src/app/core/Info/infoPresenter';
+import { IInfoRepository } from 'src/app/core/Info/InfoRepository';
 import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
+import { IWeightRepository } from 'src/app/core/Weight/WeightRepository';
 import { TelegramUserId } from 'src/app/shared/types';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
 
@@ -7,7 +9,15 @@ import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGate
  * Контроллер команды /info
  */
 export class InfoCommandController {
-  constructor(private readonly usecase: InfoUseCase, private readonly telegram: TelegramGateway) {}
+  private readonly usecase: InfoUseCase;
+
+  constructor(
+    private readonly telegram: TelegramGateway,
+    infoRepository: IInfoRepository,
+    weightRepository: IWeightRepository,
+  ) {
+    this.usecase = new InfoUseCase(infoRepository, weightRepository);
+  }
 
   enable() {
     this.telegram.onCommand('info', this.infoHandler.bind(this));

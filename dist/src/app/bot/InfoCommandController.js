@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const infoPresenter_1 = require("src/app/core/Info/infoPresenter");
+const InfoUseCase_1 = require("src/app/core/Info/InfoUseCase");
 class InfoCommandController {
-    constructor(usecase, telegram) {
-        this.usecase = usecase;
+    constructor(telegram, infoRepository, weightRepository) {
         this.telegram = telegram;
+        this.usecase = new InfoUseCase_1.InfoUseCase(infoRepository, weightRepository);
     }
     enable() {
         this.telegram.onCommand('info', this.infoHandler.bind(this));
