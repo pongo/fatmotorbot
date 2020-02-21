@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/src/main.js",
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
     "build": "rimraf dist/* && tsc --newLine lf",
     "eslint": "eslint ./src/**/*.ts ./test/**/*.ts",
