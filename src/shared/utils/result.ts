@@ -1,4 +1,4 @@
-import { StacklessError } from './StacklessError';
+import { StacklessError } from 'src/shared/utils/StacklessError';
 
 export type Ok<T> = {
   readonly isOk: true;

@@ -1,9 +1,9 @@
 import { bmiPresenter } from 'src/app/core/BMI/bmiPresenter';
 import { BMIResult } from 'src/app/core/BMI/types';
+import { UserInfo } from 'src/app/core/Info/InfoRepository';
 import { InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/core/Info/InfoUseCase';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { Result } from 'src/shared/utils/result';
-import { UserInfo } from './InfoRepository';
 
 export function infoPresenter(result: Result<InfoGetResult | InfoSetResult, InfoAddErrors>) {
   if (result.isErr) return presentError(result.error);

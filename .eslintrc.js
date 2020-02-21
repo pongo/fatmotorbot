@@ -79,6 +79,7 @@ module.exports = {
     "complexity": ["warn", 10], // suck: 5, default: 20
     "fatmotorbot/max-lines-per-function-ignore-nested": ["warn", 20],
     "func-names": 0,
+    "import/extensions": 0,
     "import/no-extraneous-dependencies": ["error", { devDependencies: ["**/*.test.ts"] }],
     "import/no-unresolved": 0,
     "import/prefer-default-export": 0,
@@ -100,6 +101,6 @@ module.exports = {
     "no-useless-constructor": 0,
   },
   settings: {
-    "import/core-modules": ["telegram-typings"],
+    "import/core-modules": ["telegram-typings"]
   },
 };

@@ -17,7 +17,7 @@ async function main() {
       port: parseInt(dbConfig.port!, 10),
     },
     'migrations',
-    { logger: console.log }, // eslint-disable-line @typescript-eslint/unbound-method
+    { logger: console.log },
   );
 }
 
