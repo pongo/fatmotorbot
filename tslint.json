@@ -96,6 +96,7 @@
     "align": false,
     "no-non-null-assertion": false,
     "no-unsafe-any": false,
-    "no-empty": false
+    "no-empty": false,
+    "no-consecutive-blank-lines": false
   }
 }

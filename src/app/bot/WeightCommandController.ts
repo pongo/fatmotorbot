@@ -1,9 +1,9 @@
-import { BMIUseCase } from 'src/app/core/BMI/BMIUseCase';
-import { InfoRepository } from 'src/app/core/Info/InfoRepository';
-import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
-import { IWeightRepository } from 'src/app/core/Weight/types';
-import { weightPresenter } from 'src/app/core/Weight/weightPresenter';
-import { WeightUseCase } from 'src/app/core/Weight/WeightUseCase';
+import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
+import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
+import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
+import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
+import { weightPresenter } from 'src/app/core/useCases/Weight/weightPresenter';
+import { WeightUseCase } from 'src/app/core/useCases/Weight/WeightUseCase';
 import { TelegramUserId } from 'src/app/shared/types';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
 
@@ -19,7 +19,7 @@ export class WeightCommandController {
     infoRepository: InfoRepository,
   ) {
     const infoUseCase = new InfoUseCase(infoRepository, weightRepository);
-    const bmiUseCase = new BMIUseCase(infoUseCase);
+    const bmiUseCase = new GetBMIUseCase(infoUseCase);
     this.usecase = new WeightUseCase(weightRepository, bmiUseCase);
   }
 

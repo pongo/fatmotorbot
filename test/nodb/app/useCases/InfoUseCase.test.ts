@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { assert } from 'chai';
 import sinon, { SinonSpy } from 'sinon';
-import { InfoUseCase, validateData } from 'src/app/core/Info/InfoUseCase';
-import { InfoSetResult, UserInfo } from 'src/app/core/Info/types';
+import { UserInfo } from 'src/app/core/repositories/InfoRepository';
+import { InfoUseCase, validateData } from 'src/app/core/useCases/Info/InfoUseCase';
+import { InfoSetResult } from 'src/app/core/useCases/Info/types';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { cm, Kg, kg, MeasuresFromNewestToOldest } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';

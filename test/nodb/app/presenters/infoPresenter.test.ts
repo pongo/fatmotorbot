@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { SlonikError } from 'slonik';
-import { infoPresenter } from 'src/app/core/Info/infoPresenter';
+import { infoPresenter } from 'src/app/core/useCases/Info/infoPresenter';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { cm } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';

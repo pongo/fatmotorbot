@@ -80,6 +80,7 @@ module.exports = {
     "fatmotorbot/max-lines-per-function-ignore-nested": ["warn", 20],
     "func-names": 0,
     "import/extensions": 0,
+    "import/no-cycle": "error",
     "import/no-extraneous-dependencies": ["error", { devDependencies: ["**/*.test.ts"] }],
     "import/no-unresolved": 0,
     "import/prefer-default-export": 0,

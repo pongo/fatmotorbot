@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { bmiPresenter } from 'src/app/core/BMI/bmiPresenter';
-import { BMIUseCase } from 'src/app/core/BMI/BMIUseCase';
-import { InfoUseCase } from 'src/app/core/Info/InfoUseCase';
-import { IInfoRepository, UserInfo } from 'src/app/core/Info/types';
+import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
+import { bmiPresenter } from 'src/app/core/useCases/BMI/bmiPresenter';
+import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
+import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
 import { cm, Gender, kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { WeightRepositoryMockSinon } from 'test/repositoryMocks';
@@ -21,6 +21,6 @@ async function getBMIResult(gender: Gender, height: number, weight: number) {
   const repo: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(userInfo) };
   const weightRepo = WeightRepositoryMockSinon();
   const infoUseCase = new InfoUseCase(repo, weightRepo);
-  const usecase = new BMIUseCase(infoUseCase);
+  const usecase = new GetBMIUseCase(infoUseCase);
   return usecase.get(u(1), kg(weight));
 }

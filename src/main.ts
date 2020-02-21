@@ -4,8 +4,8 @@ require('module-alias')({ base: process.cwd() });
 // ...
 import { InfoCommandController } from 'src/app/bot/InfoCommandController';
 import { WeightCommandController } from 'src/app/bot/WeightCommandController';
-import { InfoRepository } from 'src/app/core/Info/InfoRepository';
-import { WeightRepository } from 'src/app/core/Weight/WeightRepository';
+import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
+import { WeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { parseConfig } from 'src/config';
 import { createDB } from 'src/shared/infrastructure/createDB';
 import { TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';

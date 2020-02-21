@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const infoPresenter_1 = require("src/app/core/Info/infoPresenter");
-const InfoUseCase_1 = require("src/app/core/Info/InfoUseCase");
+const infoPresenter_1 = require("src/app/core/useCases/Info/infoPresenter");
+const InfoUseCase_1 = require("src/app/core/useCases/Info/InfoUseCase");
 class InfoCommandController {
     constructor(telegram, infoRepository, weightRepository) {
         this.telegram = telegram;
