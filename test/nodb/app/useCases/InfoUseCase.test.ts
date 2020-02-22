@@ -58,7 +58,14 @@ describe('InfoUseCase', () => {
 
       sinon.assert.calledOnce(infoRepo.set as SinonSpy);
       sinon.assert.calledWith(infoRepo.set as SinonSpy, u(1), data);
-      assert.deepEqual<Result<InfoSetResult>>(actual, Result.ok({ case: 'set' as const, data, bmi: null }));
+      assert.deepEqual<Result<InfoSetResult>>(
+        actual,
+        Result.ok({
+          case: 'set' as const,
+          data,
+          bmi: { case: 'need-user-weight' },
+        }),
+      );
     });
 
     it('should add valid data to db with weight', async () => {

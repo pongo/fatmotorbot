@@ -21,6 +21,6 @@ async function getBMIResult(gender: Gender, height: number, weight: number) {
   const repo: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(userInfo) };
   const weightRepo = WeightRepositoryMockSinon();
   const infoUseCase = new InfoUseCase(repo, weightRepo);
-  const usecase = new GetBMIUseCase(infoUseCase);
-  return usecase.get(u(1), kg(weight));
+  const usecase = new GetBMIUseCase(infoUseCase, weightRepo);
+  return usecase.get(u(1), { weight: kg(weight) });
 }

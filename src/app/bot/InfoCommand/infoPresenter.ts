@@ -1,6 +1,6 @@
 import { UserInfo } from 'src/app/core/repositories/InfoRepository';
 import { bmiPresenter } from 'src/app/bot/bmiPresenter';
-import { BMIResult } from 'src/app/core/useCases/BMI/GetBMIUseCase';
+import { BMIResult } from 'src/app/core/useCases/BMI/utils/types';
 import { InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/core/useCases/Info/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { Result } from 'src/shared/utils/result';

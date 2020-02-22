@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { SlonikError } from 'slonik';
-import { BMIResultOrError } from 'src/app/core/useCases/BMI/GetBMIUseCase';
+import { BMIResultOrError } from 'src/app/core/useCases/BMI/utils/types';
 import {
   CurrentWeightDiff,
   CurrentWeightFirst,

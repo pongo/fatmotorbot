@@ -8,7 +8,7 @@ class WeightCommandController {
     constructor(telegram, weightRepository, infoRepository) {
         this.telegram = telegram;
         const infoUseCase = new InfoUseCase_1.InfoUseCase(infoRepository, weightRepository);
-        const bmiUseCase = new GetBMIUseCase_1.GetBMIUseCase(infoUseCase);
+        const bmiUseCase = new GetBMIUseCase_1.GetBMIUseCase(infoUseCase, weightRepository);
         this.usecase = new WeightUseCase_1.WeightUseCase(weightRepository, bmiUseCase);
     }
     enable() {

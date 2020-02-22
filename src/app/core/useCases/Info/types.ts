@@ -1,5 +1,5 @@
 import type { UserInfo } from 'src/app/core/repositories/InfoRepository';
-import type { BMIResult } from 'src/app/core/useCases/BMI/GetBMIUseCase';
+import { BMIResult } from 'src/app/core/useCases/BMI/utils/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import type { TelegramUserId } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';

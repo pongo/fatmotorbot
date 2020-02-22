@@ -22,7 +22,7 @@ export class WeightUseCase {
     const addResult = await this.weightRepository.add(userId, weight, date);
     if (addResult.isErr) return addResult;
 
-    const bmi = await this.bmiUseCase.get(userId, weight);
+    const bmi = await this.bmiUseCase.get(userId, { weight });
     const previousMeasures = previousMeasuresResult.value;
     if (previousMeasures.length === 0) return Result.ok({ case: WeightCases.addFirst, weight, bmi });
 
@@ -40,7 +40,7 @@ export class WeightUseCase {
     if (measures.length === 0) return Result.ok({ case: WeightCases.currentEmpty });
 
     const current = measures[0];
-    const bmi = await this.bmiUseCase.get(userId, current.value);
+    const bmi = await this.bmiUseCase.get(userId, { weight: current.value });
     if (measures.length === 1) return Result.ok({ case: WeightCases.currentFirst, current, bmi });
 
     const diff = measureDifference(current, measures, now);

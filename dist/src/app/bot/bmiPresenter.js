@@ -39,6 +39,8 @@ const interpretNextCategory = {
     'Obese VI+': '❌',
 };
 function presentBMI(data) {
+    if (data.case === 'need-user-weight')
+        return 'Сперва нужно взвеситься';
     if (data.case === 'need-user-info')
         return 'Для расчета ИМТ не хватает данных. Укажи их при помощи /info';
     const { bmi, healthyRange, categoryName, ideal, suggest } = data;

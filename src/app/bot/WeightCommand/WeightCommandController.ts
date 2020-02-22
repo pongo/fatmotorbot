@@ -19,7 +19,7 @@ export class WeightCommandController {
     infoRepository: InfoRepository,
   ) {
     const infoUseCase = new InfoUseCase(infoRepository, weightRepository);
-    const bmiUseCase = new GetBMIUseCase(infoUseCase);
+    const bmiUseCase = new GetBMIUseCase(infoUseCase, weightRepository);
     this.usecase = new WeightUseCase(weightRepository, bmiUseCase);
   }
 

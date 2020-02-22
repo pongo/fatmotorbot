@@ -5,17 +5,36 @@ const BMICategory_1 = require("src/app/core/useCases/BMI/utils/BMICategory");
 const IdealWeight_1 = require("src/app/shared/IdealWeight");
 const result_1 = require("src/shared/utils/result");
 class GetBMIUseCase {
-    constructor(infoUseCase) {
+    constructor(infoUseCase, weightRepository) {
         this.infoUseCase = infoUseCase;
+        this.weightRepository = weightRepository;
     }
-    async get(userId, weight) {
-        const infoResult = await this.infoUseCase.get(userId);
-        if (infoResult.isErr)
-            return infoResult;
-        if (infoResult.value.case === 'get:no-user-info')
-            return result_1.Result.ok({ case: 'need-user-info' });
-        const result = calcBMIResult(weight, infoResult.value.data);
-        return result_1.Result.ok(result);
+    async get(userId, data = {}) {
+        let weight;
+        let userInfo;
+        if (data.userInfo == null) {
+            const infoResult = await this.infoUseCase.get(userId);
+            if (infoResult.isErr)
+                return infoResult;
+            if (infoResult.value.case === 'get:no-user-info')
+                return result_1.Result.ok({ case: 'need-user-info' });
+            userInfo = infoResult.value.data;
+        }
+        else {
+            userInfo = data.userInfo;
+        }
+        if (data.weight == null) {
+            const weightResult = await this.weightRepository.getCurrent(userId);
+            if (weightResult.isErr)
+                return weightResult;
+            if (weightResult.value == null)
+                return result_1.Result.ok({ case: 'need-user-weight' });
+            weight = weightResult.value;
+        }
+        else {
+            weight = data.weight;
+        }
+        return result_1.Result.ok(calcBMIResult(weight, userInfo));
     }
 }
 exports.GetBMIUseCase = GetBMIUseCase;

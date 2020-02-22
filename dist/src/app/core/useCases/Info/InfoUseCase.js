@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
-const WeightUseCase_1 = require("src/app/core/useCases/Weight/WeightUseCase");
 const errors_1 = require("src/app/shared/errors");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");
@@ -9,8 +8,7 @@ class InfoUseCase {
     constructor(infoRepository, weightRepository) {
         this.infoRepository = infoRepository;
         this.weightRepository = weightRepository;
-        const bmiUseCase = new GetBMIUseCase_1.GetBMIUseCase(this);
-        this.weightUseCase = new WeightUseCase_1.WeightUseCase(weightRepository, bmiUseCase);
+        this.bmiUseCase = new GetBMIUseCase_1.GetBMIUseCase(this, weightRepository);
     }
     async get(userId) {
         console.debug(`InfoUseCase.get(${userId});`);
@@ -29,19 +27,9 @@ class InfoUseCase {
         const addResult = await this.infoRepository.set(userId, data);
         if (addResult.isErr)
             return addResult;
-        const weightResult = await this.weightUseCase.getCurrent(userId, new Date());
-        const bmi = getBmiFromResult();
+        const bmiResult = await this.bmiUseCase.get(userId, { userInfo: data });
+        const bmi = bmiResult.isErr ? null : bmiResult.value;
         return result_1.Result.ok({ case: 'set', data, bmi });
-        function getBmiFromResult() {
-            if (weightResult.isErr)
-                return null;
-            if (weightResult.value.case === "current:empty")
-                return null;
-            const bmiResult = weightResult.value.bmi;
-            if (bmiResult.isErr)
-                return null;
-            return bmiResult.value;
-        }
     }
 }
 exports.InfoUseCase = InfoUseCase;
