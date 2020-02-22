@@ -7,7 +7,7 @@ import {
   WeightAddedDiff,
   WeightCases,
 } from 'src/app/core/useCases/Weight/types';
-import { weightPresenter } from 'src/app/core/useCases/Weight/weightPresenter';
+import { weightPresenter } from 'src/app/bot/WeightCommand/weightPresenter';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';

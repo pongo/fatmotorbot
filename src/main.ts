@@ -2,8 +2,8 @@
 /* tslint:disable:no-require-imports no-submodule-imports no-unsafe-any */
 require('module-alias')({ base: process.cwd() });
 // ...
-import { InfoCommandController } from 'src/app/bot/InfoCommandController';
-import { WeightCommandController } from 'src/app/bot/WeightCommandController';
+import { InfoCommandController } from 'src/app/bot/InfoCommand/InfoCommandController';
+import { WeightCommandController } from 'src/app/bot/WeightCommand/WeightCommandController';
 import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
 import { WeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { parseConfig } from 'src/config';

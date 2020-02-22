@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
 const InfoUseCase_1 = require("src/app/core/useCases/Info/InfoUseCase");
-const weightPresenter_1 = require("src/app/core/useCases/Weight/weightPresenter");
+const weightPresenter_1 = require("src/app/bot/WeightCommand/weightPresenter");
 const WeightUseCase_1 = require("src/app/core/useCases/Weight/WeightUseCase");
 class WeightCommandController {
     constructor(telegram, weightRepository, infoRepository) {

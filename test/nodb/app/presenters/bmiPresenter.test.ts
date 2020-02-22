@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { SlonikError } from 'slonik';
 import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
-import { bmiPresenter } from 'src/app/core/useCases/BMI/bmiPresenter';
+import { bmiPresenter } from 'src/app/bot/bmiPresenter';
 import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
 import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
 import { DatabaseError } from 'src/app/shared/errors';

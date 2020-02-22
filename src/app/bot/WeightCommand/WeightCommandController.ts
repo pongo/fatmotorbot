@@ -2,7 +2,7 @@ import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
 import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
-import { weightPresenter } from 'src/app/core/useCases/Weight/weightPresenter';
+import { weightPresenter } from 'src/app/bot/WeightCommand/weightPresenter';
 import { WeightUseCase } from 'src/app/core/useCases/Weight/WeightUseCase';
 import { TelegramUserId } from 'src/app/shared/types';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';

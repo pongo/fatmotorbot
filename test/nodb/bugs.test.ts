@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
-import { bmiPresenter } from 'src/app/core/useCases/BMI/bmiPresenter';
+import { bmiPresenter } from 'src/app/bot/bmiPresenter';
 import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
 import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
 import { cm, Gender, kg } from 'src/app/shared/types';

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 require('module-alias')({ base: process.cwd() });
-const InfoCommandController_1 = require("src/app/bot/InfoCommandController");
-const WeightCommandController_1 = require("src/app/bot/WeightCommandController");
+const InfoCommandController_1 = require("src/app/bot/InfoCommand/InfoCommandController");
+const WeightCommandController_1 = require("src/app/bot/WeightCommand/WeightCommandController");
 const InfoRepository_1 = require("src/app/core/repositories/InfoRepository");
 const WeightRepository_1 = require("src/app/core/repositories/WeightRepository");
 const config_1 = require("src/config");

@@ -1,5 +1,5 @@
 import { UserInfo } from 'src/app/core/repositories/InfoRepository';
-import { bmiPresenter } from 'src/app/core/useCases/BMI/bmiPresenter';
+import { bmiPresenter } from 'src/app/bot/bmiPresenter';
 import { BMIResult } from 'src/app/core/useCases/BMI/GetBMIUseCase';
 import { InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/core/useCases/Info/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';

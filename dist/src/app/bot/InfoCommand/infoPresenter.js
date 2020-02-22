@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const bmiPresenter_1 = require("src/app/core/useCases/BMI/bmiPresenter");
+const bmiPresenter_1 = require("src/app/bot/bmiPresenter");
 const errors_1 = require("src/app/shared/errors");
 const result_1 = require("src/shared/utils/result");
 function infoPresenter(result) {

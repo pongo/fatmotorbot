@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const date_fns_1 = require("date-fns");
-const bmiPresenter_1 = require("src/app/core/useCases/BMI/bmiPresenter");
+const bmiPresenter_1 = require("src/app/bot/bmiPresenter");
 const errors_1 = require("src/app/shared/errors");
 const measureDifference_1 = require("src/app/shared/measureDifference");
 function weightPresenter(result, now) {

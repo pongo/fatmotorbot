@@ -1,5 +1,5 @@
 import { differenceInCalendarDays } from 'date-fns';
-import { bmiPresenter } from 'src/app/core/useCases/BMI/bmiPresenter';
+import { bmiPresenter } from 'src/app/bot/bmiPresenter';
 import {
   CurrentWeight,
   CurrentWeightDiff,
