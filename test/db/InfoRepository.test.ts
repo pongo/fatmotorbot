@@ -1,7 +1,6 @@
 import { assert } from 'chai';
 import { sql } from 'slonik';
-import { InfoRepository } from 'src/app/core/Info/InfoRepository';
-import { UserInfo } from 'src/app/core/Info/types';
+import { InfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
 import { cm } from 'src/app/shared/types';
 import { parseConfig } from 'src/config';
 import { createDB } from 'src/shared/infrastructure/createDB';

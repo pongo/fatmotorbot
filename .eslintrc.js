@@ -34,7 +34,6 @@ module.exports = {
             lintFile: "./test/tslint.json",
           },
         ],
-        "fatmotorbot/max-lines-per-function-ignore-nested": 0,
         "max-lines-per-function": 0,
         "max-nested-callbacks": 0,
         "no-unused-expressions": 0,
@@ -48,7 +47,7 @@ module.exports = {
     sourceType: "module",
     tsconfigRootDir: ".",
   },
-  plugins: ["@typescript-eslint", "@typescript-eslint/tslint", "import", "eslint-plugin-fatmotorbot"],
+  plugins: ["@typescript-eslint", "@typescript-eslint/tslint", "import"],
   reportUnusedDisableDirectives: true,
   root: true,
   rules: {
@@ -77,9 +76,9 @@ module.exports = {
       },
     ],
     "complexity": ["warn", 10], // suck: 5, default: 20
-    "fatmotorbot/max-lines-per-function-ignore-nested": ["warn", 20],
     "func-names": 0,
     "import/extensions": 0,
+    "import/no-cycle": "error",
     "import/no-extraneous-dependencies": ["error", { devDependencies: ["**/*.test.ts"] }],
     "import/no-unresolved": 0,
     "import/prefer-default-export": 0,

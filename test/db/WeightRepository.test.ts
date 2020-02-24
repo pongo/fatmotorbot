@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { sql } from 'slonik';
-import { WeightRepository } from 'src/app/core/Weight/WeightRepository';
+import { WeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { kg } from 'src/app/shared/types';
 import { parseConfig } from 'src/config';
 import { createDB } from 'src/shared/infrastructure/createDB';

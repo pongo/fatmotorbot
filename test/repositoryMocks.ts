@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-ignore */
 import sinon from 'sinon';
-import { IInfoRepository, UserInfo } from 'src/app/core/Info/types';
-import { IWeightRepository } from 'src/app/core/Weight/types';
+import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
+import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { DatabaseError } from 'src/app/shared/errors';
 import { Kg, MeasuresFromNewestToOldest } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
