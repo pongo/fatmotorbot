@@ -29,22 +29,33 @@ export function devine(height: Cm, gender: Gender): Kg {
   return roundToTwo(weight) as Kg;
 }
 
-export function robinson(height: Cm, gender: Gender): Kg {
+type BaseFormulaKoeffs = {
+  k1: {
+    m: number;
+    f: number;
+  };
+  k2: {
+    m: number;
+    f: number;
+  };
+};
+
+function baseFormula(height: Cm, gender: Gender, koeffs: BaseFormulaKoeffs): Kg {
   const d = 0.393701 * height - 60;
-  const weight = gender === 'male' ? 52 + 1.9 * d : 49 + 1.7 * d;
+  const weight = gender === 'male' ? koeffs.k1.m + koeffs.k2.m * d : koeffs.k1.f + koeffs.k2.f * d;
   return roundToTwo(weight) as Kg;
+}
+
+export function robinson(height: Cm, gender: Gender): Kg {
+  return baseFormula(height, gender, { k1: { m: 52, f: 49 }, k2: { m: 1.9, f: 1.7 } });
 }
 
 export function miller(height: Cm, gender: Gender): Kg {
-  const d = 0.393701 * height - 60;
-  const weight = gender === 'male' ? 56.2 + 1.41 * d : 53.1 + 1.36 * d;
-  return roundToTwo(weight) as Kg;
+  return baseFormula(height, gender, { k1: { m: 56.2, f: 53.1 }, k2: { m: 1.41, f: 1.36 } });
 }
 
 export function hamwi(height: Cm, gender: Gender): Kg {
-  const d = 0.393701 * height - 60;
-  const weight = gender === 'male' ? 48 + 2.7 * d : 45.5 + 2.2 * d;
-  return roundToTwo(weight) as Kg;
+  return baseFormula(height, gender, { k1: { m: 48, f: 45.5 }, k2: { m: 2.7, f: 2.2 } });
 }
 
 export function lemmens(height: Cm): Kg {

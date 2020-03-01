@@ -21,22 +21,21 @@ function devine(height, gender) {
     return parseNumber_1.roundToTwo(weight);
 }
 exports.devine = devine;
-function robinson(height, gender) {
+function baseFormula(height, gender, koeffs) {
     const d = 0.393701 * height - 60;
-    const weight = gender === 'male' ? 52 + 1.9 * d : 49 + 1.7 * d;
+    const weight = gender === 'male' ? koeffs.k1.m + koeffs.k2.m * d : koeffs.k1.f + koeffs.k2.f * d;
     return parseNumber_1.roundToTwo(weight);
+}
+function robinson(height, gender) {
+    return baseFormula(height, gender, { k1: { m: 52, f: 49 }, k2: { m: 1.9, f: 1.7 } });
 }
 exports.robinson = robinson;
 function miller(height, gender) {
-    const d = 0.393701 * height - 60;
-    const weight = gender === 'male' ? 56.2 + 1.41 * d : 53.1 + 1.36 * d;
-    return parseNumber_1.roundToTwo(weight);
+    return baseFormula(height, gender, { k1: { m: 56.2, f: 53.1 }, k2: { m: 1.41, f: 1.36 } });
 }
 exports.miller = miller;
 function hamwi(height, gender) {
-    const d = 0.393701 * height - 60;
-    const weight = gender === 'male' ? 48 + 2.7 * d : 45.5 + 2.2 * d;
-    return parseNumber_1.roundToTwo(weight);
+    return baseFormula(height, gender, { k1: { m: 48, f: 45.5 }, k2: { m: 2.7, f: 2.2 } });
 }
 exports.hamwi = hamwi;
 function lemmens(height) {

@@ -1,16 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const errors_1 = require("src/app/shared/errors");
 function bmiPresenter(result) {
     if (result.isErr)
-        return presentError(result.error);
-    return presentBMI(result.value);
+        return presentError();
+    const data = result.value;
+    if (data.case === 'need-user-weight')
+        return 'Сперва нужно взвеситься';
+    if (data.case === 'need-user-info')
+        return 'Для расчета ИМТ не хватает данных. Укажи их при помощи /info';
+    return presentBMI(data);
 }
 exports.bmiPresenter = bmiPresenter;
-function presentError(error) {
-    if (error instanceof errors_1.DatabaseError)
-        return 'ИМТ: <i>ошибка в бд</i>';
-    return 'ИМТ: Ошибочная ошибка';
+function presentError() {
+    return 'ИМТ: <i>ошибка в бд</i>';
 }
 const interpretCategory = {
     'Very severely underweight': 'у тебя выраженный дефицит веса, скорее ко врачу!',
@@ -39,10 +41,6 @@ const interpretNextCategory = {
     'Obese VI+': '❌',
 };
 function presentBMI(data) {
-    if (data.case === 'need-user-weight')
-        return 'Сперва нужно взвеситься';
-    if (data.case === 'need-user-info')
-        return 'Для расчета ИМТ не хватает данных. Укажи их при помощи /info';
     const { bmi, healthyRange, categoryName, ideal, suggest } = data;
     return `ИМТ: ${bmi} — ${interpretCategory[categoryName]} ${healthy()}. А твой идеальный вес: ${presentIdeal()}.`;
     function healthy() {

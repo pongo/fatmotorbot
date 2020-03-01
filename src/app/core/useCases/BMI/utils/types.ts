@@ -25,10 +25,7 @@ export type SuggestedNextDiff = {
   diff: Kg;
 };
 
-export type BMIResult =
-  | { case: 'need-user-weight' }
-  | { case: 'need-user-info' }
-  | {
+export type BMIFullResult = {
   case: 'bmi';
   bmi: BMI;
   categoryName: BMICategoryName;
@@ -36,5 +33,10 @@ export type BMIResult =
   suggest: SuggestedWeightDiff;
   ideal: IdealWeight;
 };
+
+export type BMIResult =
+  | { case: 'need-user-weight' }
+  | { case: 'need-user-info' }
+  | BMIFullResult;
 
 export type BMIResultOrError = Result<BMIResult, DatabaseError>;

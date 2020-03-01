@@ -1,15 +1,21 @@
-import { BMICategoryName, BMIResult, BMIResultOrError, SuggestedNextDiff } from 'src/app/core/useCases/BMI/utils/types';
-import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
+import {
+  BMICategoryName,
+  BMIFullResult,
+  BMIResultOrError,
+  SuggestedNextDiff,
+} from 'src/app/core/useCases/BMI/utils/types';
 import { Kg } from 'src/app/shared/types';
 
 export function bmiPresenter(result: BMIResultOrError): string {
-  if (result.isErr) return presentError(result.error);
-  return presentBMI(result.value);
+  if (result.isErr) return presentError();
+  const data = result.value;
+  if (data.case === 'need-user-weight') return 'Сперва нужно взвеситься';
+  if (data.case === 'need-user-info') return 'Для расчета ИМТ не хватает данных. Укажи их при помощи /info';
+  return presentBMI(data);
 }
 
-function presentError(error: InvalidFormatError | DatabaseError | Error) {
-  if (error instanceof DatabaseError) return 'ИМТ: <i>ошибка в бд</i>';
-  return 'ИМТ: Ошибочная ошибка';
+function presentError() {
+  return 'ИМТ: <i>ошибка в бд</i>';
 }
 
 const interpretCategory: { [name in BMICategoryName]: string } = {
@@ -40,10 +46,7 @@ const interpretNextCategory: { [name in BMICategoryName]: string } = {
   'Obese VI+': '❌',
 };
 
-function presentBMI(data: BMIResult): string {
-  if (data.case === 'need-user-weight') return 'Сперва нужно взвеситься';
-  if (data.case === 'need-user-info') return 'Для расчета ИМТ не хватает данных. Укажи их при помощи /info';
-
+function presentBMI(data: BMIFullResult): string {
   const { bmi, healthyRange, categoryName, ideal, suggest } = data;
   return `ИМТ: ${bmi} — ${interpretCategory[categoryName]} ${healthy()}. А твой идеальный вес: ${presentIdeal()}.`;
 

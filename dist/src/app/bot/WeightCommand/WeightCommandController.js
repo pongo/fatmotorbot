@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const presentAddWeight_1 = require("src/app/bot/WeightCommand/presenters/presentAddWeight");
+const presentCurrentWeight_1 = require("src/app/bot/WeightCommand/presenters/presentCurrentWeight");
 const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
 const InfoUseCase_1 = require("src/app/core/useCases/Info/InfoUseCase");
-const weightPresenter_1 = require("src/app/bot/WeightCommand/weightPresenter");
 const WeightUseCase_1 = require("src/app/core/useCases/Weight/WeightUseCase");
 class WeightCommandController {
     constructor(telegram, weightRepository, infoRepository) {
@@ -17,10 +18,9 @@ class WeightCommandController {
     }
     async weightHandler(command) {
         const userId = command.from.id;
-        const result = command.argsText.length === 0
-            ? await this.usecase.getCurrent(userId, command.date)
-            : await this.usecase.add(userId, command.date, command.argsText);
-        const msg = weightPresenter_1.weightPresenter(result, command.date);
+        const msg = command.argsText.length === 0
+            ? presentCurrentWeight_1.presentCurrentWeight(await this.usecase.getCurrent(userId, command.date), command.date)
+            : presentAddWeight_1.presentAddWeight(await this.usecase.add(userId, command.date, command.argsText));
         await this.telegram.sendMessage(command.chatId, msg, command.messageId);
     }
 }

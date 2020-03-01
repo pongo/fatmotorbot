@@ -1,8 +1,9 @@
+import { presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAddWeight';
+import { presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
 import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
 import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
-import { weightPresenter } from 'src/app/bot/WeightCommand/weightPresenter';
 import { WeightUseCase } from 'src/app/core/useCases/Weight/WeightUseCase';
 import { TelegramUserId } from 'src/app/shared/types';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
@@ -30,12 +31,10 @@ export class WeightCommandController {
 
   private async weightHandler(command: Command) {
     const userId = command.from.id as TelegramUserId;
-    const result =
+    const msg =
       command.argsText.length === 0
-        ? await this.usecase.getCurrent(userId, command.date)
-        : await this.usecase.add(userId, command.date, command.argsText);
-
-    const msg = weightPresenter(result, command.date);
+        ? presentCurrentWeight(await this.usecase.getCurrent(userId, command.date), command.date)
+        : presentAddWeight(await this.usecase.add(userId, command.date, command.argsText));
     await this.telegram.sendMessage(command.chatId, msg, command.messageId);
   }
 }

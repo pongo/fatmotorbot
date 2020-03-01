@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import { SlonikError } from 'slonik';
-import { bmiPresenter } from 'src/app/bot/bmiPresenter';
+import { bmiPresenter } from 'src/app/bot/presenters/bmiPresenter';
 import { UserInfo } from 'src/app/core/repositories/InfoRepository';
 import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
 import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';

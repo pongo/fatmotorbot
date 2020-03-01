@@ -1,5 +1,7 @@
 import { assert } from 'chai';
 import { SlonikError } from 'slonik';
+import { presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAddWeight';
+import { presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
 import { BMIResultOrError } from 'src/app/core/useCases/BMI/utils/types';
 import {
   CurrentWeightDiff,
@@ -7,7 +9,6 @@ import {
   WeightAddedDiff,
   WeightCases,
 } from 'src/app/core/useCases/Weight/types';
-import { weightPresenter } from 'src/app/bot/WeightCommand/weightPresenter';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
@@ -15,20 +16,20 @@ import { Result } from 'src/shared/utils/result';
 const bmiResult: BMIResultOrError = Result.ok({ case: 'need-user-info' as const });
 const bmiStr = `\n\nДля расчета ИМТ не хватает данных. Укажи их при помощи /info`;
 
-describe('weightPresenter()', () => {
+describe('weightPresenter', () => {
   describe('add()', () => {
     it('error', () => {
-      assert.equal(weightPresenter(Result.err(new InvalidFormatError()), new Date()), 'Какой-какой у тебя вес?');
+      assert.equal(presentAddWeight(Result.err(new InvalidFormatError())), 'Какой-какой у тебя вес?');
 
       assert.equal(
-        weightPresenter(Result.err(new DatabaseError(new SlonikError('ops'))), new Date()),
+        presentAddWeight(Result.err(new DatabaseError(new SlonikError('ops')))),
         'Что-то не так с базой данных. Вызывайте техподдержку!',
       );
     });
 
     it('first add', () => {
       assert.equal(
-        weightPresenter(Result.ok({ case: WeightCases.addFirst, weight: kg(100), bmi: bmiResult }), new Date()),
+        presentAddWeight(Result.ok({ case: WeightCases.addFirst, weight: kg(100), bmi: bmiResult })),
         `Твой вес: 100 кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.${bmiStr}`,
       );
     });
@@ -44,7 +45,7 @@ describe('weightPresenter()', () => {
         bmi: bmiResult,
       };
       assert.equal(
-        weightPresenter(Result.ok(data), new Date('2019-08-29')),
+        presentAddWeight(Result.ok(data)),
         `Твой вес: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)${bmiStr}`,
       );
     });
@@ -53,14 +54,14 @@ describe('weightPresenter()', () => {
   describe('getCurrent()', () => {
     it('error', () => {
       assert.equal(
-        weightPresenter(Result.err(new DatabaseError(new SlonikError('ops'))), new Date()),
+        presentCurrentWeight(Result.err(new DatabaseError(new SlonikError('ops'))), new Date()),
         'Что-то не так с базой данных. Вызывайте техподдержку!',
       );
     });
 
     it('no measures', () => {
       assert.equal(
-        weightPresenter(Result.ok({ case: WeightCases.currentEmpty }), new Date('2019-08-29')),
+        presentCurrentWeight(Result.ok({ case: WeightCases.currentEmpty }), new Date('2019-08-29')),
         `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`,
       );
     });
@@ -76,27 +77,27 @@ describe('weightPresenter()', () => {
       }
 
       assert.equal(
-        weightPresenter(gen(new Date('2019-08-29')), new Date('2019-08-29')),
+        presentCurrentWeight(gen(new Date('2019-08-29')), new Date('2019-08-29')),
         `Твой вес: 100 кг.\n\nРегулярно делай замеры, например, каждую пятницу утром.${bmiStr}`,
       );
 
       assert.equal(
-        weightPresenter(gen(new Date('2019-08-22')), new Date('2019-08-29')),
+        presentCurrentWeight(gen(new Date('2019-08-22')), new Date('2019-08-29')),
         `Твой вес: 100 кг.\n\nПрошла неделя с последнего замера, пора взвешиваться!${bmiStr}`,
       );
 
       assert.equal(
-        weightPresenter(gen(new Date('2019-07-22')), new Date('2019-08-29')),
+        presentCurrentWeight(gen(new Date('2019-07-22')), new Date('2019-08-29')),
         `Твой вес: 100 кг.\n\nНесколько недель прошло, сколько ты теперь весишь?${bmiStr}`,
       );
 
       assert.equal(
-        weightPresenter(gen(new Date('2019-05-22')), new Date('2019-08-29')),
+        presentCurrentWeight(gen(new Date('2019-05-22')), new Date('2019-08-29')),
         `Твой вес: 100 кг.\n\nИ было это пару месяцев назад, сколько же ты теперь весишь?${bmiStr}`,
       );
 
       assert.equal(
-        weightPresenter(gen(new Date('2018-05-22')), new Date('2019-08-29')),
+        presentCurrentWeight(gen(new Date('2018-05-22')), new Date('2019-08-29')),
         `Твой вес: 100 кг.\n\nНо было это чертовски давно, рискнешь встать на весы?${bmiStr}`,
       );
     });
@@ -112,7 +113,7 @@ describe('weightPresenter()', () => {
         bmi: bmiResult,
       };
       assert.equal(
-        weightPresenter(Result.ok(data), new Date('2019-08-29')),
+        presentCurrentWeight(Result.ok(data), new Date('2019-08-29')),
         `Вес вчера: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)${bmiStr}`,
       );
     });

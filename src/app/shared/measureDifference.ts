@@ -67,7 +67,6 @@ export function measureDifference<T extends number>(
  * @param other дата другого замера
  * @param relativeDate с этой датой идет сравнение
  */
-// eslint-disable-next-line complexity
 export function getDateMark(current: Date, other: Date, relativeDate: Date = current): DateMark {
   if (isSameSecond(current, other)) return 'current';
 
@@ -75,15 +74,20 @@ export function getDateMark(current: Date, other: Date, relativeDate: Date = cur
   // т.к. замеры идут последовательно, то чем больше дней, тем старее дата.
   // и нам нужен только самый старый замер (т.е. наибольшее количество дней).
   const daysAgo = differenceInCalendarDays(relativeDate, other);
-  if (daysAgo < 0) return 'future';
-  if (daysAgo === 0) return 'today';
-  if (daysAgo === 1) return 'yesterday';
-  if (daysAgo <= 4) return 'daysAgo';
-  if (daysAgo <= 7 + 3) return 'weekAgo';
-  if (daysAgo <= 14 + 4) return 'twoWeeksAgo';
-  if (daysAgo <= 14 + 31) return 'monthAgo';
-  if (daysAgo <= 4 * 31) return 'monthsAgo';
-  if (daysAgo <= 9 * 31) return 'halfYearAgo';
-  if (daysAgo <= 15 * 31) return 'yearAgo';
+  const dateMarks: [number, DateMark][] = [
+    [-1, 'future'],
+    [0, 'today'],
+    [1, 'yesterday'],
+    [4, 'daysAgo'],
+    [7 + 3, 'weekAgo'],
+    [14 + 4, 'twoWeeksAgo'],
+    [14 + 31, 'monthAgo'],
+    [4 * 31, 'monthsAgo'],
+    [9 * 31, 'halfYearAgo'],
+    [15 * 31, 'yearAgo'],
+  ];
+  for (const [ago, dateMark] of dateMarks) {
+    if (daysAgo <= ago) return dateMark;
+  }
   return 'yearsAgo';
 }
