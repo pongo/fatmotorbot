@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const prepareDataForChart_1 = require("src/app/core/useCases/Weight/prepareDataForChart");
 function getHeader(weight) {
     return `Твой вес: ${weight} кг.\n\n`;
 }
@@ -45,4 +46,12 @@ function presentDiff(diff) {
     }
 }
 exports.presentDiff = presentDiff;
+function chartImage(chart, chartDomain) {
+    if (chart == null)
+        return '';
+    if (chartDomain == null || chartDomain === '')
+        return '';
+    return `<a href="https://${chartDomain}${prepareDataForChart_1.createChartQuery(chart)}">&#8205;</a>`;
+}
+exports.chartImage = chartImage;
 //# sourceMappingURL=shared.js.map

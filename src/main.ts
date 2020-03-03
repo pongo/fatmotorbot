@@ -17,7 +17,7 @@ async function main() {
   const infoRepository = new InfoRepository(db);
   const weightRepository = new WeightRepository(db);
 
-  initBot(telegram, infoRepository, weightRepository);
+  initBot(telegram, infoRepository, weightRepository, config.CHART_DOMAIN);
 
   await telegram.connect({
     domain: config.BOT_WEBHOOK_DOMAIN,

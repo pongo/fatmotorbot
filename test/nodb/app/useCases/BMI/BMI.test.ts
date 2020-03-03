@@ -85,6 +85,7 @@ describe('getSuggestedWeightDiff()', () => {
         toNext: {
           categoryName: 'Severely underweight',
           diff: kg(6),
+          nextWeight: kg(66),
         },
       },
       '60 kg',
@@ -97,6 +98,7 @@ describe('getSuggestedWeightDiff()', () => {
         toNext: {
           categoryName: 'Underweight',
           diff: kg(13),
+          nextWeight: kg(79),
         },
       },
       '66 kg',
@@ -134,6 +136,7 @@ describe('getSuggestedWeightDiff()', () => {
         toNext: {
           categoryName: 'Overweight',
           diff: kg(-19),
+          nextWeight: kg(131),
         },
       },
       '150 kg',

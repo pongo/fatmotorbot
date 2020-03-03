@@ -74,6 +74,14 @@ describe('WeightUseCase', () => {
           yesterday: { date: yesterday, difference: kg(-10), value: kg(20) },
         },
         bmi: bmiResult,
+        chart: {
+          userId: u(1),
+          data: [
+            { date: daysAgo, value: kg(15) },
+            { date: yesterday, value: kg(20) },
+          ],
+          user: undefined,
+        }
       });
     });
   });
@@ -134,6 +142,14 @@ describe('WeightUseCase', () => {
           current,
           diff: { weekAgo: { date: weekAgo, difference: kg(-1), value: kg(61) } },
           bmi: bmiResult,
+          chart: {
+            userId: u(1),
+            data: [
+              { date: weekAgo, value: kg(61) },
+              { date: current.date, value: kg(60) },
+            ],
+            user: undefined,
+          },
         });
       });
 
@@ -159,6 +175,15 @@ describe('WeightUseCase', () => {
             yesterday: { date: yesterday, difference: kg(-3), value: kg(64) },
           },
           bmi: bmiResult,
+          chart: {
+            userId: u(1),
+            data: [
+              { date: yesterday, value: kg(64) },
+              { date: earlier, value: kg(60) },
+              { date: current.date, value: kg(61) },
+            ],
+            user: undefined,
+          }
         });
       });
     });

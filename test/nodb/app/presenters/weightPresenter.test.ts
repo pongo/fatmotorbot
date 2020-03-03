@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import { SlonikError } from 'slonik';
 import { presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAddWeight';
 import { presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
+import { chartImage } from 'src/app/bot/WeightCommand/presenters/shared';
 import { BMIResultOrError } from 'src/app/core/useCases/BMI/utils/types';
 import {
   CurrentWeightDiff,
@@ -12,6 +13,7 @@ import {
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
+import { u } from 'test/utils';
 
 const bmiResult: BMIResultOrError = Result.ok({ case: 'need-user-info' as const });
 const bmiStr = `\n\nДля расчета ИМТ не хватает данных. Укажи их при помощи /info`;
@@ -117,5 +119,29 @@ describe('weightPresenter', () => {
         `Вес вчера: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)${bmiStr}`,
       );
     });
+  });
+});
+
+describe('chartImage()', () => {
+  const chart = {
+    userId: u(1),
+    data: [
+      { date: new Date('2019-08-20'), value: kg(15) },
+      { date: new Date('2019-08-22'), value: kg(20) },
+    ],
+    user: undefined,
+  };
+
+  it('should check params', () => {
+    assert.equal(chartImage(), '');
+    assert.equal(chartImage(chart), '');
+    assert.equal(chartImage(chart, ''), '');
+  });
+
+  it(`should render <a> with chart's link`, () => {
+    assert.equal(
+      chartImage(chart, 'chart-domain.com'),
+      `<a href="https://chart-domain.com/1.png?d=2019-8-20_15!2019-8-22_20">&#8205;</a>`,
+    );
   });
 });

@@ -5,7 +5,7 @@ const bmiPresenter_1 = require("src/app/bot/presenters/bmiPresenter");
 const shared_1 = require("src/app/bot/presenters/shared");
 const shared_2 = require("src/app/bot/WeightCommand/presenters/shared");
 const measureDifference_1 = require("src/app/shared/measureDifference");
-function presentCurrentWeight(result, now) {
+function presentCurrentWeight(result, now, chartDomain) {
     if (result.isErr)
         return shared_1.presentDatabaseError();
     const data = result.value;
@@ -15,7 +15,7 @@ function presentCurrentWeight(result, now) {
         case "current:first":
             return presentCurrentFirst(data, now);
         default:
-            return presentCurrentDiff(data, now);
+            return presentCurrentDiff(data, now, chartDomain);
     }
 }
 exports.presentCurrentWeight = presentCurrentWeight;
@@ -38,10 +38,10 @@ function presentCurrentFirst({ current, bmi }, now) {
         return 'Но было это чертовски давно, рискнешь встать на весы?';
     }
 }
-function presentCurrentDiff({ current, diff, bmi }, now) {
+function presentCurrentDiff({ current, diff, bmi, chart }, now, chartDomain) {
     const header = headerRelativeDate(current);
     const previous = shared_2.presentDiff(diff);
-    return `${header}${previous}\n\n${bmiPresenter_1.bmiPresenter(bmi)}`;
+    return `${header}${previous}\n\n${bmiPresenter_1.bmiPresenter(bmi)}${shared_2.chartImage(chart, chartDomain)}`;
     function headerRelativeDate({ date, value }) {
         const markToHeader = {
             current: 'Твой вес',

@@ -8,6 +8,8 @@ type Config = {
   BOT_WEBHOOK_PATH?: string;
   PORT?: number;
 
+  CHART_DOMAIN?: string;
+
   isProduction: boolean;
   isTest: boolean;
   isDev: boolean;
@@ -20,6 +22,8 @@ export function parseConfig(): Readonly<Config> {
 
     BOT_WEBHOOK_DOMAIN: host({ default: undefined }),
     BOT_WEBHOOK_PATH: str({ default: undefined }),
-    PORT: port({ default: undefined })
+    PORT: port({ default: undefined }),
+
+    CHART_DOMAIN: host({ default: undefined }),
   });
 }
