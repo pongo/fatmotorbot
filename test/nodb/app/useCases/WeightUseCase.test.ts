@@ -28,7 +28,7 @@ describe('WeightUseCase', () => {
 
       const actual = await usecase.add(u(1), today, '11.kg');
 
-      if (actual.isErr) throw new Error('should be ok');
+      assert(actual.isOk);
       sinon.assert.calledOnce(weightRepository.add);
       sinon.assert.calledWith(weightRepository.add, u(1), kg(11));
       assert.deepEqual(actual.value, {
@@ -46,7 +46,7 @@ describe('WeightUseCase', () => {
 
       const actual = await usecase.add(u(1), today, '');
 
-      if (actual.isOk) throw Error();
+      assert(actual.isErr);
       assert.instanceOf(actual.error, InvalidFormatError);
       sinon.assert.notCalled(weightRepository.add);
       sinon.assert.notCalled(weightRepository.getAll);
@@ -65,7 +65,7 @@ describe('WeightUseCase', () => {
 
       const actual = await usecase.add(u(1), today, '10');
 
-      if (actual.isErr) throw new Error('should be ok');
+      assert(actual.isOk);
       assert.deepEqual(actual.value, {
         case: WeightCases.addDiff,
         weight: kg(10),
@@ -86,7 +86,7 @@ describe('WeightUseCase', () => {
 
       const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
-      if (actual.isErr) throw new Error('should be ok');
+      assert(actual.isOk);
       assert.deepEqual(actual.value, { case: WeightCases.currentEmpty });
     });
 
@@ -100,7 +100,7 @@ describe('WeightUseCase', () => {
 
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
-        if (actual.isErr) throw new Error('should be ok');
+        assert(actual.isOk);
         assert.deepEqual(actual.value, { case: WeightCases.currentFirst, current, bmi: bmiResult });
       });
 
@@ -112,7 +112,7 @@ describe('WeightUseCase', () => {
 
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-21 20:00'));
 
-        if (actual.isErr) throw new Error('should be ok');
+        assert(actual.isOk);
         assert.deepEqual(actual.value, { case: WeightCases.currentFirst, current, bmi: bmiResult });
       });
     });
@@ -128,7 +128,7 @@ describe('WeightUseCase', () => {
 
         const actual = await usecase.getCurrent(u(1), now);
 
-        if (actual.isErr) throw new Error('should be ok');
+        assert(actual.isOk);
         assert.deepEqual(actual.value, {
           case: WeightCases.currentDiff,
           current,
@@ -150,7 +150,7 @@ describe('WeightUseCase', () => {
 
         const actual = await usecase.getCurrent(u(1), now);
 
-        if (actual.isErr) throw new Error('should be ok');
+        assert(actual.isOk);
         assert.deepEqual(actual.value, {
           case: WeightCases.currentDiff,
           current,
