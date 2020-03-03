@@ -69,6 +69,8 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": 0,
     "@typescript-eslint/no-use-before-define": ["error", { classes: true, functions: false }],
     "@typescript-eslint/prefer-interface": 0,
+    "@typescript-eslint/prefer-nullish-coalescing": "warn",
+    "@typescript-eslint/prefer-optional-chain": "warn",
     "@typescript-eslint/tslint/config": [
       "error",
       {

@@ -88,7 +88,7 @@ describe('WeightRepository', () => {
 
       const actual = await repository.getAll(u(1));
 
-      if (actual.isErr) throw Error('should be ok');
+      assert(actual.isOk);
       assert.sameDeepOrderedMembers(
         actual.value,
         sortMeasuresFromNewestToOldest([

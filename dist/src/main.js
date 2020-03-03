@@ -13,7 +13,7 @@ async function main() {
     const telegram = new TelegramGateway_1.TelegramGateway(config.BOT_TOKEN);
     const infoRepository = new InfoRepository_1.InfoRepository(db);
     const weightRepository = new WeightRepository_1.WeightRepository(db);
-    bot_1.initBot(telegram, infoRepository, weightRepository);
+    bot_1.initBot(telegram, infoRepository, weightRepository, config.CHART_DOMAIN);
     await telegram.connect({
         domain: config.BOT_WEBHOOK_DOMAIN,
         webhookPath: config.BOT_WEBHOOK_PATH,

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const prepareDataForChart_1 = require("src/app/core/useCases/Weight/prepareDataForChart");
 const errors_1 = require("src/app/shared/errors");
 const measureDifference_1 = require("src/app/shared/measureDifference");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
@@ -25,7 +26,8 @@ class WeightUseCase {
         if (previousMeasures.length === 0)
             return result_1.Result.ok({ case: "add:first", weight, bmi });
         const diff = measureDifference_1.measureDifference({ date, value: weight }, previousMeasures);
-        return result_1.Result.ok({ case: "add:diff", diff, weight, bmi });
+        const chart = await this.getDataForChart(userId, { bmiResult: bmi });
+        return result_1.Result.ok({ case: "add:diff", diff, weight, bmi, chart });
     }
     async getCurrent(userId, now) {
         console.debug(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
@@ -40,7 +42,26 @@ class WeightUseCase {
         if (measures.length === 1)
             return result_1.Result.ok({ case: "current:first", current, bmi });
         const diff = measureDifference_1.measureDifference(current, measures, now);
-        return result_1.Result.ok({ case: "current:diff", diff, current, bmi });
+        const chart = await this.getDataForChart(userId, { measuresResult, bmiResult: bmi });
+        return result_1.Result.ok({ case: "current:diff", diff, current, bmi, chart });
+    }
+    async getDataForChart(userId, { measuresResult, bmiResult }) {
+        console.debug(`WeightUseCase.getDataForChart(${userId});`);
+        const measuresResult_ = measuresResult !== null && measuresResult !== void 0 ? measuresResult : (await this.weightRepository.getAll(userId));
+        if (measuresResult_.isErr)
+            return undefined;
+        const measures = measuresResult_.value;
+        if (measures.length === 0)
+            return undefined;
+        const bmi = getBMI(this.bmiUseCase, measures[0].value);
+        return prepareDataForChart_1.prepareDataForChart(userId, measures, bmi);
+        function getBMI(_bmiUseCase, _weight) {
+            if (bmiResult.isErr)
+                return undefined;
+            if (bmiResult.value.case !== 'bmi')
+                return undefined;
+            return bmiResult.value;
+        }
     }
 }
 exports.WeightUseCase = WeightUseCase;

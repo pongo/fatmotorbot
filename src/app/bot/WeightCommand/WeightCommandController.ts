@@ -18,7 +18,7 @@ export class WeightCommandController {
     private readonly telegram: TelegramGateway,
     weightRepository: IWeightRepository,
     infoRepository: InfoRepository,
-  ) {
+    private readonly chartDomain?: string) {
     const infoUseCase = new InfoUseCase(infoRepository, weightRepository);
     const bmiUseCase = new GetBMIUseCase(infoUseCase, weightRepository);
     this.usecase = new WeightUseCase(weightRepository, bmiUseCase);
@@ -33,8 +33,8 @@ export class WeightCommandController {
     const userId = command.from.id as TelegramUserId;
     const msg =
       command.argsText.length === 0
-        ? presentCurrentWeight(await this.usecase.getCurrent(userId, command.date), command.date)
-        : presentAddWeight(await this.usecase.add(userId, command.date, command.argsText));
+        ? presentCurrentWeight(await this.usecase.getCurrent(userId, command.date), command.date, this.chartDomain)
+        : presentAddWeight(await this.usecase.add(userId, command.date, command.argsText), this.chartDomain);
     await this.telegram.sendMessage(command.chatId, msg, command.messageId);
   }
 }

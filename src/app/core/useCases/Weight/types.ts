@@ -1,7 +1,14 @@
 import { BMIResultOrError } from 'src/app/core/useCases/BMI/utils/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
-import { Kg, Measure } from 'src/app/shared/types';
+import {
+  Kg,
+  Measure,
+  MeasuresFromNewestToOldest,
+  MeasuresFromOldestToNewest,
+  TelegramUserId,
+} from 'src/app/shared/types';
+import { Result } from 'src/shared/utils/result';
 
 export const enum WeightCases {
   addFirst = 'add:first',
@@ -24,6 +31,7 @@ export type WeightAddedDiff = {
   diff: MeasureDifferenceSummary<Kg>;
   weight: Kg;
   bmi: BMIResultOrError;
+  chart?: DataForChart;
 };
 
 export type WeightAddedErrors = InvalidFormatError | DatabaseError;
@@ -45,4 +53,21 @@ export type CurrentWeightDiff = {
   current: Measure<Kg>;
   diff: MeasureDifferenceSummary<Kg>;
   bmi: BMIResultOrError;
+  chart?: DataForChart;
+};
+
+export type YYYYMMDD = string;
+export type DataForChart = {
+  userId: TelegramUserId;
+  data: MeasuresFromOldestToNewest<Kg>;
+  user?: {
+    health: { min: Kg; max: Kg };
+    ideal: { min: Kg; max: Kg };
+    next?: Kg;
+  };
+};
+
+export type GetDataForChartPrepared = {
+  measuresResult?: Result<MeasuresFromNewestToOldest<Kg>, DatabaseError>;
+  bmiResult: BMIResultOrError;
 };

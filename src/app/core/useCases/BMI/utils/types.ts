@@ -23,6 +23,7 @@ export type SuggestedWeightDiff =
 export type SuggestedNextDiff = {
   categoryName: BMICategoryName;
   diff: Kg;
+  nextWeight: Kg;
 };
 
 export type BMIFullResult = {

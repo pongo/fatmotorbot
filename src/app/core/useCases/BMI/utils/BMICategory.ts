@@ -75,6 +75,7 @@ export class BMICategory {
     return {
       categoryName: next.name,
       diff,
+      nextWeight,
     };
   }
 }

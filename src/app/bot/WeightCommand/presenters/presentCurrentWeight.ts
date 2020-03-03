@@ -1,14 +1,18 @@
 import { differenceInCalendarDays } from 'date-fns';
 import { bmiPresenter } from 'src/app/bot/presenters/bmiPresenter';
 import { presentDatabaseError } from 'src/app/bot/presenters/shared';
-import { getHeader, presentDiff } from 'src/app/bot/WeightCommand/presenters/shared';
+import { chartImage, getHeader, presentDiff } from 'src/app/bot/WeightCommand/presenters/shared';
 import { CurrentWeight, CurrentWeightDiff, CurrentWeightFirst, WeightCases } from 'src/app/core/useCases/Weight/types';
 import { DatabaseError } from 'src/app/shared/errors';
 import { DateMark, getDateMark } from 'src/app/shared/measureDifference';
 import { Kg, Measure } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
-export function presentCurrentWeight(result: Result<CurrentWeight, DatabaseError>, now: Date): string {
+export function presentCurrentWeight(
+  result: Result<CurrentWeight, DatabaseError>,
+  now: Date,
+  chartDomain?: string,
+): string {
   if (result.isErr) return presentDatabaseError();
 
   const data = result.value;
@@ -18,7 +22,7 @@ export function presentCurrentWeight(result: Result<CurrentWeight, DatabaseError
     case WeightCases.currentFirst:
       return presentCurrentFirst(data, now);
     default:
-      return presentCurrentDiff(data, now);
+      return presentCurrentDiff(data, now, chartDomain);
   }
 }
 
@@ -40,10 +44,10 @@ function presentCurrentFirst({ current, bmi }: CurrentWeightFirst, now: Date): s
   }
 }
 
-function presentCurrentDiff({ current, diff, bmi }: CurrentWeightDiff, now: Date): string {
+function presentCurrentDiff({ current, diff, bmi, chart }: CurrentWeightDiff, now: Date, chartDomain?: string): string {
   const header = headerRelativeDate(current);
   const previous = presentDiff(diff);
-  return `${header}${previous}\n\n${bmiPresenter(bmi)}`;
+  return `${header}${previous}\n\n${bmiPresenter(bmi)}${chartImage(chart, chartDomain)}`;
 
   function headerRelativeDate({ date, value }: Measure<Kg>) {
     const markToHeader: { [key in DateMark]: string } = {

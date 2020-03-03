@@ -4,13 +4,13 @@ const bmiPresenter_1 = require("src/app/bot/presenters/bmiPresenter");
 const shared_1 = require("src/app/bot/presenters/shared");
 const shared_2 = require("src/app/bot/WeightCommand/presenters/shared");
 const errors_1 = require("src/app/shared/errors");
-function presentAddWeight(result) {
+function presentAddWeight(result, chartDomain) {
     if (result.isErr)
         return presentError(result.error);
     const data = result.value;
     if (data.case === "add:first")
         return presentAddFirst(data);
-    return presentAddDiff(data);
+    return presentAddDiff(data, chartDomain);
 }
 exports.presentAddWeight = presentAddWeight;
 function presentError(error) {
@@ -22,8 +22,8 @@ function presentAddFirst({ weight, bmi }) {
     const header = shared_2.getHeader(weight);
     return `${header}Первый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.\n\n${bmiPresenter_1.bmiPresenter(bmi)}`;
 }
-function presentAddDiff({ diff, weight, bmi }) {
+function presentAddDiff({ diff, weight, bmi, chart }, chartDomain) {
     const previous = shared_2.presentDiff(diff);
-    return `${shared_2.getHeader(weight)}${previous}\n\n${bmiPresenter_1.bmiPresenter(bmi)}`;
+    return `${shared_2.getHeader(weight)}${previous}\n\n${bmiPresenter_1.bmiPresenter(bmi)}${shared_2.chartImage(chart, chartDomain)}`;
 }
 //# sourceMappingURL=presentAddWeight.js.map

@@ -6,8 +6,9 @@ const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
 const InfoUseCase_1 = require("src/app/core/useCases/Info/InfoUseCase");
 const WeightUseCase_1 = require("src/app/core/useCases/Weight/WeightUseCase");
 class WeightCommandController {
-    constructor(telegram, weightRepository, infoRepository) {
+    constructor(telegram, weightRepository, infoRepository, chartDomain) {
         this.telegram = telegram;
+        this.chartDomain = chartDomain;
         const infoUseCase = new InfoUseCase_1.InfoUseCase(infoRepository, weightRepository);
         const bmiUseCase = new GetBMIUseCase_1.GetBMIUseCase(infoUseCase, weightRepository);
         this.usecase = new WeightUseCase_1.WeightUseCase(weightRepository, bmiUseCase);
@@ -19,8 +20,8 @@ class WeightCommandController {
     async weightHandler(command) {
         const userId = command.from.id;
         const msg = command.argsText.length === 0
-            ? presentCurrentWeight_1.presentCurrentWeight(await this.usecase.getCurrent(userId, command.date), command.date)
-            : presentAddWeight_1.presentAddWeight(await this.usecase.add(userId, command.date, command.argsText));
+            ? presentCurrentWeight_1.presentCurrentWeight(await this.usecase.getCurrent(userId, command.date), command.date, this.chartDomain)
+            : presentAddWeight_1.presentAddWeight(await this.usecase.add(userId, command.date, command.argsText), this.chartDomain);
         await this.telegram.sendMessage(command.chatId, msg, command.messageId);
     }
 }

@@ -1,6 +1,15 @@
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { IGetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
-import { CurrentWeight, WeightAdded, WeightAddedErrors, WeightCases } from 'src/app/core/useCases/Weight/types';
+import { BMIFullResult } from 'src/app/core/useCases/BMI/utils/types';
+import { prepareDataForChart } from 'src/app/core/useCases/Weight/prepareDataForChart';
+import {
+  CurrentWeight,
+  DataForChart,
+  GetDataForChartPrepared,
+  WeightAdded,
+  WeightAddedErrors,
+  WeightCases,
+} from 'src/app/core/useCases/Weight/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { measureDifference } from 'src/app/shared/measureDifference';
 import { Kg, TelegramUserId } from 'src/app/shared/types';
@@ -27,7 +36,8 @@ export class WeightUseCase {
     if (previousMeasures.length === 0) return Result.ok({ case: WeightCases.addFirst, weight, bmi });
 
     const diff = measureDifference({ date, value: weight }, previousMeasures);
-    return Result.ok({ case: WeightCases.addDiff, diff, weight, bmi });
+    const chart = await this.getDataForChart(userId, { bmiResult: bmi });
+    return Result.ok({ case: WeightCases.addDiff, diff, weight, bmi, chart });
   }
 
   async getCurrent(userId: TelegramUserId, now: Date): Promise<Result<CurrentWeight, DatabaseError>> {
@@ -44,7 +54,31 @@ export class WeightUseCase {
     if (measures.length === 1) return Result.ok({ case: WeightCases.currentFirst, current, bmi });
 
     const diff = measureDifference(current, measures, now);
-    return Result.ok({ case: WeightCases.currentDiff, diff, current, bmi });
+    const chart = await this.getDataForChart(userId, { measuresResult, bmiResult: bmi });
+    return Result.ok({ case: WeightCases.currentDiff, diff, current, bmi, chart });
+  }
+
+  private async getDataForChart(
+    userId: TelegramUserId,
+    { measuresResult, bmiResult }: GetDataForChartPrepared,
+  ): Promise<DataForChart | undefined> {
+    console.debug(`WeightUseCase.getDataForChart(${userId});`);
+
+    const measuresResult_ = measuresResult ?? (await this.weightRepository.getAll(userId));
+    if (measuresResult_.isErr) return undefined;
+
+    const measures = measuresResult_.value;
+    if (measures.length === 0) return undefined;
+
+    const bmi = getBMI(this.bmiUseCase, measures[0].value);
+    return prepareDataForChart(userId, measures, bmi);
+
+    function getBMI(_bmiUseCase: IGetBMIUseCase, _weight: Kg): BMIFullResult | undefined {
+      // const bmiResult = preparedData.bmiResult; // ?? (await bmiUseCase.get(userId, { weight }));
+      if (bmiResult.isErr) return undefined;
+      if (bmiResult.value.case !== 'bmi') return undefined;
+      return bmiResult.value;
+    }
   }
 }
 

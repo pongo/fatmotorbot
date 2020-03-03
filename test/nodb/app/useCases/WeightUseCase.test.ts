@@ -28,7 +28,7 @@ describe('WeightUseCase', () => {
 
       const actual = await usecase.add(u(1), today, '11.kg');
 
-      if (actual.isErr) throw new Error('should be ok');
+      assert(actual.isOk);
       sinon.assert.calledOnce(weightRepository.add);
       sinon.assert.calledWith(weightRepository.add, u(1), kg(11));
       assert.deepEqual(actual.value, {
@@ -46,7 +46,7 @@ describe('WeightUseCase', () => {
 
       const actual = await usecase.add(u(1), today, '');
 
-      if (actual.isOk) throw Error();
+      assert(actual.isErr);
       assert.instanceOf(actual.error, InvalidFormatError);
       sinon.assert.notCalled(weightRepository.add);
       sinon.assert.notCalled(weightRepository.getAll);
@@ -65,7 +65,7 @@ describe('WeightUseCase', () => {
 
       const actual = await usecase.add(u(1), today, '10');
 
-      if (actual.isErr) throw new Error('should be ok');
+      assert(actual.isOk);
       assert.deepEqual(actual.value, {
         case: WeightCases.addDiff,
         weight: kg(10),
@@ -74,6 +74,14 @@ describe('WeightUseCase', () => {
           yesterday: { date: yesterday, difference: kg(-10), value: kg(20) },
         },
         bmi: bmiResult,
+        chart: {
+          userId: u(1),
+          data: [
+            { date: daysAgo, value: kg(15) },
+            { date: yesterday, value: kg(20) },
+          ],
+          user: undefined,
+        }
       });
     });
   });
@@ -86,7 +94,7 @@ describe('WeightUseCase', () => {
 
       const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
-      if (actual.isErr) throw new Error('should be ok');
+      assert(actual.isOk);
       assert.deepEqual(actual.value, { case: WeightCases.currentEmpty });
     });
 
@@ -100,7 +108,7 @@ describe('WeightUseCase', () => {
 
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
-        if (actual.isErr) throw new Error('should be ok');
+        assert(actual.isOk);
         assert.deepEqual(actual.value, { case: WeightCases.currentFirst, current, bmi: bmiResult });
       });
 
@@ -112,7 +120,7 @@ describe('WeightUseCase', () => {
 
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-21 20:00'));
 
-        if (actual.isErr) throw new Error('should be ok');
+        assert(actual.isOk);
         assert.deepEqual(actual.value, { case: WeightCases.currentFirst, current, bmi: bmiResult });
       });
     });
@@ -128,12 +136,20 @@ describe('WeightUseCase', () => {
 
         const actual = await usecase.getCurrent(u(1), now);
 
-        if (actual.isErr) throw new Error('should be ok');
+        assert(actual.isOk);
         assert.deepEqual(actual.value, {
           case: WeightCases.currentDiff,
           current,
           diff: { weekAgo: { date: weekAgo, difference: kg(-1), value: kg(61) } },
           bmi: bmiResult,
+          chart: {
+            userId: u(1),
+            data: [
+              { date: weekAgo, value: kg(61) },
+              { date: current.date, value: kg(60) },
+            ],
+            user: undefined,
+          },
         });
       });
 
@@ -150,7 +166,7 @@ describe('WeightUseCase', () => {
 
         const actual = await usecase.getCurrent(u(1), now);
 
-        if (actual.isErr) throw new Error('should be ok');
+        assert(actual.isOk);
         assert.deepEqual(actual.value, {
           case: WeightCases.currentDiff,
           current,
@@ -159,6 +175,15 @@ describe('WeightUseCase', () => {
             yesterday: { date: yesterday, difference: kg(-3), value: kg(64) },
           },
           bmi: bmiResult,
+          chart: {
+            userId: u(1),
+            data: [
+              { date: yesterday, value: kg(64) },
+              { date: earlier, value: kg(60) },
+              { date: current.date, value: kg(61) },
+            ],
+            user: undefined,
+          }
         });
       });
     });

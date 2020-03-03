@@ -1,3 +1,5 @@
+import { createChartQuery } from 'src/app/core/useCases/Weight/prepareDataForChart';
+import { DataForChart } from 'src/app/core/useCases/Weight/types';
 import { DateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
 import { Kg } from 'src/app/shared/types';
 
@@ -45,4 +47,10 @@ export function presentDiff(diff: MeasureDifferenceSummary<Kg>): string {
     const withSign = difference > 0 ? `+${fixed}` : fixed.replace('-', '−');
     return `(${withSign})`;
   }
+}
+
+export function chartImage(chart?: DataForChart, chartDomain?: string): string {
+  if (chart == null) return '';
+  if (chartDomain == null || chartDomain === '') return '';
+  return `<a href="https://${chartDomain}${createChartQuery(chart)}">&#8205;</a>`;
 }
