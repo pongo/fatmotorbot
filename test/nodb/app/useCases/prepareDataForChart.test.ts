@@ -2,11 +2,11 @@ import { assert } from 'chai';
 import { BMIFullResult, SuggestedNextDiff } from 'src/app/core/useCases/BMI/utils/types';
 import {
   createChartQuery,
-  parseChartQuery,
   prepareDataForChart,
   yyymmdd,
 } from 'src/app/core/useCases/Weight/prepareDataForChart';
 import { DataForChart } from 'src/app/core/useCases/Weight/types';
+import { parseChartQuery } from 'src/app/shared/parseChartQuery';
 import { BMI, kg, Kg, MeasuresFromNewestToOldest } from 'src/app/shared/types';
 import { u } from 'test/utils';
 
@@ -168,7 +168,7 @@ describe('create and parse ChartQuery', () => {
 
     assert.throw(() => parseChartQuery('/1.png?'));
     assert.throw(() => parseChartQuery('/1.png?k=111'));
-    assert.doesNotThrow(() => parseChartQuery('/1.png?d='));
+    assert.throw(() => parseChartQuery('/1.png?d='));
     assert.throw(() => parseChartQuery('/1.png?d=2019-10-10_dddd!2019-10-17_55.1'));
 
     assert.throw(() => parseChartQuery('/1.png?d=2019-10-10_dddd!2019-10-17_55.1&h=58.83!73.5'));
