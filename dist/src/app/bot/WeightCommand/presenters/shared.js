@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const prepareDataForChart_1 = require("src/app/core/useCases/Weight/prepareDataForChart");
+const urlExists_1 = require("src/shared/utils/urlExists");
 function getHeader(weight) {
     return `Твой вес: ${weight} кг.\n\n`;
 }
@@ -46,12 +47,24 @@ function presentDiff(diff) {
     }
 }
 exports.presentDiff = presentDiff;
-function chartImage(chart, chartDomain) {
-    if (chart == null)
+function chartImage(chartUrl) {
+    if (chartUrl == null)
         return '';
-    if (chartDomain == null || chartDomain === '')
-        return '';
-    return `<a href="https://${chartDomain}${prepareDataForChart_1.createChartQuery(chart)}">&#8205;</a>`;
+    return `<a href="${chartUrl}">&#8205;</a>`;
 }
 exports.chartImage = chartImage;
+function createChartUrl(chart, chartDomain) {
+    if (chart == null)
+        return undefined;
+    if (chartDomain == null || chartDomain === '')
+        return undefined;
+    const chartQuery = prepareDataForChart_1.createChartQuery(chart);
+    return `https://${chartDomain}${chartQuery}`;
+}
+exports.createChartUrl = createChartUrl;
+async function getChartUrl(chart, chartDomain) {
+    const url = createChartUrl(chart, chartDomain);
+    return url == null ? undefined : urlExists_1.urlExists(url);
+}
+exports.getChartUrl = getChartUrl;
 //# sourceMappingURL=shared.js.map

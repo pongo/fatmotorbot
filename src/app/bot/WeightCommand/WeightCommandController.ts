@@ -1,5 +1,5 @@
-import { presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAddWeight';
-import { presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
+import { getAddChartUrl, presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAddWeight';
+import { getCurrentChartUrl, presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
 import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
@@ -18,7 +18,8 @@ export class WeightCommandController {
     private readonly telegram: TelegramGateway,
     weightRepository: IWeightRepository,
     infoRepository: InfoRepository,
-    private readonly chartDomain?: string) {
+    private readonly chartDomain?: string,
+  ) {
     const infoUseCase = new InfoUseCase(infoRepository, weightRepository);
     const bmiUseCase = new GetBMIUseCase(infoUseCase, weightRepository);
     this.usecase = new WeightUseCase(weightRepository, bmiUseCase);
@@ -33,8 +34,20 @@ export class WeightCommandController {
     const userId = command.from.id as TelegramUserId;
     const msg =
       command.argsText.length === 0
-        ? presentCurrentWeight(await this.usecase.getCurrent(userId, command.date), command.date, this.chartDomain)
-        : presentAddWeight(await this.usecase.add(userId, command.date, command.argsText), this.chartDomain);
+        ? await _current(this.usecase, this.chartDomain)
+        : await _add(this.usecase, this.chartDomain);
     await this.telegram.sendMessage(command.chatId, msg, command.messageId);
+
+    async function _current(usecase: WeightUseCase, chartDomain?: string): Promise<string> {
+      const result = await usecase.getCurrent(userId, command.date);
+      const chartUrl = await getCurrentChartUrl(result, chartDomain);
+      return presentCurrentWeight(result, command.date, chartUrl);
+    }
+
+    async function _add(usecase: WeightUseCase, chartDomain?: string): Promise<string> {
+      const result = await usecase.add(userId, command.date, command.argsText);
+      const chartUrl = await getAddChartUrl(result, chartDomain);
+      return presentAddWeight(result, chartUrl);
+    }
   }
 }

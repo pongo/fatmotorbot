@@ -20,9 +20,19 @@ class WeightCommandController {
     async weightHandler(command) {
         const userId = command.from.id;
         const msg = command.argsText.length === 0
-            ? presentCurrentWeight_1.presentCurrentWeight(await this.usecase.getCurrent(userId, command.date), command.date, this.chartDomain)
-            : presentAddWeight_1.presentAddWeight(await this.usecase.add(userId, command.date, command.argsText), this.chartDomain);
+            ? await _current(this.usecase, this.chartDomain)
+            : await _add(this.usecase, this.chartDomain);
         await this.telegram.sendMessage(command.chatId, msg, command.messageId);
+        async function _current(usecase, chartDomain) {
+            const result = await usecase.getCurrent(userId, command.date);
+            const chartUrl = await presentCurrentWeight_1.getCurrentChartUrl(result, chartDomain);
+            return presentCurrentWeight_1.presentCurrentWeight(result, command.date, chartUrl);
+        }
+        async function _add(usecase, chartDomain) {
+            const result = await usecase.add(userId, command.date, command.argsText);
+            const chartUrl = await presentAddWeight_1.getAddChartUrl(result, chartDomain);
+            return presentAddWeight_1.presentAddWeight(result, chartUrl);
+        }
     }
 }
 exports.WeightCommandController = WeightCommandController;

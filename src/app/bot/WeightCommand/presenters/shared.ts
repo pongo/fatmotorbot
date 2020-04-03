@@ -2,6 +2,7 @@ import { createChartQuery } from 'src/app/core/useCases/Weight/prepareDataForCha
 import { DataForChart } from 'src/app/core/useCases/Weight/types';
 import { DateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
 import { Kg } from 'src/app/shared/types';
+import { urlExists } from 'src/shared/utils/urlExists';
 
 export function getHeader(weight: Kg): string {
   return `Твой вес: ${weight} кг.\n\n`;
@@ -49,8 +50,20 @@ export function presentDiff(diff: MeasureDifferenceSummary<Kg>): string {
   }
 }
 
-export function chartImage(chart?: DataForChart, chartDomain?: string): string {
-  if (chart == null) return '';
-  if (chartDomain == null || chartDomain === '') return '';
-  return `<a href="https://${chartDomain}${createChartQuery(chart)}">&#8205;</a>`;
+export function chartImage(chartUrl?: string): string {
+  if (chartUrl == null) return '';
+  return `<a href="${chartUrl}">&#8205;</a>`;
+}
+
+export function createChartUrl(chart?: DataForChart, chartDomain?: string): undefined | string {
+  if (chart == null) return undefined;
+  if (chartDomain == null || chartDomain === '') return undefined;
+
+  const chartQuery = createChartQuery(chart);
+  return `https://${chartDomain}${chartQuery}`;
+}
+
+export async function getChartUrl(chart?: DataForChart, chartDomain?: string): Promise<undefined | string> {
+  const url = createChartUrl(chart, chartDomain);
+  return url == null ? undefined : urlExists(url);
 }

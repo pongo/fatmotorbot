@@ -5,7 +5,7 @@ const bmiPresenter_1 = require("src/app/bot/presenters/bmiPresenter");
 const shared_1 = require("src/app/bot/presenters/shared");
 const shared_2 = require("src/app/bot/WeightCommand/presenters/shared");
 const measureDifference_1 = require("src/app/shared/measureDifference");
-function presentCurrentWeight(result, now, chartDomain) {
+function presentCurrentWeight(result, now, chartUrl) {
     if (result.isErr)
         return shared_1.presentDatabaseError();
     const data = result.value;
@@ -15,10 +15,18 @@ function presentCurrentWeight(result, now, chartDomain) {
         case "current:first":
             return presentCurrentFirst(data, now);
         default:
-            return presentCurrentDiff(data, now, chartDomain);
+            return presentCurrentDiff(data, now, chartUrl);
     }
 }
 exports.presentCurrentWeight = presentCurrentWeight;
+async function getCurrentChartUrl(result, chartDomain) {
+    if (result.isErr)
+        return undefined;
+    if (result.value.case !== "current:diff")
+        return undefined;
+    return shared_2.getChartUrl(result.value.chart, chartDomain);
+}
+exports.getCurrentChartUrl = getCurrentChartUrl;
 function presentCurrentEmpty() {
     return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
 }
@@ -38,10 +46,10 @@ function presentCurrentFirst({ current, bmi }, now) {
         return 'Но было это чертовски давно, рискнешь встать на весы?';
     }
 }
-function presentCurrentDiff({ current, diff, bmi, chart }, now, chartDomain) {
+function presentCurrentDiff({ current, diff, bmi }, now, chartUrl) {
     const header = headerRelativeDate(current);
     const previous = shared_2.presentDiff(diff);
-    return `${header}${previous}\n\n${bmiPresenter_1.bmiPresenter(bmi)}${shared_2.chartImage(chart, chartDomain)}`;
+    return `${header}${previous}\n\n${bmiPresenter_1.bmiPresenter(bmi)}${shared_2.chartImage(chartUrl)}`;
     function headerRelativeDate({ date, value }) {
         const markToHeader = {
             current: 'Твой вес',

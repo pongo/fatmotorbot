@@ -1,6 +1,6 @@
 {
   "name": "fatmotorbot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/src/main.js",
   "engines": {
@@ -40,7 +40,8 @@
     "postgres-migrations": "^4.0.2",
     "slonik": "^22.4.3",
     "stats-lite": "^2.2.0",
-    "telegraf": "^3.36.0"
+    "telegraf": "^3.36.0",
+    "url-exists-deep": "^2.0.5"
   },
   "devDependencies": {
     "@types/big.js": "^4.0.5",

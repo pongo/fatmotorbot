@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import { SlonikError } from 'slonik';
 import { presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAddWeight';
 import { presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
-import { chartImage } from 'src/app/bot/WeightCommand/presenters/shared';
+import { chartImage, createChartUrl } from 'src/app/bot/WeightCommand/presenters/shared';
 import { BMIResultOrError } from 'src/app/core/useCases/BMI/utils/types';
 import {
   CurrentWeightDiff,
@@ -122,7 +122,7 @@ describe('weightPresenter', () => {
   });
 });
 
-describe('chartImage()', () => {
+describe('createChartUrl()', () => {
   const chart = {
     userId: u(1),
     data: [
@@ -132,15 +132,25 @@ describe('chartImage()', () => {
     user: undefined,
   };
 
-  it('should check params', () => {
-    assert.equal(chartImage(), '');
-    assert.equal(chartImage(chart), '');
-    assert.equal(chartImage(chart, ''), '');
+  it('should check params', async () => {
+    assert.equal(createChartUrl(), undefined);
+    assert.equal(createChartUrl(chart), undefined);
+    assert.equal(createChartUrl(chart, ''), undefined);
   });
 
-  it(`should render <a> with chart's link`, () => {
+  it(`should return chart's link`, () => {
     assert.equal(
-      chartImage(chart, 'chart-domain.com'),
+      createChartUrl(chart, 'chart-domain.com'),
+      `https://chart-domain.com/1.png?d=2019-8-20_15!2019-8-22_20`,
+    );
+  });
+});
+
+describe('chartImage()', () => {
+  it(`should render <a> with chart's link`, () => {
+    assert.equal(chartImage(), '');
+    assert.equal(
+      chartImage('https://chart-domain.com/1.png?d=2019-8-20_15!2019-8-22_20'),
       `<a href="https://chart-domain.com/1.png?d=2019-8-20_15!2019-8-22_20">&#8205;</a>`,
     );
   });
