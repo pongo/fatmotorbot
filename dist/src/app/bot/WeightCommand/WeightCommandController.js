@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const chartUrl_1 = require("src/app/bot/WeightCommand/presenters/chartUrl");
 const presentAddWeight_1 = require("src/app/bot/WeightCommand/presenters/presentAddWeight");
 const presentCurrentWeight_1 = require("src/app/bot/WeightCommand/presenters/presentCurrentWeight");
 const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
@@ -25,12 +26,12 @@ class WeightCommandController {
         await this.telegram.sendMessage(command.chatId, msg, command.messageId);
         async function _current(usecase, chartDomain) {
             const result = await usecase.getCurrent(userId, command.date);
-            const chartUrl = await presentCurrentWeight_1.getCurrentChartUrl(result, chartDomain);
+            const chartUrl = await chartUrl_1.getCurrentChartUrl(result, chartDomain);
             return presentCurrentWeight_1.presentCurrentWeight(result, command.date, chartUrl);
         }
         async function _add(usecase, chartDomain) {
             const result = await usecase.add(userId, command.date, command.argsText);
-            const chartUrl = await presentAddWeight_1.getAddChartUrl(result, chartDomain);
+            const chartUrl = await chartUrl_1.getAddChartUrl(result, chartDomain);
             return presentAddWeight_1.presentAddWeight(result, chartUrl);
         }
     }

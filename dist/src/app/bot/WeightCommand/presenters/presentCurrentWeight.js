@@ -19,14 +19,6 @@ function presentCurrentWeight(result, now, chartUrl) {
     }
 }
 exports.presentCurrentWeight = presentCurrentWeight;
-async function getCurrentChartUrl(result, chartDomain) {
-    if (result.isErr)
-        return undefined;
-    if (result.value.case !== "current:diff")
-        return undefined;
-    return shared_2.getChartUrl(result.value.chart, chartDomain);
-}
-exports.getCurrentChartUrl = getCurrentChartUrl;
 function presentCurrentEmpty() {
     return `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`;
 }

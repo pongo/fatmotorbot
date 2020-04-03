@@ -1,7 +1,7 @@
 import { differenceInCalendarDays } from 'date-fns';
 import { bmiPresenter } from 'src/app/bot/presenters/bmiPresenter';
 import { presentDatabaseError } from 'src/app/bot/presenters/shared';
-import { chartImage, getChartUrl, getHeader, presentDiff } from 'src/app/bot/WeightCommand/presenters/shared';
+import { chartImage, getHeader, presentDiff } from 'src/app/bot/WeightCommand/presenters/shared';
 import { CurrentWeight, CurrentWeightDiff, CurrentWeightFirst, WeightCases } from 'src/app/core/useCases/Weight/types';
 import { DatabaseError } from 'src/app/shared/errors';
 import { DateMark, getDateMark } from 'src/app/shared/measureDifference';
@@ -24,15 +24,6 @@ export function presentCurrentWeight(
     default:
       return presentCurrentDiff(data, now, chartUrl);
   }
-}
-
-export async function getCurrentChartUrl(
-  result: Result<CurrentWeight, DatabaseError>,
-  chartDomain?: string,
-): Promise<string | undefined> {
-  if (result.isErr) return undefined;
-  if (result.value.case !== WeightCases.currentDiff) return undefined;
-  return getChartUrl(result.value.chart, chartDomain);
 }
 
 function presentCurrentEmpty() {

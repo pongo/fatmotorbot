@@ -1,6 +1,6 @@
 import { bmiPresenter } from 'src/app/bot/presenters/bmiPresenter';
 import { presentDatabaseError } from 'src/app/bot/presenters/shared';
-import { chartImage, getChartUrl, getHeader, presentDiff } from 'src/app/bot/WeightCommand/presenters/shared';
+import { chartImage, getHeader, presentDiff } from 'src/app/bot/WeightCommand/presenters/shared';
 import {
   WeightAdded,
   WeightAddedDiff,
@@ -17,15 +17,6 @@ export function presentAddWeight(result: Result<WeightAdded, WeightAddedErrors>,
   const data = result.value;
   if (data.case === WeightCases.addFirst) return presentAddFirst(data);
   return presentAddDiff(data, chartUrl);
-}
-
-export async function getAddChartUrl(
-  result: Result<WeightAdded, WeightAddedErrors>,
-  chartDomain?: string,
-): Promise<string | undefined> {
-  if (result.isErr) return undefined;
-  if (result.value.case !== WeightCases.addDiff) return undefined;
-  return getChartUrl(result.value.chart, chartDomain);
 }
 
 function presentError(error: InvalidFormatError | DatabaseError) {

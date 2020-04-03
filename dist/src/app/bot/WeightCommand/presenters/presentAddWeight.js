@@ -13,14 +13,6 @@ function presentAddWeight(result, chartUrl) {
     return presentAddDiff(data, chartUrl);
 }
 exports.presentAddWeight = presentAddWeight;
-async function getAddChartUrl(result, chartDomain) {
-    if (result.isErr)
-        return undefined;
-    if (result.value.case !== "add:diff")
-        return undefined;
-    return shared_2.getChartUrl(result.value.chart, chartDomain);
-}
-exports.getAddChartUrl = getAddChartUrl;
 function presentError(error) {
     if (error instanceof errors_1.InvalidFormatError)
         return 'Какой-какой у тебя вес?';

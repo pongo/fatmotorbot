@@ -1,5 +1,6 @@
-import { getAddChartUrl, presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAddWeight';
-import { getCurrentChartUrl, presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
+import { getAddChartUrl, getCurrentChartUrl } from 'src/app/bot/WeightCommand/presenters/chartUrl';
+import { presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAddWeight';
+import { presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
 import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
