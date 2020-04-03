@@ -14,7 +14,8 @@
 //                 Satana Charuwichitratana <https://github.com/micksatana>,
 //                 Erik Schierboom <https://github.com/ErikSchierboom>,
 //                 Bogdan Paranytsia <https://github.com/bparan>,
-//                 CXuesong <https://github.com/CXuesong>
+//                 CXuesong <https://github.com/CXuesong>,
+//                 Joey Kilpatrick <https://github.com/joeykilpatrick>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 3.7
 
@@ -108,7 +109,8 @@ declare namespace Chai {
 
   export interface ExpectStatic {
     (val: any, message?: string): Assertion;
-    fail(actual?: any, expected?: any, message?: string, operator?: Operator): void;
+    fail(message?: string): never;
+    fail(actual: any, expected: any, message?: string, operator?: Operator): never;
   }
 
   export interface AssertStatic extends Assert {
@@ -172,7 +174,8 @@ declare namespace Chai {
 
   interface Should extends ShouldAssertion {
     not: ShouldAssertion;
-    fail(actual: any, expected: any, message?: string, operator?: Operator): void;
+    fail(message?: string): never;
+    fail(actual: any, expected: any, message?: string, operator?: Operator): never;
   }
 
   interface ShouldThrow {
@@ -404,6 +407,14 @@ declare namespace Chai {
     /**
      * Throws a failure.
      *
+     * @param message    Message to display on error.
+     * @remarks Node.js assert module-compatible.
+     */
+    fail(message?: string): never;
+
+    /**
+     * Throws a failure.
+     *
      * @type T   Type of the objects.
      * @param actual   Actual value.
      * @param expected   Potential expected value.
@@ -411,7 +422,7 @@ declare namespace Chai {
      * @param operator   Comparison operator, if not strict equality.
      * @remarks Node.js assert module-compatible.
      */
-    fail<T>(actual?: T, expected?: T, message?: string, operator?: Operator): void;
+    fail<T>(actual: T, expected: T, message?: string, operator?: Operator): never;
 
     /**
      * Asserts that object is truthy.
