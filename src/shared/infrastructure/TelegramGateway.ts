@@ -30,7 +30,7 @@ export class TelegramGateway {
   }
 
   onStartCommand(text: string) {
-    this.telegraf.start(async ctx => {
+    this.telegraf.start(async (ctx) => {
       const isPrivate = ctx.message != null && ctx.message.from != null && ctx.message.from.id === ctx.message.chat.id;
       if (isPrivate) return ctx.reply(text);
       return undefined;
@@ -58,7 +58,10 @@ export class TelegramGateway {
 export async function handleCommand(handler: CommandHandler, ctx: ContextMessageUpdate, next?: Function) {
   if (ctx != null && ctx.message != null) {
     const parsedCommand = parseCommand(ctx.message);
-    if (parsedCommand != null) await handler(parsedCommand);
+    if (parsedCommand != null) {
+      ctx.telegram.sendChatAction(parsedCommand.chatId, 'typing').catch(console.error);
+      await handler(parsedCommand);
+    }
   }
   if (next != null) return next();
   return undefined;
@@ -94,7 +97,7 @@ export function parseCommand(message: TT.Message): Command | null {
     argsText: parts[3] == null ? '' : parts[3].trim(),
     get args() {
       if (parts == null || parts[3] == null) return [];
-      return parts[3].split(/\s+/).filter(arg => arg.length);
+      return parts[3].split(/\s+/).filter((arg) => arg.length);
     },
     messageId: message.message_id,
     date: new Date(message.date * 1000),

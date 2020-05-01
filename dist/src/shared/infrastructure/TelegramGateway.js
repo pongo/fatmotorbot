@@ -48,8 +48,10 @@ exports.TelegramGateway = TelegramGateway;
 async function handleCommand(handler, ctx, next) {
     if (ctx != null && ctx.message != null) {
         const parsedCommand = parseCommand(ctx.message);
-        if (parsedCommand != null)
+        if (parsedCommand != null) {
+            ctx.telegram.sendChatAction(parsedCommand.chatId, 'typing').catch(console.error);
             await handler(parsedCommand);
+        }
     }
     if (next != null)
         return next();
@@ -71,7 +73,7 @@ function parseCommand(message) {
         get args() {
             if (parts == null || parts[3] == null)
                 return [];
-            return parts[3].split(/\s+/).filter(arg => arg.length);
+            return parts[3].split(/\s+/).filter((arg) => arg.length);
         },
         messageId: message.message_id,
         date: new Date(message.date * 1000),
