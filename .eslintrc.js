@@ -42,7 +42,7 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 2019,
     project: "./tsconfig.eslint.json",
     sourceType: "module",
     tsconfigRootDir: ".",
@@ -102,6 +102,6 @@ module.exports = {
     "no-useless-constructor": 0,
   },
   settings: {
-    "import/core-modules": ["telegram-typings"]
+    "import/core-modules": ["telegram-typings"],
   },
 };

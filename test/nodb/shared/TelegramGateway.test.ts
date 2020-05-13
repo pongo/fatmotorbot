@@ -1,8 +1,9 @@
+/* tslint:disable:no-submodule-imports */
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { Command, handleCommand, parseCommand } from 'src/shared/infrastructure/TelegramGateway';
 import { toTimestamp } from 'src/shared/utils/utils';
-import { ContextMessageUpdate } from 'telegraf';
+import { TelegrafContext } from 'telegraf/typings/context';
 import * as TT from 'telegram-typings';
 
 describe('handleCommand()', () => {
@@ -10,10 +11,10 @@ describe('handleCommand()', () => {
     const handler = sinon.fake();
     const next = sinon.fake();
 
-    await handleCommand(handler, (null as unknown) as ContextMessageUpdate);
-    await handleCommand(handler, ({ message: null } as unknown) as ContextMessageUpdate);
-    await handleCommand(handler, ({ message: { text: null } } as unknown) as ContextMessageUpdate);
-    await handleCommand(handler, (null as unknown) as ContextMessageUpdate, next);
+    await handleCommand(handler, (null as unknown) as TelegrafContext);
+    await handleCommand(handler, ({ message: null } as unknown) as TelegrafContext);
+    await handleCommand(handler, ({ message: { text: null } } as unknown) as TelegrafContext);
+    await handleCommand(handler, (null as unknown) as TelegrafContext, next);
 
     sinon.assert.notCalled(handler);
     sinon.assert.calledOnce(next);
@@ -23,8 +24,10 @@ describe('handleCommand()', () => {
     const handler = sinon.fake().named('handler');
     const next = sinon.fake().named('next');
     const date = new Date('2019-08-29');
+    const sendChatAction = sinon.fake.resolves(true).named('sendChatAction');
+    const ctx = ({ message: createMsg(date, '/hi'), telegram: { sendChatAction } } as unknown) as TelegrafContext;
 
-    await handleCommand(handler, ({ message: createMsg(date, '/hi') } as unknown) as ContextMessageUpdate, next);
+    await handleCommand(handler, ctx, next);
 
     sinon.assert.calledOnce(handler);
     const command: Command = {
@@ -40,6 +43,7 @@ describe('handleCommand()', () => {
     };
     sinon.assert.calledWith(handler, command);
     sinon.assert.calledOnce(next);
+    sinon.assert.calledOnce(sendChatAction);
   });
 });
 

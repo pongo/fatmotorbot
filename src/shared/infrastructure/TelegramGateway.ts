@@ -1,12 +1,14 @@
+/* tslint:disable:no-submodule-imports */
 import { Result } from 'src/shared/utils/result';
-import Telegraf, { ContextMessageUpdate } from 'telegraf';
+import Telegraf from 'telegraf';
+import { TelegrafContext } from 'telegraf/typings/context';
 import * as TT from 'telegram-typings';
 
 type CommandHandler = (command: Command) => void | Promise<void>;
 type TelegramMessageId = number;
 
 export class TelegramGateway {
-  private readonly telegraf: Telegraf<ContextMessageUpdate>;
+  private readonly telegraf: Telegraf<TelegrafContext>;
 
   constructor(token: string, telegrafLogs = false) {
     this.telegraf = new Telegraf(token);
@@ -55,7 +57,7 @@ export class TelegramGateway {
   }
 }
 
-export async function handleCommand(handler: CommandHandler, ctx: ContextMessageUpdate, next?: Function) {
+export async function handleCommand(handler: CommandHandler, ctx: TelegrafContext, next?: Function) {
   if (ctx != null && ctx.message != null) {
     const parsedCommand = parseCommand(ctx.message);
     if (parsedCommand != null) {
