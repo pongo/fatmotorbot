@@ -13,6 +13,7 @@ import {
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { measureDifference } from 'src/app/shared/measureDifference';
 import { Kg, TelegramUserId } from 'src/app/shared/types';
+import { validateWeight } from 'src/app/shared/validators';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
 
@@ -80,12 +81,4 @@ export class WeightUseCase {
       return bmiResult.value;
     }
   }
-}
-
-/**
- * Проверяет правильно ли указан вес.
- */
-export function validateWeight(value: number | null): Kg | null {
-  if (value !== null && value >= 1 && value <= 999) return value as Kg;
-  return null;
 }

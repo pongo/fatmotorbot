@@ -4,9 +4,10 @@ import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
 import { BMIResultOrError } from 'src/app/core/useCases/BMI/utils/types';
 import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
 import { WeightCases } from 'src/app/core/useCases/Weight/types';
-import { validateWeight, WeightUseCase } from 'src/app/core/useCases/Weight/WeightUseCase';
+import { WeightUseCase } from 'src/app/core/useCases/Weight/WeightUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
+import { validateWeight } from 'src/app/shared/validators';
 import { Result } from 'src/shared/utils/result';
 import { InfoRepositoryMockSinon, WeightRepositoryMockSinon } from 'test/repositoryMocks';
 import { m, u } from 'test/utils';
@@ -81,7 +82,7 @@ describe('WeightUseCase', () => {
             { date: yesterday, value: kg(20) },
           ],
           user: undefined,
-        }
+        },
       });
     });
   });
@@ -183,7 +184,7 @@ describe('WeightUseCase', () => {
               { date: current.date, value: kg(61) },
             ],
             user: undefined,
-          }
+          },
         });
       });
     });
