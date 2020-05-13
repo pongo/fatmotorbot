@@ -52,7 +52,7 @@ export function getSuggestedWeightDiff(gender: Gender, height: Cm, weight: Kg): 
   return category.getSuggest(gender, height, weight);
 }
 
-function calcBMIResult(weight: Kg, { gender, height }: UserInfo): BMIResult {
+export function calcBMIResult(weight: Kg, { gender, height }: UserInfo): BMIResult {
   const bmi = calcBMI(height, weight);
   return {
     case: 'bmi',
