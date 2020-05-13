@@ -3,8 +3,8 @@ import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
 import { IInfoUseCaseGet, InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/core/useCases/Info/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
-import { Cm, Gender, TelegramUserId } from 'src/app/shared/types';
-import { parseNumber } from 'src/shared/utils/parseNumber';
+import { TelegramUserId } from 'src/app/shared/types';
+import { validateGender, validateHeight } from 'src/app/shared/validators';
 import { Result } from 'src/shared/utils/result';
 
 interface IInfoUseCaseSet {
@@ -50,21 +50,8 @@ export function validateData(args: string[]): UserInfo | null {
   if (args.length < 2) return null;
 
   const [genderStr, heightStr] = args;
-  const gender = validateGender();
-  const height = validateHeight();
+  const gender = validateGender(genderStr);
+  const height = validateHeight(heightStr);
   if (gender == null || height == null) return null;
   return { gender, height };
-
-  function validateGender(): Gender | null {
-    const lower = genderStr.toLowerCase();
-    if (lower === 'м') return 'male';
-    if (lower === 'ж') return 'female';
-    return null;
-  }
-
-  function validateHeight(): Cm | null {
-    const value = parseNumber(heightStr);
-    if (value != null && value >= 100 && value <= 300) return value as Cm;
-    return null;
-  }
 }

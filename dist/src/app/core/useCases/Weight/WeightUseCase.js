@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const prepareDataForChart_1 = require("src/app/core/useCases/Weight/prepareDataForChart");
 const errors_1 = require("src/app/shared/errors");
 const measureDifference_1 = require("src/app/shared/measureDifference");
+const validators_1 = require("src/app/shared/validators");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");
 class WeightUseCase {
@@ -12,7 +13,7 @@ class WeightUseCase {
     }
     async add(userId, date, weightString) {
         console.log(`WeightUseCase.add(${userId}, new Date('${date.toISOString()}'), \`${weightString}\`);`);
-        const weight = validateWeight(parseNumber_1.parseNumber(weightString));
+        const weight = validators_1.validateWeight(parseNumber_1.parseNumber(weightString));
         if (weight == null)
             return result_1.Result.err(new errors_1.InvalidFormatError());
         const previousMeasuresResult = await this.weightRepository.getAll(userId);
@@ -65,10 +66,4 @@ class WeightUseCase {
     }
 }
 exports.WeightUseCase = WeightUseCase;
-function validateWeight(value) {
-    if (value !== null && value >= 1 && value <= 999)
-        return value;
-    return null;
-}
-exports.validateWeight = validateWeight;
 //# sourceMappingURL=WeightUseCase.js.map

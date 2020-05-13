@@ -55,4 +55,5 @@ function calcBMIResult(weight, { gender, height }) {
         ideal: IdealWeight_1.calcIdealWeight(height, gender),
     };
 }
+exports.calcBMIResult = calcBMIResult;
 //# sourceMappingURL=GetBMIUseCase.js.map

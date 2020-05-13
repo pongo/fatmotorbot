@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
 const errors_1 = require("src/app/shared/errors");
-const parseNumber_1 = require("src/shared/utils/parseNumber");
+const validators_1 = require("src/app/shared/validators");
 const result_1 = require("src/shared/utils/result");
 class InfoUseCase {
     constructor(infoRepository, weightRepository) {
@@ -37,25 +37,11 @@ function validateData(args) {
     if (args.length < 2)
         return null;
     const [genderStr, heightStr] = args;
-    const gender = validateGender();
-    const height = validateHeight();
+    const gender = validators_1.validateGender(genderStr);
+    const height = validators_1.validateHeight(heightStr);
     if (gender == null || height == null)
         return null;
     return { gender, height };
-    function validateGender() {
-        const lower = genderStr.toLowerCase();
-        if (lower === 'м')
-            return 'male';
-        if (lower === 'ж')
-            return 'female';
-        return null;
-    }
-    function validateHeight() {
-        const value = parseNumber_1.parseNumber(heightStr);
-        if (value != null && value >= 100 && value <= 300)
-            return value;
-        return null;
-    }
 }
 exports.validateData = validateData;
 //# sourceMappingURL=InfoUseCase.js.map
