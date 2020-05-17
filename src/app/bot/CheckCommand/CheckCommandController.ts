@@ -1,4 +1,4 @@
-import { present } from 'src/app/bot/CheckCommand/present';
+import { present } from 'src/app/bot/CheckCommand/checkPresenter';
 import { checkUseCase } from 'src/app/core/useCases/checkUseCase';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
 

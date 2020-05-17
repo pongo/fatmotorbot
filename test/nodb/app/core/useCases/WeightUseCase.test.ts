@@ -1,6 +1,5 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { GetBMIUseCase } from 'src/app/core/services/BMI/BMI';
 import { BMIResultOrError } from 'src/app/core/services/BMI/utils/types';
 import { validateWeight } from 'src/app/core/services/validators';
 import { WeightCases } from 'src/app/core/useCases/Weight/types';
@@ -16,15 +15,14 @@ const infoRepository = InfoRepositoryMockSinon({ get: Result.ok(null) });
 
 describe('WeightUseCase', () => {
   describe('add()', () => {
-    it('should adds valid weight to db', async () => {
+    it('should add valid weight to db', async () => {
       const today = new Date('2019-08-23');
       const weightRepository = WeightRepositoryMockSinon({
         add: Result.ok(),
         getAll: Result.ok([]),
         getCurrent: Result.ok(null),
       });
-      const bmiUseCase = new GetBMIUseCase(infoRepository, weightRepository);
-      const usecase = new WeightUseCase(weightRepository, bmiUseCase);
+      const usecase = new WeightUseCase(weightRepository, infoRepository);
 
       const actual = await usecase.add(u(1), today, '11.kg');
 
@@ -41,8 +39,7 @@ describe('WeightUseCase', () => {
     it('should return error on invalid weight', async () => {
       const today = new Date('2019-08-23');
       const weightRepository = WeightRepositoryMockSinon();
-      const bmiUseCase = new GetBMIUseCase(infoRepository, weightRepository);
-      const usecase = new WeightUseCase(weightRepository, bmiUseCase);
+      const usecase = new WeightUseCase(weightRepository, infoRepository);
 
       const actual = await usecase.add(u(1), today, '');
 
@@ -60,8 +57,7 @@ describe('WeightUseCase', () => {
         add: Result.ok(),
         getAll: Result.ok([m(yesterday, kg(20)), m(daysAgo, kg(15))]),
       });
-      const bmiUseCase = new GetBMIUseCase(infoRepository, weightRepository);
-      const usecase = new WeightUseCase(weightRepository, bmiUseCase);
+      const usecase = new WeightUseCase(weightRepository, infoRepository);
 
       const actual = await usecase.add(u(1), today, '10');
 
@@ -87,10 +83,9 @@ describe('WeightUseCase', () => {
   });
 
   describe('getCurrent()', () => {
-    it('should return empty if there is no measures', async () => {
+    it('should return empty if there are no measures', async () => {
       const weightRepository = WeightRepositoryMockSinon({ getAll: Result.ok([]) });
-      const bmiUseCase = new GetBMIUseCase(infoRepository, weightRepository);
-      const usecase = new WeightUseCase(weightRepository, bmiUseCase);
+      const usecase = new WeightUseCase(weightRepository, infoRepository);
 
       const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
@@ -103,8 +98,7 @@ describe('WeightUseCase', () => {
         const weekAgo = new Date('2019-08-21');
         const current = m(weekAgo, kg(61));
         const weightRepository = WeightRepositoryMockSinon({ getAll: Result.ok([current]) });
-        const bmiUseCase = new GetBMIUseCase(infoRepository, weightRepository);
-        const usecase = new WeightUseCase(weightRepository, bmiUseCase);
+        const usecase = new WeightUseCase(weightRepository, infoRepository);
 
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
@@ -115,8 +109,7 @@ describe('WeightUseCase', () => {
       it('today earlier', async () => {
         const current = m(new Date('2019-08-21 15:00'), kg(61));
         const weightRepository = WeightRepositoryMockSinon({ getAll: Result.ok([current]) });
-        const bmiUseCase = new GetBMIUseCase(infoRepository, weightRepository);
-        const usecase = new WeightUseCase(weightRepository, bmiUseCase);
+        const usecase = new WeightUseCase(weightRepository, infoRepository);
 
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-21 20:00'));
 
@@ -131,8 +124,7 @@ describe('WeightUseCase', () => {
         const weekAgo = new Date('2019-08-21');
         const current = m(new Date('2019-08-28'), kg(60));
         const weightRepository = WeightRepositoryMockSinon({ getAll: Result.ok([current, m(weekAgo, kg(61))]) });
-        const bmiUseCase = new GetBMIUseCase(infoRepository, weightRepository);
-        const usecase = new WeightUseCase(weightRepository, bmiUseCase);
+        const usecase = new WeightUseCase(weightRepository, infoRepository);
 
         const actual = await usecase.getCurrent(u(1), now);
 
@@ -161,8 +153,7 @@ describe('WeightUseCase', () => {
         const weightRepository = WeightRepositoryMockSinon({
           getAll: Result.ok([current, m(earlier, kg(60)), m(yesterday, kg(64))]),
         });
-        const bmiUseCase = new GetBMIUseCase(infoRepository, weightRepository);
-        const usecase = new WeightUseCase(weightRepository, bmiUseCase);
+        const usecase = new WeightUseCase(weightRepository, infoRepository);
 
         const actual = await usecase.getCurrent(u(1), now);
 

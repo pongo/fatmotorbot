@@ -1,10 +1,10 @@
 import { assert } from 'chai';
-import { present } from 'src/app/bot/CheckCommand/present';
+import { present } from 'src/app/bot/CheckCommand/checkPresenter';
 import { checkUseCase } from 'src/app/core/useCases/checkUseCase';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { Result } from 'src/shared/utils/result';
 
-describe('present()', () => {
+describe('checkPresenter', () => {
   it('should return help on wrong args', () => {
     assert.equal(
       present(Result.err(new InvalidFormatError())),

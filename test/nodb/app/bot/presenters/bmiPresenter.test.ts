@@ -2,11 +2,11 @@ import { assert } from 'chai';
 import { SlonikError } from 'slonik';
 import { bmiPresenter } from 'src/app/bot/presenters/bmiPresenter';
 import { UserInfo } from 'src/app/core/repositories/InfoRepository';
-import { GetBMIUseCase } from 'src/app/core/services/BMI/BMI';
+import { calcBMIFromWeight } from 'src/app/core/services/BMI/BMI';
 import { DatabaseError } from 'src/app/shared/errors';
 import { cm, Gender, kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
-import { InfoRepositoryMockSinon, WeightRepositoryMockSinon } from 'test/repositoryMocks';
+import { InfoRepositoryMockSinon } from 'test/repositoryMocks';
 import { u } from 'test/utils';
 
 describe('bmiPresenter()', () => {
@@ -83,7 +83,5 @@ describe('bmiPresenter()', () => {
 async function getBMIResult(gender: Gender, height: number, weight: number) {
   const userInfo: UserInfo = { gender, height: cm(height) };
   const infoRepo = InfoRepositoryMockSinon({ get: Result.ok(userInfo) });
-  const weightRepo = WeightRepositoryMockSinon();
-  const usecase = new GetBMIUseCase(infoRepo, weightRepo);
-  return usecase.get(u(1), { weight: kg(weight) });
+  return calcBMIFromWeight(u(1), kg(weight), infoRepo);
 }

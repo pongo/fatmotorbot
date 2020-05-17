@@ -1,6 +1,6 @@
 import Big from 'big.js';
-import { calcBMICoeff } from 'src/app/core/services/BMI/BMI';
 import { BMICategoryName, SuggestedNextDiff, SuggestedWeightDiff } from 'src/app/core/services/BMI/utils/types';
+import { calcBMICoeff, calcBMIValue } from 'src/app/core/services/BMI/utils/utils';
 import { BMI, Cm, Gender, Kg } from 'src/app/shared/types';
 import { roundToTwo } from 'src/shared/utils/parseNumber';
 import { noop } from 'src/shared/utils/utils';
@@ -108,7 +108,6 @@ class BMICategories {
 
   private checkCategories() {
     addCategories(this.categories);
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     this.checkCategories = noop;
   }
 }
@@ -183,4 +182,10 @@ export function getHealthyRange(gender: Gender, height: Cm): [Kg, Kg] {
 function roundUpKg(value: number | Big): Kg {
   // prettier-ignore
   return parseInt(Big(value).round(0, 3 /* ROUND_UP */).toFixed(), 10) as Kg;
+}
+
+export function getSuggestedWeightDiff(gender: Gender, height: Cm, weight: Kg): SuggestedWeightDiff {
+  const bmi = calcBMIValue(height, weight);
+  const category = getBMICategory(gender, bmi);
+  return category.getSuggest(gender, height, weight);
 }

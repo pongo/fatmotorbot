@@ -1,11 +1,21 @@
 import { assert } from 'chai';
-import { calcBMIValue, getSuggestedWeightDiff } from 'src/app/core/services/BMI/BMI';
-import { getBMICategoryName, getHealthyRange } from 'src/app/core/services/BMI/utils/BMICategory';
-import { BMICategoryName } from 'src/app/core/services/BMI/utils/types';
+import sinon from 'sinon';
+import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
+import { calcBMI, calcBMIFromUserInfo, calcBMIFromWeight } from 'src/app/core/services/BMI/BMI';
+import {
+  getBMICategoryName,
+  getHealthyRange,
+  getSuggestedWeightDiff,
+} from 'src/app/core/services/BMI/utils/BMICategory';
+import { BMICategoryName, BMIResult } from 'src/app/core/services/BMI/utils/types';
+import { calcBMIValue } from 'src/app/core/services/BMI/utils/utils';
 import { BMI, cm, kg } from 'src/app/shared/types';
+import { Result } from 'src/shared/utils/result';
+import { InfoRepositoryMockSinon, WeightRepositoryMockSinon } from 'test/repositoryMocks';
+import { u } from 'test/utils';
 
-describe('calcBMI()', () => {
-  it('should calculate BMI', () => {
+describe('calcBMIValue()', () => {
+  it('should calculate BMI value', () => {
     const expected = [
       [140, 60, 33.63],
       [150, 60, 28.31],
@@ -140,5 +150,44 @@ describe('getSuggestedWeightDiff()', () => {
       },
       '150 kg',
     );
+  });
+});
+
+describe('BMI full report', () => {
+  const userInfo: UserInfo = { gender: 'male', height: cm(171) };
+  const expected: BMIResult = {
+    case: 'bmi',
+    bmi: 18.36 as BMI,
+    categoryName: 'Underweight',
+    healthyRange: [kg(58.83), kg(73.5)],
+    suggest: {
+      alreadyHealthy: false,
+      toHealthy: kg(5),
+      toNext: null,
+    },
+    ideal: { avg: kg(66), min: kg(63), max: kg(68) },
+  };
+
+  it('no user info', async () => {
+    const infoRepository: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(null) };
+    const actual = await calcBMIFromWeight(u(1), kg(54), infoRepository);
+    assert.deepEqual(actual, Result.ok({ case: 'need-user-info' as const }));
+  });
+
+  it('calcBMIFromUserInfo()', async () => {
+    const weightRepo = WeightRepositoryMockSinon({ getCurrent: Result.ok(kg(54)) });
+    const actual = await calcBMIFromUserInfo(u(1), userInfo, weightRepo);
+    assert.deepEqual(actual, Result.ok(expected));
+  });
+
+  it('calcBMIFromWeight()', async () => {
+    const infoRepository = InfoRepositoryMockSinon({ get: Result.ok(userInfo) });
+    const actual = await calcBMIFromWeight(u(1), kg(54), infoRepository);
+    assert.deepEqual(actual, Result.ok(expected));
+  });
+
+  it('calcBMI()', () => {
+    const actual = calcBMI(kg(54), userInfo);
+    assert.deepEqual(actual, expected);
   });
 });

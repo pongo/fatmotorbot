@@ -1,16 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WeightUseCase = void 0;
-const prepareDataForChart_1 = require("src/app/core/useCases/Weight/prepareDataForChart");
-const errors_1 = require("src/app/shared/errors");
+const BMI_1 = require("src/app/core/services/BMI/BMI");
 const measureDifference_1 = require("src/app/core/services/measureDifference");
 const validators_1 = require("src/app/core/services/validators");
+const prepareDataForChart_1 = require("src/app/core/useCases/Weight/prepareDataForChart");
+const errors_1 = require("src/app/shared/errors");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");
 class WeightUseCase {
-    constructor(weightRepository, bmiUseCase) {
+    constructor(weightRepository, infoRepository) {
         this.weightRepository = weightRepository;
-        this.bmiUseCase = bmiUseCase;
+        this.infoRepository = infoRepository;
     }
     async add(userId, date, weightString) {
         console.log(`WeightUseCase.add(${userId}, new Date('${date.toISOString()}'), \`${weightString}\`);`);
@@ -23,7 +24,7 @@ class WeightUseCase {
         const addResult = await this.weightRepository.add(userId, weight, date);
         if (addResult.isErr)
             return addResult;
-        const bmi = await this.bmiUseCase.get(userId, { weight });
+        const bmi = await BMI_1.calcBMIFromWeight(userId, weight, this.infoRepository);
         const previousMeasures = previousMeasuresResult.value;
         if (previousMeasures.length === 0)
             return result_1.Result.ok({ case: "add:first", weight, bmi });
@@ -40,7 +41,7 @@ class WeightUseCase {
         if (measures.length === 0)
             return result_1.Result.ok({ case: "current:empty" });
         const current = measures[0];
-        const bmi = await this.bmiUseCase.get(userId, { weight: current.value });
+        const bmi = await BMI_1.calcBMIFromWeight(userId, current.value, this.infoRepository);
         if (measures.length === 1)
             return result_1.Result.ok({ case: "current:first", current, bmi });
         const diff = measureDifference_1.measureDifference(current, measures, now);
@@ -55,16 +56,16 @@ class WeightUseCase {
         const measures = measuresResult_.value;
         if (measures.length === 0)
             return undefined;
-        const bmi = getBMI(this.bmiUseCase, measures[0].value);
+        const bmi = getBMIValue(bmiResult);
         return prepareDataForChart_1.prepareDataForChart(userId, measures, bmi);
-        function getBMI(_bmiUseCase, _weight) {
-            if (bmiResult.isErr)
-                return undefined;
-            if (bmiResult.value.case !== 'bmi')
-                return undefined;
-            return bmiResult.value;
-        }
     }
 }
 exports.WeightUseCase = WeightUseCase;
+function getBMIValue(bmiResult) {
+    if (bmiResult.isErr)
+        return undefined;
+    if (bmiResult.value.case !== 'bmi')
+        return undefined;
+    return bmiResult.value;
+}
 //# sourceMappingURL=WeightUseCase.js.map

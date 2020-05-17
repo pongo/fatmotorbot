@@ -3,8 +3,6 @@ import { presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAd
 import { presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
 import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
-import { GetBMIUseCase } from 'src/app/core/services/BMI/BMI';
-import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
 import { WeightUseCase } from 'src/app/core/useCases/Weight/WeightUseCase';
 import { TelegramUserId } from 'src/app/shared/types';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
@@ -21,9 +19,7 @@ export class WeightCommandController {
     infoRepository: InfoRepository,
     private readonly chartDomain?: string,
   ) {
-    const infoUseCase = new InfoUseCase(infoRepository, weightRepository);
-    const bmiUseCase = new GetBMIUseCase(infoUseCase, weightRepository);
-    this.usecase = new WeightUseCase(weightRepository, bmiUseCase);
+    this.usecase = new WeightUseCase(weightRepository, infoRepository);
   }
 
   enable() {

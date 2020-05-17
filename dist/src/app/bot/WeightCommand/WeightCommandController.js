@@ -4,16 +4,12 @@ exports.WeightCommandController = void 0;
 const chartUrl_1 = require("src/app/bot/WeightCommand/presenters/chartUrl");
 const presentAddWeight_1 = require("src/app/bot/WeightCommand/presenters/presentAddWeight");
 const presentCurrentWeight_1 = require("src/app/bot/WeightCommand/presenters/presentCurrentWeight");
-const BMI_1 = require("src/app/core/services/BMI/BMI");
-const InfoUseCase_1 = require("src/app/core/useCases/Info/InfoUseCase");
 const WeightUseCase_1 = require("src/app/core/useCases/Weight/WeightUseCase");
 class WeightCommandController {
     constructor(telegram, weightRepository, infoRepository, chartDomain) {
         this.telegram = telegram;
         this.chartDomain = chartDomain;
-        const infoUseCase = new InfoUseCase_1.InfoUseCase(infoRepository, weightRepository);
-        const bmiUseCase = new BMI_1.GetBMIUseCase(infoUseCase, weightRepository);
-        this.usecase = new WeightUseCase_1.WeightUseCase(weightRepository, bmiUseCase);
+        this.usecase = new WeightUseCase_1.WeightUseCase(weightRepository, infoRepository);
     }
     enable() {
         this.telegram.onCommand('weight', this.weightHandler.bind(this));

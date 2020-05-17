@@ -1,12 +1,10 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
 import { bmiPresenter } from 'src/app/bot/presenters/bmiPresenter';
-import { GetBMIUseCase } from 'src/app/core/services/BMI/BMI';
-import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
+import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
+import { calcBMIFromWeight } from 'src/app/core/services/BMI/BMI';
 import { cm, Gender, kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
-import { WeightRepositoryMockSinon } from 'test/repositoryMocks';
 import { u } from 'test/utils';
 
 describe('Bugs', () => {
@@ -18,9 +16,6 @@ describe('Bugs', () => {
 
 async function getBMIResult(gender: Gender, height: number, weight: number) {
   const userInfo: UserInfo = { gender, height: cm(height) };
-  const repo: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(userInfo) };
-  const weightRepo = WeightRepositoryMockSinon();
-  const infoUseCase = new InfoUseCase(repo, weightRepo);
-  const usecase = new GetBMIUseCase(repo, weightRepo);
-  return usecase.get(u(1), { weight: kg(weight) });
+  const infoRepo: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(userInfo) };
+  return calcBMIFromWeight(u(1), kg(weight), infoRepo);
 }

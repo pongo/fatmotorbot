@@ -1,10 +1,10 @@
 import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
-import { GetBMIUseCase } from 'src/app/core/services/BMI/BMI';
+import { calcBMIFromUserInfo } from 'src/app/core/services/BMI/BMI';
+import { validateGender, validateHeight } from 'src/app/core/services/validators';
 import { IInfoUseCaseGet, InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/core/useCases/Info/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { TelegramUserId } from 'src/app/shared/types';
-import { validateGender, validateHeight } from 'src/app/core/services/validators';
 import { Result } from 'src/shared/utils/result';
 
 interface IInfoUseCaseSet {
@@ -14,11 +14,7 @@ interface IInfoUseCaseSet {
 interface IInfoUseCase extends IInfoUseCaseGet, IInfoUseCaseSet {}
 
 export class InfoUseCase implements IInfoUseCase {
-  private readonly bmiUseCase: GetBMIUseCase;
-
-  constructor(private readonly infoRepository: IInfoRepository, readonly weightRepository: IWeightRepository) {
-    this.bmiUseCase = new GetBMIUseCase(this, weightRepository);
-  }
+  constructor(private readonly infoRepository: IInfoRepository, readonly weightRepository: IWeightRepository) {}
 
   async get(userId: TelegramUserId): Promise<Result<InfoGetResult, DatabaseError>> {
     console.debug(`InfoUseCase.get(${userId});`);
@@ -39,7 +35,7 @@ export class InfoUseCase implements IInfoUseCase {
     const addResult = await this.infoRepository.set(userId, data);
     if (addResult.isErr) return addResult;
 
-    const bmiResult = await this.bmiUseCase.get(userId, { userInfo: data });
+    const bmiResult = await calcBMIFromUserInfo(userId, data, this.weightRepository);
     const bmi = bmiResult.isErr ? null : bmiResult.value;
 
     return Result.ok({ case: 'set', data, bmi });
