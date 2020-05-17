@@ -15,3 +15,9 @@ export const cm = (value: number) => value as Cm;
 export type MeasureValueType = 'weight' | 'none';
 export type MeasuresFromNewestToOldest<T extends number> = Measure<T>[];
 export type MeasuresFromOldestToNewest<T extends number> = Measure<T>[];
+
+export type IdealWeight = {
+  avg: Kg;
+  min: Kg;
+  max: Kg;
+};

@@ -25,7 +25,8 @@ class TelegramGateway {
     }
     onStartCommand(text) {
         this.telegraf.start(async (ctx) => {
-            const isPrivate = ctx.message != null && ctx.message.from != null && ctx.message.from.id === ctx.message.chat.id;
+            var _a;
+            const isPrivate = ((_a = ctx.message) === null || _a === void 0 ? void 0 : _a.from) != null && ctx.message.from.id === ctx.message.chat.id;
             if (isPrivate)
                 return ctx.reply(text);
             return undefined;
@@ -47,7 +48,7 @@ class TelegramGateway {
 }
 exports.TelegramGateway = TelegramGateway;
 async function handleCommand(handler, ctx, next) {
-    if (ctx != null && ctx.message != null) {
+    if ((ctx === null || ctx === void 0 ? void 0 : ctx.message) != null) {
         const parsedCommand = parseCommand(ctx.message);
         if (parsedCommand != null) {
             ctx.telegram.sendChatAction(parsedCommand.chatId, 'typing').catch(console.error);

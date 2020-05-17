@@ -1,6 +1,6 @@
 /* tslint:disable:binary-expression-operand-order no-identical-functions */
 import { getHealthyRange } from 'src/app/core/services/BMI/utils/BMICategory';
-import { Cm, Gender, Kg } from 'src/app/shared/types';
+import { Cm, Gender, IdealWeight, Kg } from 'src/app/shared/types';
 import { roundDown, roundToTwo, roundUp } from 'src/shared/utils/parseNumber';
 import { median } from 'stats-lite';
 
@@ -115,12 +115,6 @@ const formulas = [
   robinson,
   tetona,
 ];
-
-export type IdealWeight = {
-  avg: Kg;
-  min: Kg;
-  max: Kg;
-};
 
 export function calcIdealWeight(height: Cm, gender: Gender): IdealWeight {
   const values = formulas.map((f) => f(height, gender));

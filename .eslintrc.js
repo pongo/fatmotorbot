@@ -34,6 +34,7 @@ module.exports = {
             lintFile: "./test/tslint.json",
           },
         ],
+        "import/no-extraneous-dependencies": 0,
         "max-lines-per-function": 0,
         "max-nested-callbacks": 0,
         "no-unused-expressions": 0,

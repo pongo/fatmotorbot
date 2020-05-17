@@ -1,6 +1,5 @@
 import { DatabaseError } from 'src/app/shared/errors';
-import { IdealWeight } from 'src/app/core/services/IdealWeight';
-import { BMI, Kg } from 'src/app/shared/types';
+import { BMI, IdealWeight, Kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
 export type BMICategoryName =

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { assert } from 'chai';
 import sinon, { SinonSpy } from 'sinon';
 import { UserInfo } from 'src/app/core/repositories/InfoRepository';
@@ -80,7 +79,7 @@ describe('InfoUseCase', () => {
       const actual = await usecase.set(u(1), ['ж', '150']);
 
       assert.deepEqual(infoRepo.calls.get('set'), [[u(1), data]]);
-      assert(actual.isOk)
+      assert(actual.isOk);
       assert.isNotNull(actual.value.bmi);
       assert.equal(actual.value.bmi!.case, 'bmi');
     });
