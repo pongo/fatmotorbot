@@ -3,7 +3,7 @@ import {
   BMIFullResult,
   BMIResultOrError,
   SuggestedNextDiff,
-} from 'src/app/core/useCases/BMI/utils/types';
+} from 'src/app/core/services/BMI/utils/types';
 import { Kg } from 'src/app/shared/types';
 
 export function bmiPresenter(result: BMIResultOrError): string {

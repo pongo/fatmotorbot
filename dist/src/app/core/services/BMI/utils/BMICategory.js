@@ -3,11 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getHealthyRange = exports.getBMICategory = exports.getBMICategoryName = exports.BMICategory = void 0;
+exports.getSuggestedWeightDiff = exports.getHealthyRange = exports.getBMICategory = exports.getBMICategoryName = exports.BMICategory = void 0;
 const big_js_1 = __importDefault(require("big.js"));
-const BMI_1 = require("src/app/core/useCases/BMI/utils/BMI");
+const utils_1 = require("src/app/core/services/BMI/utils/utils");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
-const utils_1 = require("src/shared/utils/utils");
+const utils_2 = require("src/shared/utils/utils");
 class BMICategory {
     constructor({ name, position, lowerBMI, upperBMI }) {
         this.name = name;
@@ -20,7 +20,7 @@ class BMICategory {
     }
     getRangeWeight(gender, height) {
         const [lowerBMI, upperBMI] = this.getRangeBMI(gender);
-        const coeff = BMI_1.calcBMICoeff(height);
+        const coeff = utils_1.calcBMICoeff(height);
         const lower = (lowerBMI / 1.3) * coeff;
         const upper = ((upperBMI - 0.01) / 1.3) * coeff;
         return [parseNumber_1.roundToTwo(lower), parseNumber_1.roundToTwo(upper)];
@@ -86,7 +86,7 @@ class BMICategories {
     }
     checkCategories() {
         addCategories(this.categories);
-        this.checkCategories = utils_1.noop;
+        this.checkCategories = utils_2.noop;
     }
 }
 function addCategories(categories) {
@@ -141,4 +141,10 @@ exports.getHealthyRange = getHealthyRange;
 function roundUpKg(value) {
     return parseInt(big_js_1.default(value).round(0, 3).toFixed(), 10);
 }
+function getSuggestedWeightDiff(gender, height, weight) {
+    const bmi = utils_1.calcBMIValue(height, weight);
+    const category = getBMICategory(gender, bmi);
+    return category.getSuggest(gender, height, weight);
+}
+exports.getSuggestedWeightDiff = getSuggestedWeightDiff;
 //# sourceMappingURL=BMICategory.js.map

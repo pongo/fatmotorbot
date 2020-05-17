@@ -1,6 +1,9 @@
+import { IInfoRepositoryGet } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
-import { IGetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
-import { BMIFullResult } from 'src/app/core/useCases/BMI/utils/types';
+import { calcBMIFromWeight } from 'src/app/core/services/BMI/BMI';
+import { BMIFullResult, BMIResultOrError } from 'src/app/core/services/BMI/utils/types';
+import { measureDifference } from 'src/app/core/services/measureDifference';
+import { validateWeight } from 'src/app/core/services/validators';
 import { prepareDataForChart } from 'src/app/core/useCases/Weight/prepareDataForChart';
 import {
   CurrentWeight,
@@ -11,14 +14,15 @@ import {
   WeightCases,
 } from 'src/app/core/useCases/Weight/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
-import { measureDifference } from 'src/app/shared/measureDifference';
-import { Kg, TelegramUserId } from 'src/app/shared/types';
-import { validateWeight } from 'src/app/shared/validators';
+import { TelegramUserId } from 'src/app/shared/types';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
 
 export class WeightUseCase {
-  constructor(private readonly weightRepository: IWeightRepository, private readonly bmiUseCase: IGetBMIUseCase) {}
+  constructor(
+    private readonly weightRepository: IWeightRepository,
+    private readonly infoRepository: IInfoRepositoryGet,
+  ) {}
 
   async add(userId: TelegramUserId, date: Date, weightString: string): Promise<Result<WeightAdded, WeightAddedErrors>> {
     console.log(`WeightUseCase.add(${userId}, new Date('${date.toISOString()}'), \`${weightString}\`);`);
@@ -32,7 +36,7 @@ export class WeightUseCase {
     const addResult = await this.weightRepository.add(userId, weight, date);
     if (addResult.isErr) return addResult;
 
-    const bmi = await this.bmiUseCase.get(userId, { weight });
+    const bmi = await calcBMIFromWeight(userId, weight, this.infoRepository);
     const previousMeasures = previousMeasuresResult.value;
     if (previousMeasures.length === 0) return Result.ok({ case: WeightCases.addFirst, weight, bmi });
 
@@ -51,7 +55,7 @@ export class WeightUseCase {
     if (measures.length === 0) return Result.ok({ case: WeightCases.currentEmpty });
 
     const current = measures[0];
-    const bmi = await this.bmiUseCase.get(userId, { weight: current.value });
+    const bmi = await calcBMIFromWeight(userId, current.value, this.infoRepository);
     if (measures.length === 1) return Result.ok({ case: WeightCases.currentFirst, current, bmi });
 
     const diff = measureDifference(current, measures, now);
@@ -71,14 +75,13 @@ export class WeightUseCase {
     const measures = measuresResult_.value;
     if (measures.length === 0) return undefined;
 
-    const bmi = getBMI(this.bmiUseCase, measures[0].value);
+    const bmi = getBMIValue(bmiResult);
     return prepareDataForChart(userId, measures, bmi);
-
-    function getBMI(_bmiUseCase: IGetBMIUseCase, _weight: Kg): BMIFullResult | undefined {
-      // const bmiResult = preparedData.bmiResult; // ?? (await bmiUseCase.get(userId, { weight }));
-      if (bmiResult.isErr) return undefined;
-      if (bmiResult.value.case !== 'bmi') return undefined;
-      return bmiResult.value;
-    }
   }
+}
+
+function getBMIValue(bmiResult: BMIResultOrError): BMIFullResult | undefined {
+  if (bmiResult.isErr) return undefined;
+  if (bmiResult.value.case !== 'bmi') return undefined;
+  return bmiResult.value;
 }

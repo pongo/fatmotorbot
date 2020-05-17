@@ -1,4 +1,4 @@
-import { DateMark, MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
+import { DateMark, MeasureDifferenceSummary } from 'src/app/core/services/measureDifference';
 import { Kg } from 'src/app/shared/types';
 
 export function getHeader(weight: Kg): string {

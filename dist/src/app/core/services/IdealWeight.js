@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.calcIdealWeight = exports.tetona = exports.breitman = exports.kuper = exports.insurance = exports.mohammed = exports.lorenz = exports.averageHealthyBMI = exports.lemmens = exports.hamwi = exports.miller = exports.robinson = exports.devine = exports.brocaBrugsh = exports.broca = void 0;
-const BMICategory_1 = require("src/app/core/useCases/BMI/utils/BMICategory");
+const BMICategory_1 = require("src/app/core/services/BMI/utils/BMICategory");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const stats_lite_1 = require("stats-lite");
 function broca(height, gender) {
@@ -97,7 +97,7 @@ const formulas = [
     tetona,
 ];
 function calcIdealWeight(height, gender) {
-    const values = formulas.map(f => f(height, gender));
+    const values = formulas.map((f) => f(height, gender));
     const avg = parseNumber_1.roundToTwo(stats_lite_1.median(values), 0);
     const min = parseNumber_1.roundDown(Math.min(...values), 0);
     const max = parseNumber_1.roundUp(Math.max(...values), 0);

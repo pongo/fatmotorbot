@@ -1,10 +1,6 @@
 import { assert } from 'chai';
-import { BMIFullResult, SuggestedNextDiff } from 'src/app/core/useCases/BMI/utils/types';
-import {
-  createChartQuery,
-  prepareDataForChart,
-  yyymmdd,
-} from 'src/app/core/useCases/Weight/prepareDataForChart';
+import { BMIFullResult, SuggestedNextDiff } from 'src/app/core/services/BMI/utils/types';
+import { createChartQuery, prepareDataForChart, yyymmdd } from 'src/app/core/useCases/Weight/prepareDataForChart';
 import { DataForChart } from 'src/app/core/useCases/Weight/types';
 import { parseChartQuery } from 'src/app/shared/parseChartQuery';
 import { BMI, kg, Kg, MeasuresFromNewestToOldest } from 'src/app/shared/types';

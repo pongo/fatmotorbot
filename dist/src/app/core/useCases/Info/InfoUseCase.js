@@ -1,15 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateData = exports.InfoUseCase = void 0;
-const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
+const BMI_1 = require("src/app/core/services/BMI/BMI");
+const validators_1 = require("src/app/core/services/validators");
 const errors_1 = require("src/app/shared/errors");
-const validators_1 = require("src/app/shared/validators");
 const result_1 = require("src/shared/utils/result");
 class InfoUseCase {
     constructor(infoRepository, weightRepository) {
         this.infoRepository = infoRepository;
         this.weightRepository = weightRepository;
-        this.bmiUseCase = new GetBMIUseCase_1.GetBMIUseCase(this, weightRepository);
     }
     async get(userId) {
         console.debug(`InfoUseCase.get(${userId});`);
@@ -28,7 +27,7 @@ class InfoUseCase {
         const addResult = await this.infoRepository.set(userId, data);
         if (addResult.isErr)
             return addResult;
-        const bmiResult = await this.bmiUseCase.get(userId, { userInfo: data });
+        const bmiResult = await BMI_1.calcBMIFromUserInfo(userId, data, this.weightRepository);
         const bmi = bmiResult.isErr ? null : bmiResult.value;
         return result_1.Result.ok({ case: 'set', data, bmi });
     }

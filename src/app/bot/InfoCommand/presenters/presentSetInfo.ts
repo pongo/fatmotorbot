@@ -2,7 +2,7 @@ import { bmiPresenter } from 'src/app/bot/presenters/bmiPresenter';
 import { presentUserData } from 'src/app/bot/InfoCommand/presenters/shared';
 import { presentDatabaseError } from 'src/app/bot/presenters/shared';
 import { UserInfo } from 'src/app/core/repositories/InfoRepository';
-import { BMIResult } from 'src/app/core/useCases/BMI/utils/types';
+import { BMIResult } from 'src/app/core/services/BMI/utils/types';
 import { InfoAddErrors, InfoSetResult } from 'src/app/core/useCases/Info/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { Result } from 'src/shared/utils/result';

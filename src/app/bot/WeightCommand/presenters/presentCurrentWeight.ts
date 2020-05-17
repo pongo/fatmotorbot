@@ -4,7 +4,7 @@ import { presentDatabaseError } from 'src/app/bot/presenters/shared';
 import { chartImage, getHeader, presentDiff } from 'src/app/bot/WeightCommand/presenters/shared';
 import { CurrentWeight, CurrentWeightDiff, CurrentWeightFirst, WeightCases } from 'src/app/core/useCases/Weight/types';
 import { DatabaseError } from 'src/app/shared/errors';
-import { DateMark, getDateMark } from 'src/app/shared/measureDifference';
+import { DateMark, getDateMark } from 'src/app/core/services/measureDifference';
 import { Kg, Measure } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
