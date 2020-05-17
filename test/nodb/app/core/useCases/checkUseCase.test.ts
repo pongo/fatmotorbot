@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { BMIResult } from 'src/app/core/useCases/BMI/utils/types';
+import { BMIResult } from 'src/app/core/services/BMI/utils/types';
 import { CheckResult, checkUseCase } from 'src/app/core/useCases/checkUseCase';
 import { BMI, cm, kg } from 'src/app/shared/types';
 

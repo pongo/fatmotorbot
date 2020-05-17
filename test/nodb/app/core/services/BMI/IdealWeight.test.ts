@@ -15,7 +15,7 @@ import {
   mohammed,
   robinson,
   tetona,
-} from 'src/app/shared/IdealWeight';
+} from 'src/app/core/services/IdealWeight';
 import { cm, kg } from 'src/app/shared/types';
 
 describe('Ideal Weight calculation', () => {

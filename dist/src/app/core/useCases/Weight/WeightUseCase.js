@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WeightUseCase = void 0;
 const prepareDataForChart_1 = require("src/app/core/useCases/Weight/prepareDataForChart");
 const errors_1 = require("src/app/shared/errors");
-const measureDifference_1 = require("src/app/shared/measureDifference");
-const validators_1 = require("src/app/shared/validators");
+const measureDifference_1 = require("src/app/core/services/measureDifference");
+const validators_1 = require("src/app/core/services/validators");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");
 class WeightUseCase {

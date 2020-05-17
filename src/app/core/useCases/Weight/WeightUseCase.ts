@@ -1,6 +1,6 @@
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
-import { IGetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
-import { BMIFullResult } from 'src/app/core/useCases/BMI/utils/types';
+import { IGetBMIUseCase } from 'src/app/core/services/BMI/BMI';
+import { BMIFullResult } from 'src/app/core/services/BMI/utils/types';
 import { prepareDataForChart } from 'src/app/core/useCases/Weight/prepareDataForChart';
 import {
   CurrentWeight,
@@ -11,9 +11,9 @@ import {
   WeightCases,
 } from 'src/app/core/useCases/Weight/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
-import { measureDifference } from 'src/app/shared/measureDifference';
+import { measureDifference } from 'src/app/core/services/measureDifference';
 import { Kg, TelegramUserId } from 'src/app/shared/types';
-import { validateWeight } from 'src/app/shared/validators';
+import { validateWeight } from 'src/app/core/services/validators';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
 

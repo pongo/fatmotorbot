@@ -1,5 +1,5 @@
 /* tslint:disable:binary-expression-operand-order no-identical-functions */
-import { getHealthyRange } from 'src/app/core/useCases/BMI/utils/BMICategory';
+import { getHealthyRange } from 'src/app/core/services/BMI/utils/BMICategory';
 import { Cm, Gender, Kg } from 'src/app/shared/types';
 import { roundDown, roundToTwo, roundUp } from 'src/shared/utils/parseNumber';
 import { median } from 'stats-lite';
@@ -123,7 +123,7 @@ export type IdealWeight = {
 };
 
 export function calcIdealWeight(height: Cm, gender: Gender): IdealWeight {
-  const values = formulas.map(f => f(height, gender));
+  const values = formulas.map((f) => f(height, gender));
   const avg = roundToTwo(median(values), 0) as Kg;
   const min = roundDown(Math.min(...values), 0) as Kg;
   const max = roundUp(Math.max(...values), 0) as Kg;

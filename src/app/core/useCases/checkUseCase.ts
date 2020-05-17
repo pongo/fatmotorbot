@@ -1,9 +1,9 @@
 import { UserInfo } from 'src/app/core/repositories/InfoRepository';
-import { calcBMIResult } from 'src/app/core/useCases/BMI/GetBMIUseCase';
-import { BMIResult } from 'src/app/core/useCases/BMI/utils/types';
+import { calcBMI } from 'src/app/core/services/BMI/BMI';
+import { BMIResult } from 'src/app/core/services/BMI/utils/types';
 import { InvalidFormatError } from 'src/app/shared/errors';
 import { Kg } from 'src/app/shared/types';
-import { validateGender, validateHeight, validateWeight } from 'src/app/shared/validators';
+import { validateGender, validateHeight, validateWeight } from 'src/app/core/services/validators';
 import { parseNumber } from 'src/shared/utils/parseNumber';
 import { Result } from 'src/shared/utils/result';
 
@@ -31,5 +31,5 @@ export function checkUseCase(args: string[]): CheckResult {
   const params = validate(args);
   if (params === null) return Result.err(new InvalidFormatError());
 
-  return Result.ok({ params, bmiResult: calcBMIResult(params.weight, params.userInfo) });
+  return Result.ok({ params, bmiResult: calcBMI(params.weight, params.userInfo) });
 }

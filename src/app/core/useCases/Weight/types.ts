@@ -1,6 +1,6 @@
-import { BMIResultOrError } from 'src/app/core/useCases/BMI/utils/types';
+import { BMIResultOrError } from 'src/app/core/services/BMI/utils/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
-import { MeasureDifferenceSummary } from 'src/app/shared/measureDifference';
+import { MeasureDifferenceSummary } from 'src/app/core/services/measureDifference';
 import {
   Kg,
   Measure,

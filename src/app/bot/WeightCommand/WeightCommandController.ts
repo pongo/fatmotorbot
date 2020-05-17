@@ -3,7 +3,7 @@ import { presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAd
 import { presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
 import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
-import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
+import { GetBMIUseCase } from 'src/app/core/services/BMI/BMI';
 import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
 import { WeightUseCase } from 'src/app/core/useCases/Weight/WeightUseCase';
 import { TelegramUserId } from 'src/app/shared/types';

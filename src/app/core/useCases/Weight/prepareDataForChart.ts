@@ -1,4 +1,4 @@
-import { BMIFullResult, SuggestedWeightDiff } from 'src/app/core/useCases/BMI/utils/types';
+import { BMIFullResult, SuggestedWeightDiff } from 'src/app/core/services/BMI/utils/types';
 import { DataForChart, YYYYMMDD } from 'src/app/core/useCases/Weight/types';
 import { Kg, MeasuresFromNewestToOldest, MeasuresFromOldestToNewest, TelegramUserId } from 'src/app/shared/types';
 

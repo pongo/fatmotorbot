@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { DateMark, getDateMark, measureDifference } from 'src/app/shared/measureDifference';
+import { DateMark, getDateMark, measureDifference } from 'src/app/core/services/measureDifference';
 import { kg } from 'src/app/shared/types';
 import { m, sortM } from 'test/utils';
 

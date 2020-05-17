@@ -8,8 +8,11 @@ export type UserInfo = {
   height: Cm;
 };
 
-export interface IInfoRepository {
+export interface IInfoRepositoryGet {
   get(userId: TelegramUserId): Promise<Result<UserInfo | null, DatabaseError>>;
+}
+
+export interface IInfoRepository extends IInfoRepositoryGet {
   set(userId: TelegramUserId, data: UserInfo): Promise<Result<undefined, DatabaseError>>;
 }
 

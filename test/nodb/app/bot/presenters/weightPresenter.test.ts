@@ -3,8 +3,8 @@ import { SlonikError } from 'slonik';
 import { createChartUrl } from 'src/app/bot/WeightCommand/presenters/chartUrl';
 import { presentAddWeight } from 'src/app/bot/WeightCommand/presenters/presentAddWeight';
 import { presentCurrentWeight } from 'src/app/bot/WeightCommand/presenters/presentCurrentWeight';
-import { chartImage} from 'src/app/bot/WeightCommand/presenters/shared';
-import { BMIResultOrError } from 'src/app/core/useCases/BMI/utils/types';
+import { chartImage } from 'src/app/bot/WeightCommand/presenters/shared';
+import { BMIResultOrError } from 'src/app/core/services/BMI/utils/types';
 import {
   CurrentWeightDiff,
   CurrentWeightFirst,

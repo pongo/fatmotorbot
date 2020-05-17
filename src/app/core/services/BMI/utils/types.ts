@@ -1,5 +1,5 @@
 import { DatabaseError } from 'src/app/shared/errors';
-import { IdealWeight } from 'src/app/shared/IdealWeight';
+import { IdealWeight } from 'src/app/core/services/IdealWeight';
 import { BMI, Kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 
@@ -35,9 +35,6 @@ export type BMIFullResult = {
   ideal: IdealWeight;
 };
 
-export type BMIResult =
-  | { case: 'need-user-weight' }
-  | { case: 'need-user-info' }
-  | BMIFullResult;
+export type BMIResult = { case: 'need-user-weight' } | { case: 'need-user-info' } | BMIFullResult;
 
 export type BMIResultOrError = Result<BMIResult, DatabaseError>;

@@ -1,8 +1,7 @@
 import { assert } from 'chai';
-import { getSuggestedWeightDiff } from 'src/app/core/useCases/BMI/GetBMIUseCase';
-import { calcBMI } from 'src/app/core/useCases/BMI/utils/BMI';
-import { getBMICategoryName, getHealthyRange } from 'src/app/core/useCases/BMI/utils/BMICategory';
-import { BMICategoryName } from 'src/app/core/useCases/BMI/utils/types';
+import { calcBMIValue, getSuggestedWeightDiff } from 'src/app/core/services/BMI/BMI';
+import { getBMICategoryName, getHealthyRange } from 'src/app/core/services/BMI/utils/BMICategory';
+import { BMICategoryName } from 'src/app/core/services/BMI/utils/types';
 import { BMI, cm, kg } from 'src/app/shared/types';
 
 describe('calcBMI()', () => {
@@ -18,7 +17,7 @@ describe('calcBMI()', () => {
       [210, 60, 12.21],
       [180, 180, 53.83],
     ];
-    const actual = expected.map(([height, weight]) => [height, weight, calcBMI(cm(height), kg(weight))]);
+    const actual = expected.map(([height, weight]) => [height, weight, calcBMIValue(cm(height), kg(weight))]);
     assert.sameDeepOrderedMembers(expected, actual);
   });
 });

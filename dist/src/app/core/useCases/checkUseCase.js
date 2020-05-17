@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkUseCase = void 0;
-const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
+const BMI_1 = require("src/app/core/services/BMI/BMI");
 const errors_1 = require("src/app/shared/errors");
-const validators_1 = require("src/app/shared/validators");
+const validators_1 = require("src/app/core/services/validators");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const result_1 = require("src/shared/utils/result");
 function validate(args) {
@@ -21,7 +21,7 @@ function checkUseCase(args) {
     const params = validate(args);
     if (params === null)
         return result_1.Result.err(new errors_1.InvalidFormatError());
-    return result_1.Result.ok({ params, bmiResult: GetBMIUseCase_1.calcBMIResult(params.weight, params.userInfo) });
+    return result_1.Result.ok({ params, bmiResult: BMI_1.calcBMI(params.weight, params.userInfo) });
 }
 exports.checkUseCase = checkUseCase;
 //# sourceMappingURL=checkUseCase.js.map

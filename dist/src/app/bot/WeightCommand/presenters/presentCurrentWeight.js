@@ -5,7 +5,7 @@ const date_fns_1 = require("date-fns");
 const bmiPresenter_1 = require("src/app/bot/presenters/bmiPresenter");
 const shared_1 = require("src/app/bot/presenters/shared");
 const shared_2 = require("src/app/bot/WeightCommand/presenters/shared");
-const measureDifference_1 = require("src/app/shared/measureDifference");
+const measureDifference_1 = require("src/app/core/services/measureDifference");
 function presentCurrentWeight(result, now, chartUrl) {
     if (result.isErr)
         return shared_1.presentDatabaseError();

@@ -1,6 +1,6 @@
 import Big from 'big.js';
-import { calcBMICoeff } from 'src/app/core/useCases/BMI/utils/BMI';
-import { BMICategoryName, SuggestedNextDiff, SuggestedWeightDiff } from 'src/app/core/useCases/BMI/utils/types';
+import { calcBMICoeff } from 'src/app/core/services/BMI/BMI';
+import { BMICategoryName, SuggestedNextDiff, SuggestedWeightDiff } from 'src/app/core/services/BMI/utils/types';
 import { BMI, Cm, Gender, Kg } from 'src/app/shared/types';
 import { roundToTwo } from 'src/shared/utils/parseNumber';
 import { noop } from 'src/shared/utils/utils';

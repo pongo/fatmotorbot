@@ -1,10 +1,10 @@
 import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
-import { GetBMIUseCase } from 'src/app/core/useCases/BMI/GetBMIUseCase';
+import { GetBMIUseCase } from 'src/app/core/services/BMI/BMI';
 import { IInfoUseCaseGet, InfoAddErrors, InfoGetResult, InfoSetResult } from 'src/app/core/useCases/Info/types';
 import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { TelegramUserId } from 'src/app/shared/types';
-import { validateGender, validateHeight } from 'src/app/shared/validators';
+import { validateGender, validateHeight } from 'src/app/core/services/validators';
 import { Result } from 'src/shared/utils/result';
 
 interface IInfoUseCaseSet {
