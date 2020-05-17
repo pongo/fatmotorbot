@@ -1,4 +1,5 @@
-import { present, validate } from 'src/app/bot/CheckCommand/checkCommand';
+import { present } from 'src/app/bot/CheckCommand/present';
+import { checkUseCase } from 'src/app/core/useCases/checkUseCase';
 import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
 
 /**
@@ -14,7 +15,7 @@ export class CheckCommandController {
   }
 
   private async handleCheck(command: Command) {
-    const msg = present(validate(command.args));
+    const msg = present(checkUseCase(command.args));
     await this.telegram.sendMessage(command.chatId, msg, command.messageId);
   }
 }

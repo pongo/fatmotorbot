@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CheckCommandController = void 0;
-const checkCommand_1 = require("src/app/bot/CheckCommand/checkCommand");
+const present_1 = require("src/app/bot/CheckCommand/present");
+const checkUseCase_1 = require("src/app/core/useCases/checkUseCase");
 class CheckCommandController {
     constructor(telegram) {
         this.telegram = telegram;
@@ -12,7 +13,7 @@ class CheckCommandController {
         this.telegram.onCommand('imt', this.handleCheck.bind(this));
     }
     async handleCheck(command) {
-        const msg = checkCommand_1.present(checkCommand_1.validate(command.args));
+        const msg = present_1.present(checkUseCase_1.checkUseCase(command.args));
         await this.telegram.sendMessage(command.chatId, msg, command.messageId);
     }
 }

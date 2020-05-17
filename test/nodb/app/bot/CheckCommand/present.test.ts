@@ -1,29 +1,13 @@
 import { assert } from 'chai';
-import { present, validate } from 'src/app/bot/CheckCommand/checkCommand';
-import { cm, kg } from 'src/app/shared/types';
-
-describe('validate()', () => {
-  it('should validate args', () => {
-    assert.deepEqual(validate(['м', '170', '55']), { weight: kg(55), userInfo: { gender: 'male', height: cm(170) } });
-    assert.deepEqual(validate(['ж', '170', '55']), { weight: kg(55), userInfo: { gender: 'female', height: cm(170) } });
-
-    assert.equal(validate(['м', '170', '55,7'])?.weight, kg(55.7));
-    assert.equal(validate(['м', '170', '55.7'])?.weight, kg(55.7));
-
-    assert.isNull(validate(['ж', '170']));
-    assert.isNull(validate(['ж']));
-    assert.isNull(validate([]));
-
-    assert.isNull(validate(['ж', '170', '0']));
-    assert.isNull(validate(['ж', '0', '55']));
-    assert.isNull(validate(['0', '170', '55']));
-  });
-});
+import { present } from 'src/app/bot/CheckCommand/present';
+import { checkUseCase } from 'src/app/core/useCases/checkUseCase';
+import { InvalidFormatError } from 'src/app/shared/errors';
+import { Result } from 'src/shared/utils/result';
 
 describe('present()', () => {
   it('should return help on wrong args', () => {
     assert.equal(
-      present(null),
+      present(Result.err(new InvalidFormatError())),
       `
 Укажи данные командой: /check пол рост вес, где:
 • пол — м или ж
@@ -38,7 +22,7 @@ describe('present()', () => {
 
   it('should return bmi text', () => {
     assert.equal(
-      present({ weight: kg(57.8), userInfo: { gender: 'male', height: cm(171) } }),
+      present(checkUseCase(['м', '171', '57.8'])),
       `
 Мужчина, 171 см, 57.8 кг.
 
@@ -47,7 +31,7 @@ describe('present()', () => {
     );
 
     assert.equal(
-      present({ weight: kg(57.8), userInfo: { gender: 'female', height: cm(171) } }),
+      present(checkUseCase(['ж', '171', '57,8'])),
       `
 Женщина, 171 см, 57.8 кг.
 
