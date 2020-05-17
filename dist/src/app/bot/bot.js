@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.initBot = void 0;
 const CheckCommandController_1 = require("src/app/bot/CheckCommand/CheckCommandController");
 const InfoCommandController_1 = require("src/app/bot/InfoCommand/InfoCommandController");
 const WeightCommandController_1 = require("src/app/bot/WeightCommand/WeightCommandController");

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.InfoRepository = void 0;
 const slonik_1 = require("slonik");
 const errors_1 = require("src/app/shared/errors");
 const result_1 = require("src/shared/utils/result");

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.InfoCommandController = void 0;
 const presentGetInfo_1 = require("src/app/bot/InfoCommand/presenters/presentGetInfo");
 const presentSetInfo_1 = require("src/app/bot/InfoCommand/presenters/presentSetInfo");
 const InfoUseCase_1 = require("src/app/core/useCases/Info/InfoUseCase");

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateData = exports.InfoUseCase = void 0;
 const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
 const errors_1 = require("src/app/shared/errors");
 const validators_1 = require("src/app/shared/validators");

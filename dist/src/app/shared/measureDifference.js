@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDateMark = exports.measureDifference = void 0;
 const date_fns_1 = require("date-fns");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 function measureDifference(current, previous, relativeDate) {

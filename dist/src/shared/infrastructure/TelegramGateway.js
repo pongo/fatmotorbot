@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseCommand = exports.handleCommand = exports.TelegramGateway = void 0;
 const result_1 = require("src/shared/utils/result");
 const telegraf_1 = __importDefault(require("telegraf"));
 class TelegramGateway {

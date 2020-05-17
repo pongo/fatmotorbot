@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.StacklessError = void 0;
 class StacklessError {
     constructor(message, data) {
         this.message = message;

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Result = void 0;
 const StacklessError_1 = require("src/shared/utils/StacklessError");
 exports.Result = {
     ok,

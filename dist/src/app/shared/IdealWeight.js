@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.calcIdealWeight = exports.tetona = exports.breitman = exports.kuper = exports.insurance = exports.mohammed = exports.lorenz = exports.averageHealthyBMI = exports.lemmens = exports.hamwi = exports.miller = exports.robinson = exports.devine = exports.brocaBrugsh = exports.broca = void 0;
 const BMICategory_1 = require("src/app/core/useCases/BMI/utils/BMICategory");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const stats_lite_1 = require("stats-lite");

@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getHealthyRange = exports.getBMICategory = exports.getBMICategoryName = exports.BMICategory = void 0;
 const big_js_1 = __importDefault(require("big.js"));
 const BMI_1 = require("src/app/core/useCases/BMI/utils/BMI");
 const parseNumber_1 = require("src/shared/utils/parseNumber");

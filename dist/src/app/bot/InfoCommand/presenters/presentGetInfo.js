@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.presentGetInfo = void 0;
 const shared_1 = require("src/app/bot/InfoCommand/presenters/shared");
 const shared_2 = require("src/app/bot/presenters/shared");
 function presentGetInfo(result) {

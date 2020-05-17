@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.chartImage = exports.presentDiff = exports.getHeader = void 0;
 function getHeader(weight) {
     return `Твой вес: ${weight} кг.\n\n`;
 }

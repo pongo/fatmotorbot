@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateHeight = exports.validateGender = exports.validateWeight = void 0;
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 function validateWeight(value) {
     if (value !== null && value >= 1 && value <= 999)

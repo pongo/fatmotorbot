@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WeightUseCase = void 0;
 const prepareDataForChart_1 = require("src/app/core/useCases/Weight/prepareDataForChart");
 const errors_1 = require("src/app/shared/errors");
 const measureDifference_1 = require("src/app/shared/measureDifference");

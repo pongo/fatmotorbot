@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WeightCommandController = void 0;
 const chartUrl_1 = require("src/app/bot/WeightCommand/presenters/chartUrl");
 const presentAddWeight_1 = require("src/app/bot/WeightCommand/presenters/presentAddWeight");
 const presentCurrentWeight_1 = require("src/app/bot/WeightCommand/presenters/presentCurrentWeight");

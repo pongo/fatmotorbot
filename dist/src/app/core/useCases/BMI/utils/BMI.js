@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.calcBMICoeff = exports.calcBMI = void 0;
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 function calcBMI(height, weight) {
     const bmi = (weight * 1.3) / calcBMICoeff(height);

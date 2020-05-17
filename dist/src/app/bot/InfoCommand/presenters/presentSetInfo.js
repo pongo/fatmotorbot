@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.presentSetInfo = void 0;
 const bmiPresenter_1 = require("src/app/bot/presenters/bmiPresenter");
 const shared_1 = require("src/app/bot/InfoCommand/presenters/shared");
 const shared_2 = require("src/app/bot/presenters/shared");

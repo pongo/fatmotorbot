@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DatabaseError = exports.InvalidFormatError = void 0;
 const StacklessError_1 = require("src/shared/utils/StacklessError");
 class InvalidFormatError extends StacklessError_1.StacklessError {
     constructor() {

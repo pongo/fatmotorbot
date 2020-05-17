@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.bmiPresenter = void 0;
 function bmiPresenter(result) {
     if (result.isErr)
         return presentError();

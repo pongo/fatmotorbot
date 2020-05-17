@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CheckCommandController = void 0;
 const checkCommand_1 = require("src/app/bot/CheckCommand/checkCommand");
 class CheckCommandController {
     constructor(telegram) {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.presentCurrentWeight = void 0;
 const date_fns_1 = require("date-fns");
 const bmiPresenter_1 = require("src/app/bot/presenters/bmiPresenter");
 const shared_1 = require("src/app/bot/presenters/shared");

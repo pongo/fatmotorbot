@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.calcBMIResult = exports.getSuggestedWeightDiff = exports.GetBMIUseCase = void 0;
 const BMI_1 = require("src/app/core/useCases/BMI/utils/BMI");
 const BMICategory_1 = require("src/app/core/useCases/BMI/utils/BMICategory");
 const IdealWeight_1 = require("src/app/shared/IdealWeight");

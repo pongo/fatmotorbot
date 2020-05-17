@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.present = exports.validate = void 0;
 const bmiPresenter_1 = require("src/app/bot/presenters/bmiPresenter");
 const GetBMIUseCase_1 = require("src/app/core/useCases/BMI/GetBMIUseCase");
 const validators_1 = require("src/app/shared/validators");

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createChartQuery = exports.yyymmdd = exports.prepareDataForChart = void 0;
 function prepareDataForChart(userId, measures, bmi) {
     const data = prepareData(measures);
     const user = prepareUser();
