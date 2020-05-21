@@ -33,7 +33,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": [
     "node_modules"

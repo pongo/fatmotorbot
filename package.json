@@ -7,7 +7,7 @@
     "node": "12.x"
   },
   "scripts": {
-    "build": "rimraf dist/* && tsc --newLine lf",
+    "build": "rimraf dist/* && tsc --newLine lf --skipLibCheck",
     "eslint": "eslint ./src/**/*.ts ./test/**/*.ts",
     "eslintfix": "eslint --fix ./src/**/*.ts ./test/**/*.ts",
     "tscheck": "tsc --noEmit",
