@@ -44,6 +44,7 @@
     "url-exists-deep": "^2.0.6"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/big.js": "^4.0.5",
     "@types/mocha": "^7.0.2",
     "@types/node": "^14.0.1",
@@ -100,6 +101,7 @@
     ]
   },
   "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
     "include": [
       "src/**/*.ts"
     ],
