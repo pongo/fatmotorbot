@@ -9,7 +9,7 @@ import { Kg } from 'src/app/shared/types';
 export function bmiPresenter(result: BMIResultOrError): string {
   if (result.isErr) return presentError();
   const data = result.value;
-  if (data.case === 'need-user-weight') return 'Сперва нужно взвеситься';
+  if (data.case === 'need-user-weight') return 'Теперь нужно взвеситься: /weight 50';
   if (data.case === 'need-user-info') return 'Для расчета ИМТ не хватает данных. Укажи их при помощи /info';
   return presentBMI(data);
 }

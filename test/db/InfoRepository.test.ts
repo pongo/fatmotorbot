@@ -1,44 +1,16 @@
 import { assert } from 'chai';
-import { sql } from 'slonik';
 import { InfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
 import { cm } from 'src/app/shared/types';
-import { parseConfig } from 'src/config';
-import { createDB } from 'src/shared/infrastructure/createDB';
 import { Result } from 'src/shared/utils/result';
+import { createTestDB, InfoDbApi } from 'test/db/createTestDB';
 import { u } from 'test/utils';
 
-const config = (parseConfig() as unknown) as { DATABASE_URL_TEST: string };
-const db = createDB(config.DATABASE_URL_TEST);
+const db = createTestDB();
+const dbApi = new InfoDbApi(db);
 
 describe('InfoRepository', () => {
-  before(async () => {
-    await db.connect(async connection => {
-      return connection.query(sql`
-        SELECT pg_terminate_backend(pid)
-        FROM pg_stat_activity
-        WHERE datname = 'users'
-          AND state = 'idle in transaction';
-
-        DROP TABLE IF EXISTS users;
-        CREATE UNLOGGED TABLE IF NOT EXISTS users
-        (
-            user_id integer NOT NULL
-                CONSTRAINT users_pk
-                    PRIMARY KEY,
-            gender  varchar(255),
-            height  numeric(20, 2)
-        );
-      `);
-    });
-  });
-
-  after(async () => {
-    await db.connect(async connection => {
-      return connection.query(sql`
-        DROP TABLE IF EXISTS users;
-      `);
-    });
-  });
+  before(async () => dbApi.createTable());
+  after(async () => dbApi.dropTable());
 
   it('get() should return null on empty db', async () => {
     const repository = new InfoRepository(db);

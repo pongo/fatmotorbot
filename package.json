@@ -84,7 +84,6 @@
   },
   "prettier": {
     "singleQuote": true,
-    "trailingComma": "all",
     "endOfLine": "lf",
     "printWidth": 120,
     "overrides": [

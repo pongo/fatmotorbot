@@ -4,10 +4,20 @@ import Telegraf from 'telegraf';
 import { TelegrafContext } from 'telegraf/typings/context';
 import * as TT from 'telegram-typings';
 
-type CommandHandler = (command: Command) => void | Promise<void>;
-type TelegramMessageId = number;
+export type CommandHandler = (command: Command) => void | Promise<void>;
+export type TelegramMessageId = number;
 
-export class TelegramGateway {
+export interface ITelegramGateway {
+  onCommand(command: StringWithoutSlash, handler: CommandHandler): void;
+  onStartCommand(text: string): void;
+  sendMessage(
+    chatId: number,
+    text: string,
+    reply_to_message_id?: TelegramMessageId,
+  ): Promise<Result<TelegramMessageId>>;
+}
+
+export class TelegramGateway implements ITelegramGateway {
   private readonly telegraf: Telegraf<TelegrafContext>;
 
   constructor(token: string, telegrafLogs = false) {
@@ -72,8 +82,8 @@ export async function handleCommand(handler: CommandHandler, ctx: TelegrafContex
 // https://github.com/telegraf/telegraf-command-parts/blob/master/index.js
 const reCommandParts = /^\/([^@\s]+)@?(?:(\S+)|)\s?([\s\S]+)?$/i;
 
-type StringWithoutAt = string;
-type StringWithoutSlash = string;
+export type StringWithoutAt = string;
+export type StringWithoutSlash = string;
 export type Command = {
   readonly fullText: string;
   readonly command: StringWithoutSlash;

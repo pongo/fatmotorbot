@@ -2,48 +2,19 @@ import { assert } from 'chai';
 import { sql } from 'slonik';
 import { WeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { kg } from 'src/app/shared/types';
-import { parseConfig } from 'src/config';
-import { createDB } from 'src/shared/infrastructure/createDB';
 import { Result } from 'src/shared/utils/result';
+import { createTestDB, WeightDbApi } from 'test/db/createTestDB';
 import { m, sortMeasuresFromNewestToOldest, u } from 'test/utils';
 
-const config = (parseConfig() as unknown) as { DATABASE_URL_TEST: string };
-const db = createDB(config.DATABASE_URL_TEST);
+const db = createTestDB();
+const dbApi = new WeightDbApi(db);
 
 describe('WeightRepository', () => {
-  before(async () => {
-    await db.connect(async connection => {
-      return connection.query(sql`
-        SELECT pg_terminate_backend(pid)
-        FROM pg_stat_activity
-        WHERE datname = 'measures'
-          AND state = 'idle in transaction';
-
-        DROP TABLE IF EXISTS measures;
-        CREATE UNLOGGED TABLE IF NOT EXISTS measures
-        (
-            measure_id serial PRIMARY KEY,
-            user_id    integer        NOT NULL,
-            value_type varchar(255)   NOT NULL,
-            value      decimal(20, 2) NOT NULL, --- 20 is big enough
-            date       timestamptz DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-    });
-  });
-
-  after(async () => {
-    await db.connect(async connection => {
-      return connection.query(sql`
-        DROP TABLE IF EXISTS measures;
-      `);
-    });
-  });
+  before(async () => dbApi.createTable());
+  after(async () => dbApi.dropTable());
 
   describe('on empty db', () => {
-    beforeEach(async () => {
-      await db.connect(async connection => connection.query(sql`TRUNCATE TABLE measures;`));
-    });
+    beforeEach(async () => dbApi.truncateTable());
 
     it('getAll() should returns []', async () => {
       const repository = new WeightRepository(db);
@@ -71,7 +42,7 @@ describe('WeightRepository', () => {
 
   describe('on db with measures', () => {
     beforeEach(async () => {
-      await db.connect(async connection => {
+      await db.connect(async (connection) => {
         return connection.query(sql`
           TRUNCATE TABLE measures;
           INSERT INTO measures (measure_id, user_id, value_type, value, date)
