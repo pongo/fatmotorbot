@@ -8,7 +8,7 @@ import { u } from 'test/utils';
 
 describe('yyymmdd()', () => {
   it('should format date', () => {
-    assert.equal(yyymmdd(new Date('2020-02-20')), '2020-2-20');
+    assert.strictEqual(yyymmdd(new Date('2020-02-20')), '2020-2-20');
   });
 });
 
@@ -115,7 +115,7 @@ describe('create and parse ChartQuery', () => {
     const chart: DataForChart = { userId, data, user: undefined };
     const expected = `/10000000.png?d=2019-10-10_54.4!2019-10-17_55.1!2019-12-19_55.7`;
     const actual = createChartQuery(chart);
-    assert.equal(actual, expected);
+    assert.strictEqual(actual, expected);
     assert.deepStrictEqual(parseChartQuery(actual), chart);
   });
 
@@ -131,7 +131,7 @@ describe('create and parse ChartQuery', () => {
     };
     const expected = `/10000000.png?d=2019-10-10_54.4!2019-10-17_55.1!2019-12-19_55.7&h=58.83!73.5&i=63!68`;
     const actual = createChartQuery(chart);
-    assert.equal(actual, expected);
+    assert.strictEqual(actual, expected);
     assert.deepStrictEqual(parseChartQuery(actual), chart);
   });
 
@@ -147,7 +147,7 @@ describe('create and parse ChartQuery', () => {
     };
     const expected = `/10000000.png?d=2019-10-10_54.4!2019-10-17_55.1!2019-12-19_55.7&h=58.83!73.5&i=63!68&n=60`;
     const actual = createChartQuery(chart);
-    assert.equal(actual, expected);
+    assert.strictEqual(actual, expected);
     assert.deepStrictEqual(parseChartQuery(actual), chart);
   });
 

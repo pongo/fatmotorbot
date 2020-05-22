@@ -27,7 +27,7 @@ describe('InfoUseCase', () => {
 
       const actual = await usecase.get(u(1));
 
-      assert.deepEqual(actual, Result.ok({ case: 'get:no-user-info' as const }));
+      assert.deepStrictEqual(actual, Result.ok({ case: 'get:no-user-info' as const }));
     });
 
     it('should return user data', async () => {
@@ -38,7 +38,7 @@ describe('InfoUseCase', () => {
 
       const actual = await usecase.get(u(1));
 
-      assert.deepEqual(actual, Result.ok({ case: 'get' as const, data }));
+      assert.deepStrictEqual(actual, Result.ok({ case: 'get' as const, data }));
     });
   });
 
@@ -50,7 +50,7 @@ describe('InfoUseCase', () => {
 
       const actual = await usecase.set(u(1), []);
 
-      assert.deepEqual(actual, Result.err(new InvalidFormatError()));
+      assert.deepStrictEqual(actual, Result.err(new InvalidFormatError()));
     });
 
     it('should return error on database error', async () => {
@@ -70,7 +70,7 @@ describe('InfoUseCase', () => {
 
       const actual = await usecase.set(u(1), ['ж', '150']);
 
-      assert.deepEqual<Result<InfoSetResult>>(
+      assert.deepStrictEqual<Result<InfoSetResult>>(
         actual,
         Result.ok({
           case: 'set' as const,
@@ -93,7 +93,7 @@ describe('InfoUseCase', () => {
 
       sinon.assert.calledOnce(infoRepo.set as SinonSpy);
       sinon.assert.calledWith(infoRepo.set as SinonSpy, u(1), data);
-      assert.deepEqual<Result<InfoSetResult>>(
+      assert.deepStrictEqual<Result<InfoSetResult>>(
         actual,
         Result.ok({
           case: 'set' as const,
@@ -114,10 +114,10 @@ describe('InfoUseCase', () => {
 
       const actual = await usecase.set(u(1), ['ж', '150']);
 
-      assert.deepEqual(infoRepo.calls.get('set'), [[u(1), data]]);
+      assert.deepStrictEqual(infoRepo.calls.get('set'), [[u(1), data]]);
       assert(actual.isOk);
       assert.isNotNull(actual.value.bmi);
-      assert.equal(actual.value.bmi!.case, 'bmi');
+      assert.strictEqual(actual.value.bmi!.case, 'bmi');
     });
   });
 });
@@ -144,7 +144,7 @@ describe('validateData()', () => {
   });
 
   it('valid data', () => {
-    assert.deepEqual(validateData(['ж', '100', 'см']), { gender: 'female', height: cm(100) });
-    assert.deepEqual(validateData(['м', '300', 'см']), { gender: 'male', height: cm(300) });
+    assert.deepStrictEqual(validateData(['ж', '100', 'см']), { gender: 'female', height: cm(100) });
+    assert.deepStrictEqual(validateData(['м', '300', 'см']), { gender: 'male', height: cm(300) });
   });
 });

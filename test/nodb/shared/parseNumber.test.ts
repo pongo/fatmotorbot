@@ -59,15 +59,15 @@ describe('roundToTwo()', () => {
     ];
 
     for (const [value, expected] of tests) {
-      assert.equal(roundToTwo(value), expected, value.toString());
+      assert.strictEqual(roundToTwo(value), expected, value.toString());
     }
   });
 });
 
 describe('minus()', () => {
   it('should substract numbers', () => {
-    assert.equal(minus(10, 5), 5);
-    assert.equal(minus(0.3, 0.1), 0.2); // известная float проблема
-    assert.equal(minus(0.3333, 0.1111), 0.22);
+    assert.strictEqual(minus(10, 5), 5);
+    assert.strictEqual(minus(0.3, 0.1), 0.2); // известная float проблема
+    assert.strictEqual(minus(0.3333, 0.1111), 0.22);
   });
 });

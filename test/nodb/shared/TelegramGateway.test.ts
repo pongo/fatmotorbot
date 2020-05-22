@@ -60,7 +60,7 @@ describe('parseCommand()', () => {
     const date = new Date('2019-08-29');
     const from = ({} as unknown) as TT.User;
 
-    assert.deepEqual(parseCommand(createMsg(date, '/hey')), {
+    assert.deepStrictEqual(parseCommand(createMsg(date, '/hey')), {
       fullText: '/hey',
       command: 'hey',
       bot: undefined,
@@ -71,7 +71,7 @@ describe('parseCommand()', () => {
       chatId: -1,
       from,
     });
-    assert.deepEqual(parseCommand(createMsg(date, '/hey privet    bot, eto ya ')), {
+    assert.deepStrictEqual(parseCommand(createMsg(date, '/hey privet    bot, eto ya ')), {
       fullText: '/hey privet    bot, eto ya ',
       command: 'hey',
       bot: undefined,
@@ -82,7 +82,7 @@ describe('parseCommand()', () => {
       chatId: -1,
       from,
     });
-    assert.deepEqual(parseCommand(createMsg(date, '/hey@fatmotorbot')), {
+    assert.deepStrictEqual(parseCommand(createMsg(date, '/hey@fatmotorbot')), {
       fullText: '/hey@fatmotorbot',
       command: 'hey',
       bot: 'fatmotorbot',
@@ -93,7 +93,7 @@ describe('parseCommand()', () => {
       chatId: -1,
       from,
     });
-    assert.deepEqual(parseCommand(createMsg(date, '/hey@fatmotorbot  хаха')), {
+    assert.deepStrictEqual(parseCommand(createMsg(date, '/hey@fatmotorbot  хаха')), {
       fullText: '/hey@fatmotorbot  хаха',
       command: 'hey',
       bot: 'fatmotorbot',

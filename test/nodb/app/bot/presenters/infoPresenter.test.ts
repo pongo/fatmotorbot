@@ -9,14 +9,14 @@ import { Result } from 'src/shared/utils/result';
 describe('infoPresenter', () => {
   describe('get()', () => {
     it('error', () => {
-      assert.equal(
+      assert.strictEqual(
         presentGetInfo(Result.err(new DatabaseError(new SlonikError('ops')))),
         'Что-то не так с базой данных. Вызывайте техподдержку!'
       );
     });
 
     it('no data', () => {
-      assert.equal(
+      assert.strictEqual(
         presentGetInfo(Result.ok({ case: 'get:no-user-info' as const })),
         `
 Укажи свои данные командой: /info пол рост, где:
@@ -29,11 +29,11 @@ describe('infoPresenter', () => {
     });
 
     it('data', () => {
-      assert.equal(
+      assert.strictEqual(
         presentGetInfo(Result.ok({ case: 'get', data: { gender: 'female', height: cm(150) } })),
         `Женщина, 150 см`
       );
-      assert.equal(
+      assert.strictEqual(
         presentGetInfo(Result.ok({ case: 'get', data: { gender: 'male', height: cm(150) } })),
         `Мужчина, 150 см`
       );
@@ -42,21 +42,21 @@ describe('infoPresenter', () => {
 
   describe('set()', () => {
     it('invalid data', () => {
-      assert.equal(
+      assert.strictEqual(
         presentSetInfo(Result.err(new InvalidFormatError())),
         'Не могу разобрать твои каракули. Пиши точно как я указал'
       );
     });
 
     it('valid data', () => {
-      assert.equal(
+      assert.strictEqual(
         presentSetInfo(Result.ok({ case: 'set', data: { gender: 'female', height: cm(150) }, bmi: null })),
         `Сохранил твои данные: женщина, 150 см`
       );
     });
 
     it('database error', () => {
-      assert.equal(
+      assert.strictEqual(
         presentSetInfo(Result.err(new DatabaseError(new SlonikError()))),
         'Что-то не так с базой данных. Вызывайте техподдержку!'
       );

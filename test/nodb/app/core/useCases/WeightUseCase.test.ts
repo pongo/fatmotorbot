@@ -46,7 +46,7 @@ describe('WeightUseCase', () => {
       assert(actual.isOk);
       sinon.assert.calledOnce(weightRepository.add);
       sinon.assert.calledWith(weightRepository.add, u(1), kg(11));
-      assert.deepEqual(actual.value, {
+      assert.deepStrictEqual(actual.value, {
         case: WeightCases.addFirst,
         weight: kg(11),
         bmi: bmiResult,
@@ -79,7 +79,7 @@ describe('WeightUseCase', () => {
       const actual = await usecase.add(u(1), today, '10');
 
       assert(actual.isOk);
-      assert.deepEqual(actual.value, {
+      assert.deepStrictEqual(actual.value, {
         case: WeightCases.addDiff,
         weight: kg(10),
         diff: {
@@ -112,7 +112,7 @@ describe('WeightUseCase', () => {
       const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
       assert(actual.isOk);
-      assert.deepEqual(actual.value, { case: WeightCases.currentEmpty });
+      assert.deepStrictEqual(actual.value, { case: WeightCases.currentEmpty });
     });
 
     describe('should return current weight and empty diff if only one measure', () => {
@@ -125,7 +125,7 @@ describe('WeightUseCase', () => {
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-28'));
 
         assert(actual.isOk);
-        assert.deepEqual(actual.value, { case: WeightCases.currentFirst, current, bmi: bmiResult });
+        assert.deepStrictEqual(actual.value, { case: WeightCases.currentFirst, current, bmi: bmiResult });
       });
 
       it('today earlier', async () => {
@@ -136,7 +136,7 @@ describe('WeightUseCase', () => {
         const actual = await usecase.getCurrent(u(1), new Date('2019-08-21 20:00'));
 
         assert(actual.isOk);
-        assert.deepEqual(actual.value, { case: WeightCases.currentFirst, current, bmi: bmiResult });
+        assert.deepStrictEqual(actual.value, { case: WeightCases.currentFirst, current, bmi: bmiResult });
       });
     });
 
@@ -151,7 +151,7 @@ describe('WeightUseCase', () => {
         const actual = await usecase.getCurrent(u(1), now);
 
         assert(actual.isOk);
-        assert.deepEqual(actual.value, {
+        assert.deepStrictEqual(actual.value, {
           case: WeightCases.currentDiff,
           current,
           diff: { weekAgo: { date: weekAgo, difference: kg(-1), value: kg(61) } },
@@ -180,7 +180,7 @@ describe('WeightUseCase', () => {
         const actual = await usecase.getCurrent(u(1), now);
 
         assert(actual.isOk);
-        assert.deepEqual(actual.value, {
+        assert.deepStrictEqual(actual.value, {
           case: WeightCases.currentDiff,
           current,
           diff: {
@@ -237,8 +237,8 @@ describe('validateWeight()', () => {
     assert.isNull(validateWeight(-100));
     assert.isNull(validateWeight(1000));
 
-    assert.equal(validateWeight(50.5), kg(50.5));
-    assert.equal(validateWeight(1), kg(1));
-    assert.equal(validateWeight(999), kg(999));
+    assert.strictEqual(validateWeight(50.5), kg(50.5));
+    assert.strictEqual(validateWeight(1), kg(1));
+    assert.strictEqual(validateWeight(999), kg(999));
   });
 });

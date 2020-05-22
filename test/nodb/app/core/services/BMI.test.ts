@@ -52,7 +52,7 @@ describe('getBMICategoryName()', () => {
     };
     for (const [cat, values] of Object.entries(expected)) {
       for (const bmi of values) {
-        assert.equal(getBMICategoryName('female', bmi as BMI), cat, `female ${bmi} BMI`);
+        assert.strictEqual(getBMICategoryName('female', bmi as BMI), cat, `female ${bmi} BMI`);
       }
     }
   });
@@ -73,7 +73,7 @@ describe('getBMICategoryName()', () => {
     };
     for (const [cat, values] of Object.entries(expected)) {
       for (const bmi of values) {
-        assert.equal(getBMICategoryName('male', bmi as BMI), cat, `male ${bmi} BMI`);
+        assert.strictEqual(getBMICategoryName('male', bmi as BMI), cat, `male ${bmi} BMI`);
       }
     }
   });
@@ -81,15 +81,15 @@ describe('getBMICategoryName()', () => {
 
 describe('getHealthyRange()', () => {
   it('should return healthy range for height', () => {
-    assert.deepEqual(getHealthyRange('male', cm(180)), [66.88, 83.56], 'male');
-    assert.deepEqual(getHealthyRange('female', cm(180)), [63.53, 80.22], 'female');
-    assert.deepEqual(getHealthyRange('male', cm(175)), [62.33, 77.88], 'male');
+    assert.deepStrictEqual(getHealthyRange('male', cm(180)), [66.88, 83.56], 'male');
+    assert.deepStrictEqual(getHealthyRange('female', cm(180)), [63.53, 80.22], 'female');
+    assert.deepStrictEqual(getHealthyRange('male', cm(175)), [62.33, 77.88], 'male');
   });
 });
 
 describe('getSuggestedWeightDiff()', () => {
   it('should return suggested weight loss or gain', () => {
-    assert.deepEqual(
+    assert.deepStrictEqual(
       getSuggestedWeightDiff('male', cm(200), kg(60)),
       {
         alreadyHealthy: false,
@@ -102,7 +102,7 @@ describe('getSuggestedWeightDiff()', () => {
       },
       '60 kg'
     );
-    assert.deepEqual(
+    assert.deepStrictEqual(
       getSuggestedWeightDiff('male', cm(200), kg(66)),
       {
         alreadyHealthy: false,
@@ -115,7 +115,7 @@ describe('getSuggestedWeightDiff()', () => {
       },
       '66 kg'
     );
-    assert.deepEqual(
+    assert.deepStrictEqual(
       getSuggestedWeightDiff('male', cm(200), kg(79)),
       {
         alreadyHealthy: false,
@@ -124,14 +124,14 @@ describe('getSuggestedWeightDiff()', () => {
       },
       '79 kg'
     );
-    assert.deepEqual(
+    assert.deepStrictEqual(
       getSuggestedWeightDiff('male', cm(200), kg(88)),
       {
         alreadyHealthy: true,
       },
       '88 kg'
     );
-    assert.deepEqual(
+    assert.deepStrictEqual(
       getSuggestedWeightDiff('male', cm(200), kg(115)),
       {
         alreadyHealthy: false,
@@ -140,7 +140,7 @@ describe('getSuggestedWeightDiff()', () => {
       },
       '115 kg'
     );
-    assert.deepEqual(
+    assert.deepStrictEqual(
       getSuggestedWeightDiff('male', cm(200), kg(150)),
       {
         alreadyHealthy: false,
@@ -174,19 +174,19 @@ describe('BMI full report', () => {
   it('no user info', async () => {
     const infoRepository: IInfoRepository = { set: sinon.fake.throws(''), get: async () => Result.ok(null) };
     const actual = await calcBMIFromWeight(u(1), kg(54), infoRepository);
-    assert.deepEqual(actual, Result.ok({ case: 'need-user-info' as const }));
+    assert.deepStrictEqual(actual, Result.ok({ case: 'need-user-info' as const }));
   });
 
   it('calcBMIFromUserInfo()', async () => {
     const weightRepo = WeightRepositoryMockSinon({ getCurrent: Result.ok(kg(54)) });
     const actual = await calcBMIFromUserInfo(u(1), userInfo, weightRepo);
-    assert.deepEqual(actual, Result.ok(expected));
+    assert.deepStrictEqual(actual, Result.ok(expected));
   });
 
   it('calcBMIFromWeight()', async () => {
     const infoRepository = InfoRepositoryMockSinon({ get: Result.ok(userInfo) });
     const actual = await calcBMIFromWeight(u(1), kg(54), infoRepository);
-    assert.deepEqual(actual, Result.ok(expected));
+    assert.deepStrictEqual(actual, Result.ok(expected));
   });
 
   it('calc* should check errors', async () => {
@@ -201,7 +201,7 @@ describe('BMI full report', () => {
 
   it('calcBMI()', () => {
     const actual = calcBMI(kg(54), userInfo);
-    assert.deepEqual(actual, expected);
+    assert.deepStrictEqual(actual, expected);
   });
 });
 

@@ -22,18 +22,18 @@ const bmiStr = `\n\nДля расчета ИМТ не хватает данны�
 describe('weightPresenter', () => {
   describe('add()', () => {
     it('error', () => {
-      assert.equal(presentAddWeight(Result.err(new InvalidFormatError())), 'Какой-какой у тебя вес?');
+      assert.strictEqual(presentAddWeight(Result.err(new InvalidFormatError())), 'Какой-какой у тебя вес?');
 
-      assert.equal(
+      assert.strictEqual(
         presentAddWeight(Result.err(new DatabaseError(new SlonikError('ops')))),
-        'Что-то не так с базой данных. Вызывайте техподдержку!',
+        'Что-то не так с базой данных. Вызывайте техподдержку!'
       );
     });
 
     it('first add', () => {
-      assert.equal(
+      assert.strictEqual(
         presentAddWeight(Result.ok({ case: WeightCases.addFirst, weight: kg(100), bmi: bmiResult })),
-        `Твой вес: 100 кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.${bmiStr}`,
+        `Твой вес: 100 кг.\n\nПервый шаг сделан. Регулярно делай замеры, например, каждую пятницу утром.${bmiStr}`
       );
     });
 
@@ -47,25 +47,25 @@ describe('weightPresenter', () => {
         },
         bmi: bmiResult,
       };
-      assert.equal(
+      assert.strictEqual(
         presentAddWeight(Result.ok(data)),
-        `Твой вес: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)${bmiStr}`,
+        `Твой вес: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)${bmiStr}`
       );
     });
   });
 
   describe('getCurrent()', () => {
     it('error', () => {
-      assert.equal(
+      assert.strictEqual(
         presentCurrentWeight(Result.err(new DatabaseError(new SlonikError('ops'))), new Date()),
-        'Что-то не так с базой данных. Вызывайте техподдержку!',
+        'Что-то не так с базой данных. Вызывайте техподдержку!'
       );
     });
 
     it('no measures', () => {
-      assert.equal(
+      assert.strictEqual(
         presentCurrentWeight(Result.ok({ case: WeightCases.currentEmpty }), new Date('2019-08-29')),
-        `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`,
+        `Впервые у меня? Встань на весы и взвесься. Затем добавь вес командой, например:\n\n/weight 88.41`
       );
     });
 
@@ -79,29 +79,29 @@ describe('weightPresenter', () => {
         return Result.ok(data);
       }
 
-      assert.equal(
+      assert.strictEqual(
         presentCurrentWeight(gen(new Date('2019-08-29')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nРегулярно делай замеры, например, каждую пятницу утром.${bmiStr}`,
+        `Твой вес: 100 кг.\n\nРегулярно делай замеры, например, каждую пятницу утром.${bmiStr}`
       );
 
-      assert.equal(
+      assert.strictEqual(
         presentCurrentWeight(gen(new Date('2019-08-22')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nПрошла неделя с последнего замера, пора взвешиваться!${bmiStr}`,
+        `Твой вес: 100 кг.\n\nПрошла неделя с последнего замера, пора взвешиваться!${bmiStr}`
       );
 
-      assert.equal(
+      assert.strictEqual(
         presentCurrentWeight(gen(new Date('2019-07-22')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nНесколько недель прошло, сколько ты теперь весишь?${bmiStr}`,
+        `Твой вес: 100 кг.\n\nНесколько недель прошло, сколько ты теперь весишь?${bmiStr}`
       );
 
-      assert.equal(
+      assert.strictEqual(
         presentCurrentWeight(gen(new Date('2019-05-22')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nИ было это пару месяцев назад, сколько же ты теперь весишь?${bmiStr}`,
+        `Твой вес: 100 кг.\n\nИ было это пару месяцев назад, сколько же ты теперь весишь?${bmiStr}`
       );
 
-      assert.equal(
+      assert.strictEqual(
         presentCurrentWeight(gen(new Date('2018-05-22')), new Date('2019-08-29')),
-        `Твой вес: 100 кг.\n\nНо было это чертовски давно, рискнешь встать на весы?${bmiStr}`,
+        `Твой вес: 100 кг.\n\nНо было это чертовски давно, рискнешь встать на весы?${bmiStr}`
       );
     });
 
@@ -115,9 +115,9 @@ describe('weightPresenter', () => {
         },
         bmi: bmiResult,
       };
-      assert.equal(
+      assert.strictEqual(
         presentCurrentWeight(Result.ok(data), new Date('2019-08-29')),
-        `Вес вчера: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)${bmiStr}`,
+        `Вес вчера: 50 кг.\n\n• Пару дней назад: 49 (+1)\n• Месяц: 55 (−5)${bmiStr}`
       );
     });
   });
@@ -134,25 +134,25 @@ describe('createChartUrl()', () => {
   };
 
   it('should check params', async () => {
-    assert.equal(createChartUrl(), undefined);
-    assert.equal(createChartUrl(chart), undefined);
-    assert.equal(createChartUrl(chart, ''), undefined);
+    assert.strictEqual(createChartUrl(), undefined);
+    assert.strictEqual(createChartUrl(chart), undefined);
+    assert.strictEqual(createChartUrl(chart, ''), undefined);
   });
 
   it(`should return chart's link`, () => {
-    assert.equal(
+    assert.strictEqual(
       createChartUrl(chart, 'chart-domain.com'),
-      `https://chart-domain.com/1.png?d=2019-8-20_15!2019-8-22_20`,
+      `https://chart-domain.com/1.png?d=2019-8-20_15!2019-8-22_20`
     );
   });
 });
 
 describe('chartImage()', () => {
   it(`should render <a> with chart's link`, () => {
-    assert.equal(chartImage(), '');
-    assert.equal(
+    assert.strictEqual(chartImage(), '');
+    assert.strictEqual(
       chartImage('https://chart-domain.com/1.png?d=2019-8-20_15!2019-8-22_20'),
-      `<a href="https://chart-domain.com/1.png?d=2019-8-20_15!2019-8-22_20">&#8205;</a>`,
+      `<a href="https://chart-domain.com/1.png?d=2019-8-20_15!2019-8-22_20">&#8205;</a>`
     );
   });
 });

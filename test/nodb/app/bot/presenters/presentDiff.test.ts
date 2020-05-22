@@ -45,7 +45,7 @@ describe('presentDiff()', () => {
 
     const actual = diffs.map(([date, diff]) => [date, presentDiff(diff)]);
 
-    assert.deepEqual(actual, expected);
+    assert.deepStrictEqual(actual, expected);
   });
 
   it('should present multiple diffs', () => {

@@ -19,7 +19,7 @@ describe('WeightRepository', () => {
     it('getAll() should return []', async () => {
       const repository = new WeightRepository(db);
       const actual = await repository.getAll(u(1));
-      assert.deepEqual(actual, Result.ok([]));
+      assert.deepStrictEqual(actual, Result.ok([]));
     });
 
     it('add() should add measures', async () => {
@@ -30,13 +30,13 @@ describe('WeightRepository', () => {
       const actual = await repository.getAll(u(1));
 
       assert.isTrue(addResult.isOk);
-      assert.deepEqual(actual, Result.ok([m(date, kg(100))]));
+      assert.deepStrictEqual(actual, Result.ok([m(date, kg(100))]));
     });
 
     it('getCurrent() should return null', async () => {
       const repository = new WeightRepository(db);
       const actual = await repository.getCurrent(u(1));
-      assert.deepEqual(actual, Result.ok(null));
+      assert.deepStrictEqual(actual, Result.ok(null));
     });
   });
 
@@ -73,7 +73,7 @@ describe('WeightRepository', () => {
     it('getCurrent() should return current weight as Kg', async () => {
       const repository = new WeightRepository(db);
       const actual = await repository.getCurrent(u(1));
-      assert.deepEqual(actual, Result.ok(kg(90)));
+      assert.deepStrictEqual(actual, Result.ok(kg(90)));
     });
   });
 

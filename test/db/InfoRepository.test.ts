@@ -15,7 +15,7 @@ describe('InfoRepository', () => {
   it('get() should return null on empty db', async () => {
     const repository = new InfoRepository(db);
     const actual = await repository.get(u(1));
-    assert.deepEqual(actual, Result.ok(null));
+    assert.deepStrictEqual(actual, Result.ok(null));
   });
 
   it('set() should save data', async () => {
@@ -27,11 +27,11 @@ describe('InfoRepository', () => {
     const actual = await repository.get(u(1));
 
     assert.isTrue(addResult.isOk);
-    assert.deepEqual(actual, Result.ok(data));
+    assert.deepStrictEqual(actual, Result.ok(data));
 
     await repository.set(u(1), data2);
     const actual2 = await repository.get(u(1));
-    assert.deepEqual(actual2, Result.ok(data2));
+    assert.deepStrictEqual(actual2, Result.ok(data2));
   });
 
   it('should catch errors', async () => {

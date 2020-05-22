@@ -10,7 +10,7 @@ import { u } from 'test/utils';
 describe('Bugs', () => {
   it('#13', async () => {
     const expected = `ИМТ: 25 — у тебя избыточный вес. Тебе нужно сбросить 1 кг до здорового веса, который для тебя от 62.33 до 77.88 кг. А твой идеальный вес: 69 кг (66–73).`;
-    assert.equal(bmiPresenter(await getBMIResult('male', 175, 77.9)), expected);
+    assert.strictEqual(bmiPresenter(await getBMIResult('male', 175, 77.9)), expected);
   });
 });
 

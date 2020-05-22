@@ -14,24 +14,19 @@ describe('new user', () => {
   const telegram = new TelegramMock();
   const infoRepository = new InfoRepository(db);
   const weightRepository = new WeightRepository(db);
-  const { weightCommandController, infoCommandController } = initBot(
-    telegram,
-    infoRepository,
-    weightRepository,
-    ''
-  );
+  const { weightCommandController, infoCommandController } = initBot(telegram, infoRepository, weightRepository, '');
 
   before(async () => {
     await weightDbApi.createTable();
     await infoDbApi.createTable();
 
-    assert.equal(telegram.handlers.size, 6);
-    assert.equal(telegram.handlers.get('w')?.length, 1);
-    assert.equal(telegram.handlers.get('weight')?.length, 1);
-    assert.equal(telegram.handlers.get('info')?.length, 1);
-    assert.equal(telegram.handlers.get('check')?.length, 1);
-    assert.equal(telegram.handlers.get('bmi')?.length, 1);
-    assert.equal(telegram.handlers.get('imt')?.length, 1);
+    assert.strictEqual(telegram.handlers.size, 6);
+    assert.strictEqual(telegram.handlers.get('w')?.length, 1);
+    assert.strictEqual(telegram.handlers.get('weight')?.length, 1);
+    assert.strictEqual(telegram.handlers.get('info')?.length, 1);
+    assert.strictEqual(telegram.handlers.get('check')?.length, 1);
+    assert.strictEqual(telegram.handlers.get('bmi')?.length, 1);
+    assert.strictEqual(telegram.handlers.get('imt')?.length, 1);
   });
 
   after(async () => {
@@ -97,10 +92,7 @@ describe('new user', () => {
   });
 
   it('starts with /info', async () => {
-    await shouldSend(
-      '/info ж 165',
-      'Сохранил твои данные: женщина, 165 см.\n\nТеперь нужно взвеситься: /weight 50'
-    );
+    await shouldSend('/info ж 165', 'Сохранил твои данные: женщина, 165 см.\n\nТеперь нужно взвеситься: /weight 50');
 
     await shouldSend(
       '/weight 54',

@@ -50,7 +50,7 @@ describe('checkUseCase()', () => {
       const actual = checkUseCase(['м', '170', '55']);
 
       assert(actual.isOk);
-      assert.deepEqual(actual.value, expected);
+      assert.deepStrictEqual(actual.value, expected);
     });
   });
 
@@ -58,14 +58,14 @@ describe('checkUseCase()', () => {
     const actual = checkUseCase(['ж', '170', '55']);
 
     assert(actual.isOk);
-    assert.deepEqual(actual.value.params, { weight: kg(55), userInfo: { gender: 'female', height: cm(170) } });
+    assert.deepStrictEqual(actual.value.params, { weight: kg(55), userInfo: { gender: 'female', height: cm(170) } });
     assert(actual.value.bmiResult.case === 'bmi');
-    assert.equal(actual.value.bmiResult.bmi, 18.98 as BMI);
+    assert.strictEqual(actual.value.bmiResult.bmi, 18.98 as BMI);
   });
 
   it('floating weight ', () => {
-    assert.equal(getParams(checkUseCase(['м', '170', '55,7'])).weight, kg(55.7));
-    assert.equal(getParams(checkUseCase(['ж', '170', '55.7'])).weight, kg(55.7));
+    assert.strictEqual(getParams(checkUseCase(['м', '170', '55,7'])).weight, kg(55.7));
+    assert.strictEqual(getParams(checkUseCase(['ж', '170', '55.7'])).weight, kg(55.7));
   });
 });
 
