@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.chartImage = exports.presentDiff = exports.getHeader = void 0;
+const assert_1 = require("src/shared/utils/assert");
 function getHeader(weight) {
     return `Твой вес: ${weight} кг.\n\n`;
 }
@@ -21,8 +22,7 @@ function presentDiff(diff) {
     ];
     return dates.reduce(reducer, '').trim();
     function reducer(acc, [mark, text]) {
-        if (mark === 'future' || mark === 'current')
-            return acc;
+        assert_1.assert(mark !== 'future' && mark !== 'current');
         const measure = diff[mark];
         if (measure == null)
             return acc;

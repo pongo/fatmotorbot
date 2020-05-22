@@ -2,6 +2,7 @@ import Big from 'big.js';
 import { BMICategoryName, SuggestedNextDiff, SuggestedWeightDiff } from 'src/app/core/services/BMI/utils/types';
 import { calcBMICoeff, calcBMIValue } from 'src/app/core/services/BMI/utils/utils';
 import { BMI, Cm, Gender, Kg } from 'src/app/shared/types';
+import { assert } from 'src/shared/utils/assert';
 import { roundToTwo } from 'src/shared/utils/parseNumber';
 import { noop } from 'src/shared/utils/utils';
 
@@ -32,10 +33,12 @@ export class BMICategory {
 
   getRangeWeight(gender: Gender, height: Cm): [Kg, Kg] {
     const [lowerBMI, upperBMI] = this.getRangeBMI(gender);
+    const MIN_WEIGHT = 1;
+    const MAX_WEIGHT = 999;
 
     const coeff = calcBMICoeff(height);
-    const lower = (lowerBMI / 1.3) * coeff;
-    const upper = ((upperBMI - 0.01) / 1.3) * coeff; // у upperBMI не включительное сравнение, поэтому уменьшаем
+    const lower = Number.isFinite(lowerBMI) ? (lowerBMI / 1.3) * coeff : MIN_WEIGHT;
+    const upper = Number.isFinite(upperBMI) ? ((upperBMI - 0.01) / 1.3) * coeff : MAX_WEIGHT; // у upperBMI не включительное сравнение, поэтому уменьшаем
 
     return [roundToTwo(lower) as Kg, roundToTwo(upper) as Kg];
   }
@@ -65,6 +68,7 @@ export class BMICategory {
 
     const nextPosition = this.position < 0 ? this.position + 1 : this.position - 1;
     const next = getBMICategoryByPosition(nextPosition);
+    /* istanbul ignore if */
     if (next == null) {
       throw new Error(`next should be defined. ${JSON.stringify({ gender, height, weight, name: this.name })}`);
     }
@@ -95,6 +99,7 @@ class BMICategories {
     for (const cat of this.categories.values()) {
       if (cat.inRange(gender, bmi)) return cat;
     }
+    /* istanbul ignore next */
     throw Error(`BMI category not found. gender: "${gender}", bmi: "${bmi}"`);
   }
 
@@ -102,7 +107,7 @@ class BMICategories {
     this.checkCategories();
 
     const normal = this.categories.get(0);
-    if (normal == null) throw Error('normal category not found');
+    assert(normal != null, 'the normal category not found');
     return normal.getRangeWeight(gender, height);
   }
 
@@ -131,7 +136,7 @@ function addCategories(categories: Map<Position, BMICategory>) {
     position: Position,
     name: BMICategoryName,
     lowerBMI: [FemaleBMI, MaleBMI],
-    upperBMI: [FemaleBMI, MaleBMI],
+    upperBMI: [FemaleBMI, MaleBMI]
   ) {
     categories.set(
       position,
@@ -140,7 +145,7 @@ function addCategories(categories: Map<Position, BMICategory>) {
         position,
         lowerBMI: { female: lowerBMI[0] as BMI, male: lowerBMI[1] as BMI },
         upperBMI: { female: upperBMI[0] as BMI, male: upperBMI[1] as BMI },
-      }),
+      })
     );
   }
 
@@ -163,7 +168,7 @@ function addCategories(categories: Map<Position, BMICategory>) {
 
 const bmiCategories = new BMICategories();
 
-function getBMICategoryByPosition(position: Position): BMICategory | undefined {
+export function getBMICategoryByPosition(position: Position): BMICategory | undefined {
   return bmiCategories.getByPosition(position);
 }
 

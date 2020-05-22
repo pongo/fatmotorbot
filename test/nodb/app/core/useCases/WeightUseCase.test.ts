@@ -1,20 +1,37 @@
+/* eslint-disable dot-notation */
+/* tslint:disable:no-string-literal no-big-function */
 import { assert } from 'chai';
 import sinon from 'sinon';
+import { SlonikError } from 'slonik';
 import { BMIResultOrError } from 'src/app/core/services/BMI/utils/types';
 import { validateWeight } from 'src/app/core/services/validators';
 import { WeightCases } from 'src/app/core/useCases/Weight/types';
 import { WeightUseCase } from 'src/app/core/useCases/Weight/WeightUseCase';
-import { InvalidFormatError } from 'src/app/shared/errors';
+import { DatabaseError, InvalidFormatError } from 'src/app/shared/errors';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { InfoRepositoryMockSinon, WeightRepositoryMockSinon } from 'test/repositoryMocks';
 import { m, u } from 'test/utils';
 
+const err = Result.err(new DatabaseError(new SlonikError()));
 const bmiResult: BMIResultOrError = Result.ok({ case: 'need-user-info' as const });
 const infoRepository = InfoRepositoryMockSinon({ get: Result.ok(null) });
 
 describe('WeightUseCase', () => {
   describe('add()', () => {
+    it('should return error on database errors', async () => {
+      const today = new Date('2019-08-23');
+
+      const usecase1 = new WeightUseCase(WeightRepositoryMockSinon({ getAll: err }), infoRepository);
+      assert.isTrue((await usecase1.add(u(1), today, '11')).isErr);
+
+      const usecase2 = new WeightUseCase(
+        WeightRepositoryMockSinon({ getAll: Result.ok([]), add: err }),
+        infoRepository
+      );
+      assert.isTrue((await usecase2.add(u(1), today, '11')).isErr);
+    });
+
     it('should add valid weight to db', async () => {
       const today = new Date('2019-08-23');
       const weightRepository = WeightRepositoryMockSinon({
@@ -83,6 +100,11 @@ describe('WeightUseCase', () => {
   });
 
   describe('getCurrent()', () => {
+    it('should return error on database errors', async () => {
+      const usecase = new WeightUseCase(WeightRepositoryMockSinon({ getAll: err }), infoRepository);
+      assert.isTrue((await usecase.getCurrent(u(1), new Date('2019-08-28'))).isErr);
+    });
+
     it('should return empty if there are no measures', async () => {
       const weightRepository = WeightRepositoryMockSinon({ getAll: Result.ok([]) });
       const usecase = new WeightUseCase(weightRepository, infoRepository);
@@ -177,6 +199,30 @@ describe('WeightUseCase', () => {
           },
         });
       });
+    });
+  });
+
+  describe('private getDataForChart()', () => {
+    it('should return undefined on database error', async () => {
+      const weightRepository = WeightRepositoryMockSinon({ getAll: err });
+      const usecase = new WeightUseCase(weightRepository, infoRepository);
+      assert.isUndefined(await usecase['getDataForChart'](u(1), { measuresResult: undefined, bmiResult }));
+    });
+
+    it('should return undefined on an empty measureResult', async () => {
+      const usecase = new WeightUseCase(WeightRepositoryMockSinon(), infoRepository);
+      assert.isUndefined(await usecase['getDataForChart'](u(1), { measuresResult: Result.ok([]), bmiResult }));
+    });
+
+    it('should skip bmi with error', async () => {
+      const usecase = new WeightUseCase(WeightRepositoryMockSinon(), infoRepository);
+      const date = new Date();
+      const value = kg(100);
+      const userId = u(1);
+      assert.deepStrictEqual(
+        await usecase['getDataForChart'](userId, { measuresResult: Result.ok([{ date, value }]), bmiResult: err }),
+        { userId, data: [{ date, value }], user: undefined }
+      );
     });
   });
 });

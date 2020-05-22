@@ -25,7 +25,7 @@ export async function getChartUrl(chart?: DataForChart, chartDomain?: string): P
 
 export async function getCurrentChartUrl(
   result: Result<CurrentWeight, DatabaseError>,
-  chartDomain?: string,
+  chartDomain?: string
 ): Promise<string | undefined> {
   if (result.isErr) return undefined;
   if (result.value.case !== WeightCases.currentDiff) return undefined;
@@ -34,7 +34,7 @@ export async function getCurrentChartUrl(
 
 export async function getAddChartUrl(
   result: Result<WeightAdded, WeightAddedErrors>,
-  chartDomain?: string,
+  chartDomain?: string
 ): Promise<string | undefined> {
   if (result.isErr) return undefined;
   if (result.value.case !== WeightCases.addDiff) return undefined;

@@ -10,9 +10,9 @@ class InfoCommandController {
         this.usecase = new InfoUseCase_1.InfoUseCase(infoRepository, weightRepository);
     }
     enable() {
-        this.telegram.onCommand('info', this.infoHandler.bind(this));
+        this.telegram.onCommand('info', this.handleInfo.bind(this));
     }
-    async infoHandler(command) {
+    async handleInfo(command) {
         const userId = command.from.id;
         const msg = command.argsText.length === 0
             ? presentGetInfo_1.presentGetInfo(await this.usecase.get(userId))

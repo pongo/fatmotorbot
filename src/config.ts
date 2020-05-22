@@ -16,14 +16,20 @@ type Config = {
 };
 
 export function parseConfig(): Readonly<Config> {
-  return envalid.cleanEnv(process.env, {
-    DATABASE_URL: str(),
-    BOT_TOKEN: str(),
+  return envalid.cleanEnv(
+    process.env,
+    {
+      DATABASE_URL: str(),
+      BOT_TOKEN: str(),
 
-    BOT_WEBHOOK_DOMAIN: host({ default: undefined }),
-    BOT_WEBHOOK_PATH: str({ default: undefined }),
-    PORT: port({ default: undefined }),
+      BOT_WEBHOOK_DOMAIN: host({ default: undefined }),
+      BOT_WEBHOOK_PATH: str({ default: undefined }),
+      PORT: port({ default: undefined }),
 
-    CHART_DOMAIN: host({ default: undefined }),
-  });
+      CHART_DOMAIN: host({ default: undefined }),
+    },
+    {
+      dotEnvPath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+    }
+  );
 }

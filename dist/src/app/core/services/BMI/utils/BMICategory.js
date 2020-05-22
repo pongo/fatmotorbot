@@ -3,9 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSuggestedWeightDiff = exports.getHealthyRange = exports.getBMICategory = exports.getBMICategoryName = exports.BMICategory = void 0;
+exports.getSuggestedWeightDiff = exports.getHealthyRange = exports.getBMICategory = exports.getBMICategoryName = exports.getBMICategoryByPosition = exports.BMICategory = void 0;
 const big_js_1 = __importDefault(require("big.js"));
 const utils_1 = require("src/app/core/services/BMI/utils/utils");
+const assert_1 = require("src/shared/utils/assert");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const utils_2 = require("src/shared/utils/utils");
 class BMICategory {
@@ -20,9 +21,11 @@ class BMICategory {
     }
     getRangeWeight(gender, height) {
         const [lowerBMI, upperBMI] = this.getRangeBMI(gender);
+        const MIN_WEIGHT = 1;
+        const MAX_WEIGHT = 999;
         const coeff = utils_1.calcBMICoeff(height);
-        const lower = (lowerBMI / 1.3) * coeff;
-        const upper = ((upperBMI - 0.01) / 1.3) * coeff;
+        const lower = Number.isFinite(lowerBMI) ? (lowerBMI / 1.3) * coeff : MIN_WEIGHT;
+        const upper = Number.isFinite(upperBMI) ? ((upperBMI - 0.01) / 1.3) * coeff : MAX_WEIGHT;
         return [parseNumber_1.roundToTwo(lower), parseNumber_1.roundToTwo(upper)];
     }
     getSuggest(gender, height, weight) {
@@ -80,8 +83,7 @@ class BMICategories {
     getHealthyRange(gender, height) {
         this.checkCategories();
         const normal = this.categories.get(0);
-        if (normal == null)
-            throw Error('normal category not found');
+        assert_1.assert(normal != null, 'the normal category not found');
         return normal.getRangeWeight(gender, height);
     }
     checkCategories() {
@@ -126,6 +128,7 @@ const bmiCategories = new BMICategories();
 function getBMICategoryByPosition(position) {
     return bmiCategories.getByPosition(position);
 }
+exports.getBMICategoryByPosition = getBMICategoryByPosition;
 function getBMICategoryName(gender, bmi) {
     return getBMICategory(gender, bmi).name;
 }

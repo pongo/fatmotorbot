@@ -21,7 +21,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-    "removeComments": true,
+    "removeComments": false,
     "newLine": "LF",
 
     "strict": true,
@@ -33,7 +33,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": [
     "node_modules"

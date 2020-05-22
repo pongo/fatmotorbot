@@ -2,50 +2,21 @@ import { assert } from 'chai';
 import { sql } from 'slonik';
 import { WeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { kg } from 'src/app/shared/types';
-import { parseConfig } from 'src/config';
-import { createDB } from 'src/shared/infrastructure/createDB';
 import { Result } from 'src/shared/utils/result';
+import { alwaysThrowDB, createTestDB, WeightDbApi } from 'test/db/createTestDB';
 import { m, sortMeasuresFromNewestToOldest, u } from 'test/utils';
 
-const config = (parseConfig() as unknown) as { DATABASE_URL_TEST: string };
-const db = createDB(config.DATABASE_URL_TEST);
+const db = createTestDB();
+const dbApi = new WeightDbApi(db);
 
 describe('WeightRepository', () => {
-  before(async () => {
-    await db.connect(async connection => {
-      return connection.query(sql`
-        SELECT pg_terminate_backend(pid)
-        FROM pg_stat_activity
-        WHERE datname = 'measures'
-          AND state = 'idle in transaction';
+  before(async () => dbApi.createTable());
+  after(async () => dbApi.dropTable());
 
-        DROP TABLE IF EXISTS measures;
-        CREATE UNLOGGED TABLE IF NOT EXISTS measures
-        (
-            measure_id serial PRIMARY KEY,
-            user_id    integer        NOT NULL,
-            value_type varchar(255)   NOT NULL,
-            value      decimal(20, 2) NOT NULL, --- 20 is big enough
-            date       timestamptz DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-    });
-  });
+  describe('empty db', () => {
+    beforeEach(async () => dbApi.truncateTable());
 
-  after(async () => {
-    await db.connect(async connection => {
-      return connection.query(sql`
-        DROP TABLE IF EXISTS measures;
-      `);
-    });
-  });
-
-  describe('on empty db', () => {
-    beforeEach(async () => {
-      await db.connect(async connection => connection.query(sql`TRUNCATE TABLE measures;`));
-    });
-
-    it('getAll() should returns []', async () => {
+    it('getAll() should return []', async () => {
       const repository = new WeightRepository(db);
       const actual = await repository.getAll(u(1));
       assert.deepEqual(actual, Result.ok([]));
@@ -69,9 +40,9 @@ describe('WeightRepository', () => {
     });
   });
 
-  describe('on db with measures', () => {
+  describe('db with measures', () => {
     beforeEach(async () => {
-      await db.connect(async connection => {
+      await db.connect(async (connection) => {
         return connection.query(sql`
           TRUNCATE TABLE measures;
           INSERT INTO measures (measure_id, user_id, value_type, value, date)
@@ -83,7 +54,7 @@ describe('WeightRepository', () => {
       });
     });
 
-    it('getAll() should returns ordered measures', async () => {
+    it('getAll() should return ordered measures', async () => {
       const repository = new WeightRepository(db);
 
       const actual = await repository.getAll(u(1));
@@ -95,7 +66,7 @@ describe('WeightRepository', () => {
           m(new Date('2019-08-28 16:58:24.918000'), kg(90)),
           m(new Date('2019-08-27 16:58:20.482000'), kg(50)),
           m(new Date('2019-07-28 16:58:24.918000'), kg(100)),
-        ]),
+        ])
       );
     });
 
@@ -104,5 +75,13 @@ describe('WeightRepository', () => {
       const actual = await repository.getCurrent(u(1));
       assert.deepEqual(actual, Result.ok(kg(90)));
     });
+  });
+
+  it('should catch errors', async () => {
+    const repository = new WeightRepository(alwaysThrowDB);
+
+    assert.ok((await repository.add(u(1), kg(100), new Date())).isErr);
+    assert.ok((await repository.getAll(u(1))).isErr);
+    assert.ok((await repository.getCurrent(u(1))).isErr);
   });
 });

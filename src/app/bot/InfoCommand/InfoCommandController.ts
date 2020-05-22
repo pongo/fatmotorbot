@@ -4,7 +4,7 @@ import { IInfoRepository } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { InfoUseCase } from 'src/app/core/useCases/Info/InfoUseCase';
 import { TelegramUserId } from 'src/app/shared/types';
-import { Command, TelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
+import { Command, ITelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
 
 /**
  * Контроллер команды /info
@@ -13,7 +13,7 @@ export class InfoCommandController {
   private readonly usecase: InfoUseCase;
 
   constructor(
-    private readonly telegram: TelegramGateway,
+    private readonly telegram: ITelegramGateway,
     infoRepository: IInfoRepository,
     weightRepository: IWeightRepository,
   ) {
@@ -21,10 +21,10 @@ export class InfoCommandController {
   }
 
   enable() {
-    this.telegram.onCommand('info', this.infoHandler.bind(this));
+    this.telegram.onCommand('info', this.handleInfo.bind(this));
   }
 
-  private async infoHandler(command: Command) {
+  async handleInfo(command: Command) {
     const userId = command.from.id as TelegramUserId;
     const msg =
       command.argsText.length === 0

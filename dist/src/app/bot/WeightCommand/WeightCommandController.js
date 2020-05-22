@@ -12,10 +12,10 @@ class WeightCommandController {
         this.usecase = new WeightUseCase_1.WeightUseCase(weightRepository, infoRepository);
     }
     enable() {
-        this.telegram.onCommand('weight', this.weightHandler.bind(this));
-        this.telegram.onCommand('w', this.weightHandler.bind(this));
+        this.telegram.onCommand('weight', this.handleWeight.bind(this));
+        this.telegram.onCommand('w', this.handleWeight.bind(this));
     }
-    async weightHandler(command) {
+    async handleWeight(command) {
         const userId = command.from.id;
         const msg = command.argsText.length === 0
             ? await _current(this.usecase, this.chartDomain)

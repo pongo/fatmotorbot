@@ -7,7 +7,7 @@
     "node": "12.x"
   },
   "scripts": {
-    "build": "rimraf dist/* && tsc --newLine lf",
+    "build": "rimraf dist/* && tsc --newLine lf --skipLibCheck --removeComments",
     "eslint": "eslint ./src/**/*.ts ./test/**/*.ts",
     "eslintfix": "eslint --fix ./src/**/*.ts ./test/**/*.ts",
     "tscheck": "tsc --noEmit",
@@ -44,6 +44,7 @@
     "url-exists-deep": "^2.0.6"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/big.js": "^4.0.5",
     "@types/mocha": "^7.0.2",
     "@types/node": "^14.0.1",
@@ -83,7 +84,6 @@
   },
   "prettier": {
     "singleQuote": true,
-    "trailingComma": "all",
     "endOfLine": "lf",
     "printWidth": 120,
     "overrides": [
@@ -100,6 +100,7 @@
     ]
   },
   "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
     "include": [
       "src/**/*.ts"
     ],

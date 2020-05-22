@@ -29,6 +29,8 @@ function parseConfig() {
         BOT_WEBHOOK_PATH: envalid_1.str({ default: undefined }),
         PORT: envalid_1.port({ default: undefined }),
         CHART_DOMAIN: envalid_1.host({ default: undefined }),
+    }, {
+        dotEnvPath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
     });
 }
 exports.parseConfig = parseConfig;

@@ -14,5 +14,5 @@ async function main() {
         port: parseInt(dbConfig.port, 10),
     }, 'migrations', { logger: console.log });
 }
-main();
+main().catch(console.error);
 //# sourceMappingURL=migrate.js.map
