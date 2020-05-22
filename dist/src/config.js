@@ -30,6 +30,7 @@ function parseConfig() {
         PORT: envalid_1.port({ default: undefined }),
         CHART_DOMAIN: envalid_1.host({ default: undefined }),
     }, {
+        /* istanbul ignore next */
         dotEnvPath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
     });
 }

@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai';
-import { minus, parseNumber, roundToTwo } from 'src/shared/utils/parseNumber';
+import { minus, parseNumber, roundDown, roundToTwo, roundUp } from 'src/shared/utils/parseNumber';
 
 describe('parseNumber()', () => {
   it('should parse single value', () => {
@@ -65,9 +65,15 @@ describe('roundToTwo()', () => {
 });
 
 describe('minus()', () => {
-  it('should substract numbers', () => {
+  it('should subtract numbers', () => {
     assert.strictEqual(minus(10, 5), 5);
     assert.strictEqual(minus(0.3, 0.1), 0.2); // известная float проблема
     assert.strictEqual(minus(0.3333, 0.1111), 0.22);
   });
+});
+
+it('round dp', () => {
+  assert.strictEqual(roundToTwo(55.77777, 1), 55.8, 'roundToTwo');
+  assert.strictEqual(roundDown(55.77777, 1), 55.7, 'roundDown');
+  assert.strictEqual(roundUp(55.77777, 1), 55.8, 'roundUp');
 });

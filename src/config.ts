@@ -29,6 +29,7 @@ export function parseConfig(): Readonly<Config> {
       CHART_DOMAIN: host({ default: undefined }),
     },
     {
+      /* istanbul ignore next */
       dotEnvPath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
     }
   );
