@@ -22,6 +22,8 @@ function err(error, data) {
         error: typeof error === 'string' ? new StacklessError_1.StacklessError(error, data) : error,
     };
 }
+// const result = Result.combine<[Gender, Cm]>([validateGender(), validateHeight()]);`
+// const [gender, height] = result.value;
 function combine(results) {
     for (const result of results) {
         if (result.isErr)

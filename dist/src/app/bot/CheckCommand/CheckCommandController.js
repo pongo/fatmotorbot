@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CheckCommandController = void 0;
 const checkPresenter_1 = require("src/app/bot/CheckCommand/checkPresenter");
 const checkUseCase_1 = require("src/app/core/useCases/checkUseCase");
+/**
+ * Контроллер команды /check
+ */
 class CheckCommandController {
     constructor(telegram) {
         this.telegram = telegram;

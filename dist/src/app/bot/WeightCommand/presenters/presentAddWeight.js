@@ -9,7 +9,7 @@ function presentAddWeight(result, chartUrl) {
     if (result.isErr)
         return presentError(result.error);
     const data = result.value;
-    if (data.case === "add:first")
+    if (data.case === "add:first" /* addFirst */)
         return presentAddFirst(data);
     return presentAddDiff(data, chartUrl);
 }

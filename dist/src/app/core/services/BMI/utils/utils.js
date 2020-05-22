@@ -2,6 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.calcBMICoeff = exports.calcBMIValue = void 0;
 const parseNumber_1 = require("src/shared/utils/parseNumber");
+/**
+ * Вычисляет ИМТ, используя "новую" формулу.
+ * http://people.maths.ox.ac.uk/trefethen/bmi_calc.html
+ */
 function calcBMIValue(height, weight) {
     const bmi = (weight * 1.3) / calcBMICoeff(height);
     return parseNumber_1.roundToTwo(bmi);

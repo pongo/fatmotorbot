@@ -4,11 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseCommand = exports.handleCommand = exports.TelegramGateway = void 0;
+/* tslint:disable:no-submodule-imports */
 const result_1 = require("src/shared/utils/result");
 const telegraf_1 = __importDefault(require("telegraf"));
 class TelegramGateway {
     constructor(token, telegrafLogs = false) {
         this.telegraf = new telegraf_1.default(token);
+        // logging
         if (telegrafLogs)
             this.telegraf.use(telegraf_1.default.log());
     }
@@ -60,6 +62,7 @@ async function handleCommand(handler, ctx, next) {
     return undefined;
 }
 exports.handleCommand = handleCommand;
+// https://github.com/telegraf/telegraf-command-parts/blob/master/index.js
 const reCommandParts = /^\/([^@\s]+)@?(?:(\S+)|)\s?([\s\S]+)?$/i;
 function parseCommand(message) {
     if (message.text == null || message.forward_date != null || message.from == null)

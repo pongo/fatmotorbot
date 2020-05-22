@@ -32,6 +32,7 @@ class WeightRepository {
           AND user_id = ${userId}
         ORDER BY date DESC;
       `);
+            // TODO: нужна ли здесь валидация?
             const measures = result;
             return result_1.Result.ok(measures);
         }

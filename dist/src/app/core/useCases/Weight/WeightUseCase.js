@@ -27,10 +27,10 @@ class WeightUseCase {
         const bmi = await BMI_1.calcBMIFromWeight(userId, weight, this.infoRepository);
         const previousMeasures = previousMeasuresResult.value;
         if (previousMeasures.length === 0)
-            return result_1.Result.ok({ case: "add:first", weight, bmi });
+            return result_1.Result.ok({ case: "add:first" /* addFirst */, weight, bmi });
         const diff = measureDifference_1.measureDifference({ date, value: weight }, previousMeasures);
         const chart = await this.getDataForChart(userId, { bmiResult: bmi });
-        return result_1.Result.ok({ case: "add:diff", diff, weight, bmi, chart });
+        return result_1.Result.ok({ case: "add:diff" /* addDiff */, diff, weight, bmi, chart });
     }
     async getCurrent(userId, now) {
         console.debug(`WeightUseCase.getCurrent(${userId}, new Date('${now.toISOString()}');`);
@@ -39,14 +39,14 @@ class WeightUseCase {
             return measuresResult;
         const measures = measuresResult.value;
         if (measures.length === 0)
-            return result_1.Result.ok({ case: "current:empty" });
+            return result_1.Result.ok({ case: "current:empty" /* currentEmpty */ });
         const current = measures[0];
         const bmi = await BMI_1.calcBMIFromWeight(userId, current.value, this.infoRepository);
         if (measures.length === 1)
-            return result_1.Result.ok({ case: "current:first", current, bmi });
+            return result_1.Result.ok({ case: "current:first" /* currentFirst */, current, bmi });
         const diff = measureDifference_1.measureDifference(current, measures, now);
         const chart = await this.getDataForChart(userId, { measuresResult, bmiResult: bmi });
-        return result_1.Result.ok({ case: "current:diff", diff, current, bmi, chart });
+        return result_1.Result.ok({ case: "current:diff" /* currentDiff */, diff, current, bmi, chart });
     }
     async getDataForChart(userId, { measuresResult, bmiResult }) {
         console.debug(`WeightUseCase.getDataForChart(${userId});`);

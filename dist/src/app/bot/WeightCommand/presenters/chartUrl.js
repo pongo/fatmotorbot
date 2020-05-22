@@ -20,7 +20,7 @@ exports.getChartUrl = getChartUrl;
 async function getCurrentChartUrl(result, chartDomain) {
     if (result.isErr)
         return undefined;
-    if (result.value.case !== "current:diff")
+    if (result.value.case !== "current:diff" /* currentDiff */)
         return undefined;
     return getChartUrl(result.value.chart, chartDomain);
 }
@@ -28,7 +28,7 @@ exports.getCurrentChartUrl = getCurrentChartUrl;
 async function getAddChartUrl(result, chartDomain) {
     if (result.isErr)
         return undefined;
-    if (result.value.case !== "add:diff")
+    if (result.value.case !== "add:diff" /* addDiff */)
         return undefined;
     return getChartUrl(result.value.chart, chartDomain);
 }

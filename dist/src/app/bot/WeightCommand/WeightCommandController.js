@@ -5,6 +5,9 @@ const chartUrl_1 = require("src/app/bot/WeightCommand/presenters/chartUrl");
 const presentAddWeight_1 = require("src/app/bot/WeightCommand/presenters/presentAddWeight");
 const presentCurrentWeight_1 = require("src/app/bot/WeightCommand/presenters/presentCurrentWeight");
 const WeightUseCase_1 = require("src/app/core/useCases/Weight/WeightUseCase");
+/**
+ * Контроллер команды /weight
+ */
 class WeightCommandController {
     constructor(telegram, weightRepository, infoRepository, chartDomain) {
         this.telegram = telegram;

@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable import/first,@typescript-eslint/no-var-requires */
+/* tslint:disable:no-require-imports no-submodule-imports no-unsafe-any */
 require('module-alias')({ base: process.cwd() });
+// ...
 const bot_1 = require("src/app/bot/bot");
 const InfoRepository_1 = require("src/app/core/repositories/InfoRepository");
 const WeightRepository_1 = require("src/app/core/repositories/WeightRepository");

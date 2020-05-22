@@ -1,9 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.calcIdealWeight = exports.tetona = exports.breitman = exports.kuper = exports.insurance = exports.mohammed = exports.lorenz = exports.averageHealthyBMI = exports.lemmens = exports.hamwi = exports.miller = exports.robinson = exports.devine = exports.brocaBrugsh = exports.broca = void 0;
+/* tslint:disable:binary-expression-operand-order no-identical-functions */
 const BMICategory_1 = require("src/app/core/services/BMI/utils/BMICategory");
 const parseNumber_1 = require("src/shared/utils/parseNumber");
 const stats_lite_1 = require("stats-lite");
+/**
+ * Источники:
+ * * http://www.bmi-calculator.net/ideal-weight-calculator/
+ * * https://beregifiguru.ru/%D0%9A%D0%B0%D0%BB%D1%8C%D0%BA%D1%83%D0%BB%D1%8F%D1%82%D0%BE%D1%80%D1%8B/%D0%A0%D0%B0%D1%81%D1%87%D0%B5%D1%82-%D0%B8%D0%B4%D0%B5%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B3%D0%BE-%D0%B2%D0%B5%D1%81%D0%B0
+ */
 function broca(height, gender) {
     const coeff = gender === 'male' ? 0.9 : 0.85;
     const weight = (height - 100) * coeff;
@@ -11,6 +17,7 @@ function broca(height, gender) {
 }
 exports.broca = broca;
 function brocaBrugsh(height) {
+    // eslint-disable-next-line no-nested-ternary
     const coeff = height < 165 ? 100 : height > 175 ? 110 : 105;
     const weight = height - coeff;
     return parseNumber_1.roundToTwo(weight);

@@ -31,6 +31,7 @@ class InfoRepository {
         FROM users
         WHERE user_id = ${userId};
       `);
+            // TODO: нужна ли здесь валидация?
             if (result == null)
                 return result_1.Result.ok(null);
             return result_1.Result.ok(result);

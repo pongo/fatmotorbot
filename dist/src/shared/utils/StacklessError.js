@@ -1,4 +1,5 @@
 "use strict";
+/* tslint:disable:no-unnecessary-class no-require-imports no-unsafe-any */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StacklessError = void 0;
 class StacklessError {

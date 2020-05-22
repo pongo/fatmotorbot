@@ -11,9 +11,9 @@ function presentCurrentWeight(result, now, chartUrl) {
         return shared_1.presentDatabaseError();
     const data = result.value;
     switch (data.case) {
-        case "current:empty":
+        case "current:empty" /* currentEmpty */:
             return presentCurrentEmpty();
-        case "current:first":
+        case "current:first" /* currentFirst */:
             return presentCurrentFirst(data, now);
         default:
             return presentCurrentDiff(data, now, chartUrl);

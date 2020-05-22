@@ -25,7 +25,7 @@ class BMICategory {
         const MAX_WEIGHT = 999;
         const coeff = utils_1.calcBMICoeff(height);
         const lower = Number.isFinite(lowerBMI) ? (lowerBMI / 1.3) * coeff : MIN_WEIGHT;
-        const upper = Number.isFinite(upperBMI) ? ((upperBMI - 0.01) / 1.3) * coeff : MAX_WEIGHT;
+        const upper = Number.isFinite(upperBMI) ? ((upperBMI - 0.01) / 1.3) * coeff : MAX_WEIGHT; // у upperBMI не включительное сравнение, поэтому уменьшаем
         return [parseNumber_1.roundToTwo(lower), parseNumber_1.roundToTwo(upper)];
     }
     getSuggest(gender, height, weight) {
@@ -50,6 +50,7 @@ class BMICategory {
             return null;
         const nextPosition = this.position < 0 ? this.position + 1 : this.position - 1;
         const next = getBMICategoryByPosition(nextPosition);
+        /* istanbul ignore if */
         if (next == null) {
             throw new Error(`next should be defined. ${JSON.stringify({ gender, height, weight, name: this.name })}`);
         }
@@ -78,6 +79,7 @@ class BMICategories {
             if (cat.inRange(gender, bmi))
                 return cat;
         }
+        /* istanbul ignore next */
         throw Error(`BMI category not found. gender: "${gender}", bmi: "${bmi}"`);
     }
     getHealthyRange(gender, height) {
@@ -100,6 +102,7 @@ function addCategories(categories) {
         lower = upper;
         pos += 1;
     }
+    // eslint-disable-next-line max-params
     function addCategory(position, name, lowerBMI, upperBMI) {
         categories.set(position, new BMICategory({
             name,
@@ -142,7 +145,8 @@ function getHealthyRange(gender, height) {
 }
 exports.getHealthyRange = getHealthyRange;
 function roundUpKg(value) {
-    return parseInt(big_js_1.default(value).round(0, 3).toFixed(), 10);
+    // prettier-ignore
+    return parseInt(big_js_1.default(value).round(0, 3 /* ROUND_UP */).toFixed(), 10);
 }
 function getSuggestedWeightDiff(gender, height, weight) {
     const bmi = utils_1.calcBMIValue(height, weight);

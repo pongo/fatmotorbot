@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/* istanbul ignore file */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* tslint:disable:no-non-null-assertion */
 const pg_connection_string_1 = require("pg-connection-string");
 const postgres_migrations_1 = require("postgres-migrations");
 const config_1 = require("./config");
