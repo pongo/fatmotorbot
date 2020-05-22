@@ -3,7 +3,7 @@ import { sql } from 'slonik';
 import { WeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
-import { createTestDB, WeightDbApi } from 'test/db/createTestDB';
+import { alwaysThrowDB, createTestDB, WeightDbApi } from 'test/db/createTestDB';
 import { m, sortMeasuresFromNewestToOldest, u } from 'test/utils';
 
 const db = createTestDB();
@@ -13,10 +13,10 @@ describe('WeightRepository', () => {
   before(async () => dbApi.createTable());
   after(async () => dbApi.dropTable());
 
-  describe('on empty db', () => {
+  describe('empty db', () => {
     beforeEach(async () => dbApi.truncateTable());
 
-    it('getAll() should returns []', async () => {
+    it('getAll() should return []', async () => {
       const repository = new WeightRepository(db);
       const actual = await repository.getAll(u(1));
       assert.deepEqual(actual, Result.ok([]));
@@ -40,7 +40,7 @@ describe('WeightRepository', () => {
     });
   });
 
-  describe('on db with measures', () => {
+  describe('db with measures', () => {
     beforeEach(async () => {
       await db.connect(async (connection) => {
         return connection.query(sql`
@@ -54,7 +54,7 @@ describe('WeightRepository', () => {
       });
     });
 
-    it('getAll() should returns ordered measures', async () => {
+    it('getAll() should return ordered measures', async () => {
       const repository = new WeightRepository(db);
 
       const actual = await repository.getAll(u(1));
@@ -66,7 +66,7 @@ describe('WeightRepository', () => {
           m(new Date('2019-08-28 16:58:24.918000'), kg(90)),
           m(new Date('2019-08-27 16:58:20.482000'), kg(50)),
           m(new Date('2019-07-28 16:58:24.918000'), kg(100)),
-        ]),
+        ])
       );
     });
 
@@ -75,5 +75,13 @@ describe('WeightRepository', () => {
       const actual = await repository.getCurrent(u(1));
       assert.deepEqual(actual, Result.ok(kg(90)));
     });
+  });
+
+  it('should catch errors', async () => {
+    const repository = new WeightRepository(alwaysThrowDB);
+
+    assert.ok((await repository.add(u(1), kg(100), new Date())).isErr);
+    assert.ok((await repository.getAll(u(1))).isErr);
+    assert.ok((await repository.getCurrent(u(1))).isErr);
   });
 });

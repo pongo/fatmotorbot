@@ -1,10 +1,12 @@
-import { DatabasePoolType, sql } from 'slonik';
+import { DatabasePoolType, SlonikError, sql } from 'slonik';
 import { parseConfig } from 'src/config';
 import { createDB } from 'src/shared/infrastructure/createDB';
+import { assert } from 'src/shared/utils/assert';
 
 export function createTestDB() {
-  const config = (parseConfig() as unknown) as { DATABASE_URL_TEST: string };
-  return createDB(config.DATABASE_URL_TEST);
+  const config = parseConfig();
+  assert(config.DATABASE_URL.endsWith('fatmotorbot_test'));
+  return createDB(config.DATABASE_URL);
 }
 
 export class InfoDbApi {
@@ -79,4 +81,10 @@ export class WeightDbApi {
   async truncateTable() {
     await this.db.connect(async (connection) => connection.query(sql`TRUNCATE TABLE measures;`));
   }
+}
+
+export const alwaysThrowDB = ({ any: throwError, maybeOne: throwError } as unknown) as DatabasePoolType;
+
+function throwError() {
+  throw new SlonikError();
 }

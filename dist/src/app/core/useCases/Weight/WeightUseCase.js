@@ -50,10 +50,10 @@ class WeightUseCase {
     }
     async getDataForChart(userId, { measuresResult, bmiResult }) {
         console.debug(`WeightUseCase.getDataForChart(${userId});`);
-        const measuresResult_ = measuresResult !== null && measuresResult !== void 0 ? measuresResult : (await this.weightRepository.getAll(userId));
-        if (measuresResult_.isErr)
+        const _measuresResult = measuresResult !== null && measuresResult !== void 0 ? measuresResult : (await this.weightRepository.getAll(userId));
+        if (_measuresResult.isErr)
             return undefined;
-        const measures = measuresResult_.value;
+        const measures = _measuresResult.value;
         if (measures.length === 0)
             return undefined;
         const bmi = getBMIValue(bmiResult);

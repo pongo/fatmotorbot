@@ -21,7 +21,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-    "removeComments": true,
+    "removeComments": false,
     "newLine": "LF",
 
     "strict": true,

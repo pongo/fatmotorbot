@@ -11,7 +11,7 @@ describe('infoPresenter', () => {
     it('error', () => {
       assert.equal(
         presentGetInfo(Result.err(new DatabaseError(new SlonikError('ops')))),
-        'Что-то не так с базой данных. Вызывайте техподдержку!',
+        'Что-то не так с базой данных. Вызывайте техподдержку!'
       );
     });
 
@@ -24,18 +24,18 @@ describe('infoPresenter', () => {
 • рост в см — 185
 
 Пример: /info ж 164
-`.trim(),
+`.trim()
       );
     });
 
     it('data', () => {
       assert.equal(
         presentGetInfo(Result.ok({ case: 'get', data: { gender: 'female', height: cm(150) } })),
-        `Женщина, 150 см`,
+        `Женщина, 150 см`
       );
       assert.equal(
         presentGetInfo(Result.ok({ case: 'get', data: { gender: 'male', height: cm(150) } })),
-        `Мужчина, 150 см`,
+        `Мужчина, 150 см`
       );
     });
   });
@@ -44,14 +44,21 @@ describe('infoPresenter', () => {
     it('invalid data', () => {
       assert.equal(
         presentSetInfo(Result.err(new InvalidFormatError())),
-        'Не могу разобрать твои каракули. Пиши точно как я указал',
+        'Не могу разобрать твои каракули. Пиши точно как я указал'
       );
     });
 
     it('valid data', () => {
       assert.equal(
         presentSetInfo(Result.ok({ case: 'set', data: { gender: 'female', height: cm(150) }, bmi: null })),
-        `Сохранил твои данные: женщина, 150 см`,
+        `Сохранил твои данные: женщина, 150 см`
+      );
+    });
+
+    it('database error', () => {
+      assert.equal(
+        presentSetInfo(Result.err(new DatabaseError(new SlonikError()))),
+        'Что-то не так с базой данных. Вызывайте техподдержку!'
       );
     });
   });

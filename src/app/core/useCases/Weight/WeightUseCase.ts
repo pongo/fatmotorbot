@@ -21,7 +21,7 @@ import { Result } from 'src/shared/utils/result';
 export class WeightUseCase {
   constructor(
     private readonly weightRepository: IWeightRepository,
-    private readonly infoRepository: IInfoRepositoryGet,
+    private readonly infoRepository: IInfoRepositoryGet
   ) {}
 
   async add(userId: TelegramUserId, date: Date, weightString: string): Promise<Result<WeightAdded, WeightAddedErrors>> {
@@ -65,14 +65,14 @@ export class WeightUseCase {
 
   private async getDataForChart(
     userId: TelegramUserId,
-    { measuresResult, bmiResult }: GetDataForChartPrepared,
+    { measuresResult, bmiResult }: GetDataForChartPrepared
   ): Promise<DataForChart | undefined> {
     console.debug(`WeightUseCase.getDataForChart(${userId});`);
 
-    const measuresResult_ = measuresResult ?? (await this.weightRepository.getAll(userId));
-    if (measuresResult_.isErr) return undefined;
+    const _measuresResult = measuresResult ?? (await this.weightRepository.getAll(userId));
+    if (_measuresResult.isErr) return undefined;
 
-    const measures = measuresResult_.value;
+    const measures = _measuresResult.value;
     if (measures.length === 0) return undefined;
 
     const bmi = getBMIValue(bmiResult);

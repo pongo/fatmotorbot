@@ -24,3 +24,4 @@ yarn-error.log*
 *.test.js
 
 /.env
+/.env.test

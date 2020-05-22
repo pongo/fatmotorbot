@@ -1,5 +1,6 @@
 import { DateMark, MeasureDifferenceSummary } from 'src/app/core/services/measureDifference';
 import { Kg } from 'src/app/shared/types';
+import { assert } from 'src/shared/utils/assert';
 
 export function getHeader(weight: Kg): string {
   return `Твой вес: ${weight} кг.\n\n`;
@@ -22,7 +23,7 @@ export function presentDiff(diff: MeasureDifferenceSummary<Kg>): string {
   return dates.reduce(reducer, '').trim();
 
   function reducer(acc: string, [mark, text]: [DateMark, string]): string {
-    if (mark === 'future' || mark === 'current') return acc;
+    assert(mark !== 'future' && mark !== 'current');
     const measure = diff[mark];
     if (measure == null) return acc;
 

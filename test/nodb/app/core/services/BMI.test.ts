@@ -1,14 +1,17 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
+import { SlonikError } from 'slonik';
 import { IInfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
 import { calcBMI, calcBMIFromUserInfo, calcBMIFromWeight } from 'src/app/core/services/BMI/BMI';
 import {
+  getBMICategoryByPosition,
   getBMICategoryName,
   getHealthyRange,
   getSuggestedWeightDiff,
 } from 'src/app/core/services/BMI/utils/BMICategory';
 import { BMICategoryName, BMIResult } from 'src/app/core/services/BMI/utils/types';
 import { calcBMIValue } from 'src/app/core/services/BMI/utils/utils';
+import { DatabaseError } from 'src/app/shared/errors';
 import { BMI, cm, kg } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
 import { InfoRepositoryMockSinon, WeightRepositoryMockSinon } from 'test/repositoryMocks';
@@ -97,7 +100,7 @@ describe('getSuggestedWeightDiff()', () => {
           nextWeight: kg(66),
         },
       },
-      '60 kg',
+      '60 kg'
     );
     assert.deepEqual(
       getSuggestedWeightDiff('male', cm(200), kg(66)),
@@ -110,7 +113,7 @@ describe('getSuggestedWeightDiff()', () => {
           nextWeight: kg(79),
         },
       },
-      '66 kg',
+      '66 kg'
     );
     assert.deepEqual(
       getSuggestedWeightDiff('male', cm(200), kg(79)),
@@ -119,14 +122,14 @@ describe('getSuggestedWeightDiff()', () => {
         toHealthy: kg(9),
         toNext: null,
       },
-      '79 kg',
+      '79 kg'
     );
     assert.deepEqual(
       getSuggestedWeightDiff('male', cm(200), kg(88)),
       {
         alreadyHealthy: true,
       },
-      '88 kg',
+      '88 kg'
     );
     assert.deepEqual(
       getSuggestedWeightDiff('male', cm(200), kg(115)),
@@ -135,7 +138,7 @@ describe('getSuggestedWeightDiff()', () => {
         toHealthy: kg(-7),
         toNext: null,
       },
-      '115 kg',
+      '115 kg'
     );
     assert.deepEqual(
       getSuggestedWeightDiff('male', cm(200), kg(150)),
@@ -148,7 +151,7 @@ describe('getSuggestedWeightDiff()', () => {
           nextWeight: kg(131),
         },
       },
-      '150 kg',
+      '150 kg'
     );
   });
 });
@@ -186,8 +189,48 @@ describe('BMI full report', () => {
     assert.deepEqual(actual, Result.ok(expected));
   });
 
+  it('calc* should check errors', async () => {
+    const err = Result.err(new DatabaseError(new SlonikError()));
+
+    const weightRepo = WeightRepositoryMockSinon({ getCurrent: err });
+    assert.isTrue((await calcBMIFromUserInfo(u(1), userInfo, weightRepo)).isErr);
+
+    const infoRepository = InfoRepositoryMockSinon({ get: err });
+    assert.isTrue((await calcBMIFromWeight(u(1), kg(54), infoRepository)).isErr);
+  });
+
   it('calcBMI()', () => {
     const actual = calcBMI(kg(54), userInfo);
     assert.deepEqual(actual, expected);
+  });
+});
+
+describe('BMICategory', () => {
+  it('toNext catch error', () => {
+    assert.isUndefined(getBMICategoryByPosition(-4));
+    assert.isUndefined(getBMICategoryByPosition(8));
+
+    const ranges = [];
+    for (let pos = -3; pos < 8; pos++) {
+      const cat = getBMICategoryByPosition(pos);
+      assert(cat != null);
+      cat.inRange('male', 20 as BMI);
+      assert.isDefined(cat.getSuggest('male', cm(180), kg(50)));
+      ranges.push(cat.getRangeWeight('female', cm(160)));
+    }
+
+    assert.deepStrictEqual(ranges, [
+      [1, 37.34],
+      [37.36, 39.83],
+      [39.85, 47.3],
+      [47.33, 59.76],
+      [59.78, 74.7],
+      [74.73, 87.16],
+      [87.18, 99.61],
+      [99.64, 112.07],
+      [112.09, 124.52],
+      [124.55, 149.43],
+      [149.45, 999],
+    ]);
   });
 });

@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import { InfoRepository, UserInfo } from 'src/app/core/repositories/InfoRepository';
 import { cm } from 'src/app/shared/types';
 import { Result } from 'src/shared/utils/result';
-import { createTestDB, InfoDbApi } from 'test/db/createTestDB';
+import { alwaysThrowDB, createTestDB, InfoDbApi } from 'test/db/createTestDB';
 import { u } from 'test/utils';
 
 const db = createTestDB();
@@ -32,5 +32,12 @@ describe('InfoRepository', () => {
     await repository.set(u(1), data2);
     const actual2 = await repository.get(u(1));
     assert.deepEqual(actual2, Result.ok(data2));
+  });
+
+  it('should catch errors', async () => {
+    const repository = new InfoRepository(alwaysThrowDB);
+
+    assert.ok((await repository.get(u(1))).isErr);
+    assert.ok((await repository.set(u(1), { height: cm(180), gender: 'male' })).isErr);
   });
 });
