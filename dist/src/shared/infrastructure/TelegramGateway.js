@@ -20,6 +20,11 @@ class TelegramGateway {
             : { webhook: { domain, webhookPath, port, tlsOptions: null } };
         return this.telegraf.launch(config);
     }
+    onText(handler) {
+        this.telegraf.on('text', async (ctx, next) => {
+            return handleText(handler, ctx, next);
+        });
+    }
     onCommand(command, handler) {
         this.telegraf.command(command, async (ctx, next) => {
             return handleCommand(handler, ctx, next);
@@ -49,6 +54,18 @@ class TelegramGateway {
     }
 }
 exports.TelegramGateway = TelegramGateway;
+async function handleText(handler, ctx, next) {
+    if ((ctx === null || ctx === void 0 ? void 0 : ctx.message) != null) {
+        const parsedText = parseText(ctx.message);
+        if (parsedText != null) {
+            ctx.telegram.sendChatAction(parsedText.chatId, 'typing').catch(console.error);
+            await handler(parsedText);
+        }
+    }
+    if (next != null)
+        return next();
+    return undefined;
+}
 async function handleCommand(handler, ctx, next) {
     if ((ctx === null || ctx === void 0 ? void 0 : ctx.message) != null) {
         const parsedCommand = parseCommand(ctx.message);
@@ -64,6 +81,17 @@ async function handleCommand(handler, ctx, next) {
 exports.handleCommand = handleCommand;
 // https://github.com/telegraf/telegraf-command-parts/blob/master/index.js
 const reCommandParts = /^\/([^@\s]+)@?(?:(\S+)|)\s?([\s\S]+)?$/i;
+function parseText(message) {
+    if (message.text == null || message.forward_date != null || message.from == null)
+        return null;
+    return {
+        text: message.text,
+        messageId: message.message_id,
+        date: new Date(message.date * 1000),
+        chatId: message.chat.id,
+        from: message.from,
+    };
+}
 function parseCommand(message) {
     if (message.text == null || message.forward_date != null || message.from == null)
         return null;

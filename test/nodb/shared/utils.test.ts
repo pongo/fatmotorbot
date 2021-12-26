@@ -24,6 +24,6 @@ describe('sortMeasuresFromNewestToOldest()', () => {
 });
 
 it('urlExists() should check url', async () => {
-  assert.strictEqual(await urlExists('https://always200.now.sh'), 'https://always200.now.sh/');
-  assert.isUndefined(await urlExists('https://200.now.sh/not-found'));
+  assert.strictEqual(await urlExists('https://always200.vercel.app'), 'https://always200.vercel.app/');
+  assert.isUndefined(await urlExists('https://200.vercel.app/not-found'));
 });

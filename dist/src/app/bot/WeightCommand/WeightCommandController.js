@@ -17,6 +17,14 @@ class WeightCommandController {
     enable() {
         this.telegram.onCommand('weight', this.handleWeight.bind(this));
         this.telegram.onCommand('w', this.handleWeight.bind(this));
+        this.telegram.onText(this.handleWeightText.bind(this));
+    }
+    async handleWeightText(msg) {
+        const userId = msg.from.id;
+        const result = await this.usecase.add(userId, msg.date, msg.text);
+        const chartUrl = await chartUrl_1.getAddChartUrl(result, this.chartDomain);
+        const answer = presentAddWeight_1.presentAddWeight(result, chartUrl);
+        await this.telegram.sendMessage(msg.chatId, answer, msg.messageId);
     }
     async handleWeight(command) {
         const userId = command.from.id;

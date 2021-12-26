@@ -5,7 +5,7 @@ import { InfoRepository } from 'src/app/core/repositories/InfoRepository';
 import { IWeightRepository } from 'src/app/core/repositories/WeightRepository';
 import { WeightUseCase } from 'src/app/core/useCases/Weight/WeightUseCase';
 import { TelegramUserId } from 'src/app/shared/types';
-import { Command, ITelegramGateway } from 'src/shared/infrastructure/TelegramGateway';
+import { Command, ITelegramGateway, TextMessage } from 'src/shared/infrastructure/TelegramGateway';
 
 /**
  * Контроллер команды /weight
@@ -17,7 +17,7 @@ export class WeightCommandController {
     private readonly telegram: ITelegramGateway,
     weightRepository: IWeightRepository,
     infoRepository: InfoRepository,
-    private readonly chartDomain?: string,
+    private readonly chartDomain?: string
   ) {
     this.usecase = new WeightUseCase(weightRepository, infoRepository);
   }
@@ -25,6 +25,15 @@ export class WeightCommandController {
   enable() {
     this.telegram.onCommand('weight', this.handleWeight.bind(this));
     this.telegram.onCommand('w', this.handleWeight.bind(this));
+    this.telegram.onText(this.handleWeightText.bind(this));
+  }
+
+  async handleWeightText(msg: TextMessage) {
+    const userId = msg.from.id as TelegramUserId;
+    const result = await this.usecase.add(userId, msg.date, msg.text);
+    const chartUrl = await getAddChartUrl(result, this.chartDomain);
+    const answer = presentAddWeight(result, chartUrl);
+    await this.telegram.sendMessage(msg.chatId, answer, msg.messageId);
   }
 
   async handleWeight(command: Command) {

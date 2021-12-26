@@ -5,15 +5,25 @@ import { TelegrafContext } from 'telegraf/typings/context';
 import * as TT from 'telegram-typings';
 
 export type CommandHandler = (command: Command) => void | Promise<void>;
+export type TextHandler = (msg: TextMessage) => void | Promise<void>;
 export type TelegramMessageId = number;
+
+export type TextMessage = {
+  readonly text: string;
+  readonly messageId: TelegramMessageId;
+  readonly from: TT.User;
+  readonly date: Date;
+  readonly chatId: number;
+};
 
 export interface ITelegramGateway {
   onCommand(command: StringWithoutSlash, handler: CommandHandler): void;
+  onText(handler: TextHandler): void;
   onStartCommand(text: string): void;
   sendMessage(
     chatId: number,
     text: string,
-    reply_to_message_id?: TelegramMessageId,
+    reply_to_message_id?: TelegramMessageId
   ): Promise<Result<TelegramMessageId>>;
 }
 
@@ -35,6 +45,12 @@ export class TelegramGateway implements ITelegramGateway {
     return this.telegraf.launch(config);
   }
 
+  onText(handler: TextHandler) {
+    this.telegraf.on('text', async (ctx, next) => {
+      return handleText(handler, ctx, next);
+    });
+  }
+
   onCommand(command: StringWithoutSlash, handler: CommandHandler) {
     this.telegraf.command(command, async (ctx, next) => {
       return handleCommand(handler, ctx, next);
@@ -52,7 +68,7 @@ export class TelegramGateway implements ITelegramGateway {
   async sendMessage(
     chatId: number,
     text: string,
-    reply_to_message_id?: TelegramMessageId,
+    reply_to_message_id?: TelegramMessageId
   ): Promise<Result<TelegramMessageId>> {
     try {
       const message = await this.telegraf.telegram.sendMessage(chatId, text, {
@@ -65,6 +81,18 @@ export class TelegramGateway implements ITelegramGateway {
       return Result.err(e);
     }
   }
+}
+
+async function handleText(handler: TextHandler, ctx: TelegrafContext, next?: Function) {
+  if (ctx?.message != null) {
+    const parsedText = parseText(ctx.message);
+    if (parsedText != null) {
+      ctx.telegram.sendChatAction(parsedText.chatId, 'typing').catch(console.error);
+      await handler(parsedText);
+    }
+  }
+  if (next != null) return next();
+  return undefined;
 }
 
 export async function handleCommand(handler: CommandHandler, ctx: TelegrafContext, next?: Function) {
@@ -95,6 +123,18 @@ export type Command = {
   readonly date: Date;
   readonly chatId: number;
 };
+
+function parseText(message: TT.Message): TextMessage | null {
+  if (message.text == null || message.forward_date != null || message.from == null) return null;
+
+  return {
+    text: message.text,
+    messageId: message.message_id,
+    date: new Date(message.date * 1000),
+    chatId: message.chat.id,
+    from: message.from,
+  };
+}
 
 export function parseCommand(message: TT.Message): Command | null {
   if (message.text == null || message.forward_date != null || message.from == null) return null;
