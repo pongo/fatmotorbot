@@ -1,3 +1,4 @@
 !.eslintrc.js
 !.tslint.js
 packages/eslint-plugin-fatmotorbot/index.js
+/wallaby.js
