@@ -126,6 +126,7 @@ export type Command = {
 
 function parseText(message: TT.Message): TextMessage | null {
   if (message.text == null || message.forward_date != null || message.from == null) return null;
+  if (message.text.startsWith('/')) return null;
 
   return {
     text: message.text,
